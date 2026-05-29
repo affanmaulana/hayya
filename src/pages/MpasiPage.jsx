@@ -18,7 +18,7 @@ export default function MpasiPage() {
         </p>
       </div>
 
-      <div className="bg-bg-card rounded-(--radius-card) p-6 shadow-(--shadow-card) flex flex-col items-center text-center gap-3">
+      <div className="bg-bg-card rounded-card p-6 shadow-card flex flex-col items-center text-center gap-3">
         <div className="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center text-3xl">
           🍽️
         </div>

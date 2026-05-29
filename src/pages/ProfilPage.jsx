@@ -18,7 +18,7 @@ export default function ProfilPage() {
       </div>
 
       {/* Profile Card */}
-      <div className="bg-bg-card rounded-(--radius-card) p-5 shadow-(--shadow-card)">
+      <div className="bg-bg-card rounded-card p-5 shadow-card">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-full bg-gradient-to-br from-secondary to-primary flex items-center justify-center shrink-0">
             <span className="text-xl text-white font-bold font-[var(--font-heading)]">
@@ -38,7 +38,7 @@ export default function ProfilPage() {
       </div>
 
       {/* Menu Items Placeholder */}
-      <div className="bg-bg-card rounded-(--radius-card) shadow-(--shadow-card) overflow-hidden divide-y divide-border">
+      <div className="bg-bg-card rounded-card shadow-card overflow-hidden divide-y divide-border">
         {[
           { icon: '✏️', label: 'Edit Profil' },
           { icon: '👶', label: 'Kelola Data Anak' },
@@ -61,7 +61,7 @@ export default function ProfilPage() {
       {/* Logout */}
       <button
         onClick={logout}
-        className="w-full py-3 rounded-(--radius-button) border-2 border-danger/30 text-danger text-sm font-semibold font-[var(--font-heading)] hover:bg-danger/5 transition-colors duration-200 cursor-pointer min-h-[48px]"
+        className="w-full py-3 rounded-button border-2 border-danger/30 text-danger text-sm font-semibold font-[var(--font-heading)] hover:bg-danger/5 transition-colors duration-200 cursor-pointer min-h-[48px]"
       >
         Keluar Akun
       </button>

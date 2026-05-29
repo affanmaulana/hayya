@@ -28,7 +28,7 @@ export default function AppLayout() {
       <div className="w-full max-w-[428px] min-h-dvh flex flex-col bg-bg relative shadow-lg shadow-black/5">
         
         {/* ===== HEADER ===== */}
-        <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-lg border-b border-border">
+        <header className="sticky top-0 z-30 bg-white border-b border-border">
           <div className="flex items-center justify-between px-(--spacing-page) py-3">
             {/* Greeting */}
             <div className="flex flex-col">

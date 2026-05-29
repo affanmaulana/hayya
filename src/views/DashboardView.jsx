@@ -10,14 +10,14 @@ export default function DashboardView() {
   // Local states for child form
   const [name, setName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
-  const [gender, setGender] = useState('L'); // Default: Laki-laki
+  const [gender, setGender] = useState('L'); // Default: Laki-laki (L)
   const [birthWeight, setBirthWeight] = useState('');
   const [birthHeight, setBirthHeight] = useState('');
   const [bloodType, setBloodType] = useState(''); // Optional
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Get current date string for max birth date input validation
+  // Get current date string for birth date max input validation
   const todayString = useMemo(() => {
     return new Date().toISOString().split('T')[0];
   }, []);
@@ -31,7 +31,7 @@ export default function DashboardView() {
     return 'Selamat malam';
   }, []);
 
-  // Calculate age string for active child
+  // Calculate age string for active child using precise helper
   const ageString = useMemo(() => {
     if (!activeChild || !activeChild.dateOfBirth) return '';
     const { months, days } = calculateAgeInMonthsAndDays(activeChild.dateOfBirth);
@@ -70,7 +70,7 @@ export default function DashboardView() {
         gender,
         birthWeightKg: parseFloat(birthWeight),
         birthHeightCm: parseFloat(birthHeight),
-        bloodType: bloodType || '', // Make it optional as requested
+        bloodType: bloodType || '',
         photoUrl: ''
       };
 
@@ -93,13 +93,12 @@ export default function DashboardView() {
   // ----- RENDER EMPTY STATE (No Children Registered) -----
   if (childrenList.length === 0) {
     return (
-      <div className="space-y-8 animate-fade-in px-1">
-        {/* Empty State Banner */}
-        <div className="flex flex-col items-center text-center space-y-4 pt-6">
-          {/* Elegant minimalist SVG illustration of a baby crib / sleeping baby */}
-          <div className="w-28 h-28 bg-primary/5 rounded-full flex items-center justify-center text-primary text-5xl shadow-sm">
+      <div className="space-y-8 animate-fade-in px-1 py-4 font-[var(--font-body)]">
+        {/* Empty State Banner with generous whitespace */}
+        <div className="flex flex-col items-center text-center space-y-5 pt-4">
+          <div className="w-24 h-24 bg-primary/5 rounded-full flex items-center justify-center text-primary shadow-sm border border-primary/10">
             <svg
-              className="w-16 h-16 text-primary/80"
+              className="w-12 h-12 text-primary/80"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
@@ -114,34 +113,34 @@ export default function DashboardView() {
             </svg>
           </div>
           
-          <div className="space-y-2">
-            <h2 className="text-xl font-bold font-[var(--font-heading)] text-text">
+          <div className="space-y-2.5">
+            <h2 className="text-xl font-bold font-[var(--font-heading)] text-text tracking-tight">
               {timeGreeting}, Bunda {currentUser?.fullName?.split(' ')[0]}! 🧡
             </h2>
-            <p className="text-sm text-text-secondary max-w-[320px] leading-relaxed font-[var(--font-body)]">
+            <p className="text-sm text-text-secondary max-w-[310px] leading-relaxed">
               Yuk, daftarkan profil si kecil pertama Bunda untuk mulai memantau tumbuh kembang, jadwal imunisasi, dan nutrisi MPASI secara mandiri.
             </p>
           </div>
         </div>
 
-        {/* Inline Registration Form */}
-        <div className="bg-white rounded-(--radius-card) border border-border shadow-(--shadow-card) p-5 space-y-5">
-          <div className="border-b border-border pb-3">
+        {/* Premium Integrated Registration Form Card */}
+        <div className="bg-white rounded-card border border-border/80 shadow-card p-6 space-y-6">
+          <div className="border-b border-border/50 pb-4">
             <h3 className="text-base font-bold font-[var(--font-heading)] text-text">
-              Tambah Profil Si Kecil
+              Daftarkan Profil Si Kecil
             </h3>
-            <p className="text-xs text-text-secondary font-[var(--font-body)] mt-0.5">
-              Masukkan data kelahiran si kecil dengan benar, ya Bunda.
+            <p className="text-xs text-text-secondary mt-1">
+              Masukkan informasi dasar kelahiran si kecil secara lengkap.
             </p>
           </div>
 
           {formError && (
-            <div className="p-3 bg-danger/5 border border-danger/10 text-danger text-xs rounded-xl font-medium">
+            <div className="p-3 bg-danger/5 border border-danger/10 text-danger text-xs rounded-input font-medium animate-shake">
               {formError}
             </div>
           )}
 
-          <form onSubmit={handleAddChildSubmit} className="space-y-4 font-[var(--font-body)]">
+          <form onSubmit={handleAddChildSubmit} className="space-y-4">
             {/* Child Name */}
             <div className="space-y-1.5">
               <label htmlFor="child-name" className="text-xs font-semibold text-text">
@@ -152,8 +151,8 @@ export default function DashboardView() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Misal: Rayyan, Kiran, Arka"
-                className="w-full h-11 px-4 border border-border rounded-(--radius-input) text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                placeholder="Misal: Rayyan, Kiran"
+                className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
                 required
               />
             </div>
@@ -168,13 +167,13 @@ export default function DashboardView() {
                 type="date"
                 value={dateOfBirth}
                 onChange={(e) => setDateOfBirth(e.target.value)}
-                max={todayString} // Restrict birthdate to past/today dates only
-                className="w-full h-11 px-4 border border-border rounded-(--radius-input) text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                max={todayString}
+                className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors cursor-pointer"
                 required
               />
             </div>
 
-            {/* Gender Switcher */}
+            {/* Gender Selection */}
             <div className="space-y-1.5">
               <span className="text-xs font-semibold text-text">
                 Jenis Kelamin <span className="text-primary">*</span>
@@ -183,30 +182,30 @@ export default function DashboardView() {
                 <button
                   type="button"
                   onClick={() => setGender('L')}
-                  className={`flex-1 h-11 rounded-(--radius-input) border text-sm font-medium transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
                     gender === 'L'
-                      ? 'border-primary bg-primary/5 text-primary font-semibold'
-                      : 'border-border bg-bg-card text-text-secondary hover:bg-bg'
+                      ? 'border-accent bg-accent/5 text-accent'
+                      : 'border-border bg-bg-card text-text-secondary hover:bg-bg/40'
                   }`}
                 >
-                  <span>👦</span> Laki-laki
+                  👦 Laki-laki
                 </button>
                 <button
                   type="button"
                   onClick={() => setGender('P')}
-                  className={`flex-1 h-11 rounded-(--radius-input) border text-sm font-medium transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
                     gender === 'P'
-                      ? 'border-primary bg-primary/5 text-primary font-semibold'
-                      : 'border-border bg-bg-card text-text-secondary hover:bg-bg'
+                      ? 'border-primary bg-primary/5 text-primary'
+                      : 'border-border bg-bg-card text-text-secondary hover:bg-bg/40'
                   }`}
                 >
-                  <span>👧</span> Perempuan
+                  👧 Perempuan
                 </button>
               </div>
             </div>
 
             {/* Birth Weight & Height Grid */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3.5">
               <div className="space-y-1.5">
                 <label htmlFor="weight" className="text-xs font-semibold text-text">
                   Berat Lahir (kg) <span className="text-primary">*</span>
@@ -219,8 +218,8 @@ export default function DashboardView() {
                   max="15"
                   value={birthWeight}
                   onChange={(e) => setBirthWeight(e.target.value)}
-                  placeholder="Contoh: 3.2"
-                  className="w-full h-11 px-4 border border-border rounded-(--radius-input) text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                  placeholder="Misal: 3.2"
+                  className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
                   required
                 />
               </div>
@@ -236,23 +235,23 @@ export default function DashboardView() {
                   max="100"
                   value={birthHeight}
                   onChange={(e) => setBirthHeight(e.target.value)}
-                  placeholder="Contoh: 49"
-                  className="w-full h-11 px-4 border border-border rounded-(--radius-input) text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                  placeholder="Misal: 49"
+                  className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
                   required
                 />
               </div>
             </div>
 
-            {/* Blood Type Selection (Optional as requested) */}
+            {/* Blood Type (Optional) */}
             <div className="space-y-1.5">
               <label htmlFor="blood-type" className="text-xs font-semibold text-text">
-                Golongan Darah <span className="text-text-muted text-[10px]">(Opsional)</span>
+                Golongan Darah <span className="text-text-muted text-[10px] font-normal">(Opsional)</span>
               </label>
               <select
                 id="blood-type"
                 value={bloodType}
                 onChange={(e) => setBloodType(e.target.value)}
-                className="w-full h-11 px-4 border border-border rounded-(--radius-input) text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors cursor-pointer"
+                className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors cursor-pointer"
               >
                 <option value="">Pilih golongan darah...</option>
                 <option value="A">A</option>
@@ -266,7 +265,7 @@ export default function DashboardView() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-[52px] mt-2 rounded-(--radius-button) bg-primary hover:bg-primary-dark active:scale-[0.98] text-white font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm shadow-primary/20"
+              className="w-full h-[52px] mt-3 rounded-button bg-primary hover:bg-primary-dark active:scale-[0.98] text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-primary/10"
             >
               {isSubmitting ? 'Mendaftarkan...' : 'Daftarkan Profil Si Kecil 🧡'}
             </button>
@@ -276,31 +275,31 @@ export default function DashboardView() {
     );
   }
 
-  // ----- RENDER DASHBOARD (When at least one child is registered) -----
+  // ----- RENDER DASHBOARD (Active Child Toggled) -----
   return (
-    <div className="space-y-6 animate-fade-in px-1">
-      {/* Dynamic Welcome Banner */}
-      <div className="bg-gradient-to-br from-primary to-secondary rounded-(--radius-card) p-5 text-white shadow-md shadow-primary/5 relative overflow-hidden">
-        {/* Ambient background glow shapes */}
+    <div className="space-y-8 animate-fade-in px-1 py-4 font-[var(--font-body)]">
+      {/* Dynamic Welcome Hero Banner */}
+      <div className="bg-gradient-to-br from-primary to-secondary rounded-card p-6 text-white shadow-md shadow-primary/5 relative overflow-hidden">
+        {/* Ambient premium background blur shapes */}
         <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-white/10 blur-xl" />
         <div className="absolute -left-6 -top-6 w-24 h-24 rounded-full bg-white/10 blur-xl" />
         
-        <div className="relative space-y-3">
+        <div className="relative space-y-4">
           <div>
-            <p className="text-[12px] opacity-85 font-medium tracking-wide uppercase font-[var(--font-body)]">
+            <p className="text-[12px] opacity-85 font-semibold tracking-wide uppercase">
               {timeGreeting}, Bunda {currentUser?.fullName?.split(' ')[0]} 🌟
             </p>
-            <h2 className="text-xl font-extrabold font-[var(--font-heading)] leading-tight text-white mt-0.5">
+            <h2 className="text-xl font-extrabold font-[var(--font-heading)] leading-tight text-white mt-1">
               Aktivitas Si Kecil Hari Ini
             </h2>
           </div>
           
           {activeChild && (
-            <div className="flex items-center gap-2.5 bg-white/15 backdrop-blur-md rounded-xl p-3 border border-white/10">
+            <div className="flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-xl p-3 border border-white/10">
               <span className="text-2xl animate-pulse">👶</span>
               <div className="flex flex-col">
-                <span className="text-[11px] text-white/70 font-medium">Usia {activeChild.name} saat ini</span>
-                <span className="text-sm font-bold tracking-tight">
+                <span className="text-[11px] text-white/70 font-semibold uppercase tracking-wider">Usia {activeChild.name} saat ini</span>
+                <span className="text-base font-extrabold tracking-tight mt-0.5">
                   {ageString || 'Kalkulasi usia...'}
                 </span>
               </div>
@@ -309,73 +308,81 @@ export default function DashboardView() {
         </div>
       </div>
 
-      {/* Core Active Child Profile Card */}
+      {/* Core Active Child Profile Card - matching the empty state's clean design system */}
       {activeChild ? (
-        <div className="bg-white rounded-(--radius-card) border border-border shadow-(--shadow-card) p-5 space-y-5">
+        <div className="bg-white rounded-card border border-border/80 shadow-card p-6 space-y-6 hover:shadow-card-hover transition-all duration-300">
           <div className="flex items-center gap-4">
-            {/* Elegant profile avatar placeholder */}
-            <div className="w-14 h-14 rounded-full bg-primary/5 border border-primary/10 flex items-center justify-center text-2xl font-bold text-primary font-[var(--font-heading)]">
-              {activeChild.name ? activeChild.name.charAt(0).toUpperCase() : 'S'}
+            {/* Elegant and gender-responsive pastel profile avatar */}
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-extrabold font-[var(--font-heading)] border ${
+              activeChild.gender === 'L'
+                ? 'bg-accent/10 border-accent/15 text-accent'
+                : 'bg-primary/10 border-primary/15 text-primary'
+            }`}>
+              {activeChild.name ? activeChild.name.charAt(0).toUpperCase() : '👶'}
             </div>
             
-            <div className="flex-1">
-              <h3 className="text-base font-extrabold font-[var(--font-heading)] text-text">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-base font-extrabold font-[var(--font-heading)] text-text truncate">
                 {activeChild.name}
               </h3>
-              <p className="text-xs text-text-secondary font-[var(--font-body)]">
+              <p className="text-xs text-text-secondary mt-0.5">
                 Lahir pada {formatDate(activeChild.dateOfBirth)}
               </p>
             </div>
 
-            <span className="px-2.5 py-1 text-[11px] font-bold rounded-full font-[var(--font-body)] bg-accent/5 text-accent border border-accent/10">
+            <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
+              activeChild.gender === 'L'
+                ? 'bg-accent/5 border-accent/10 text-accent'
+                : 'bg-primary/5 border-primary/10 text-primary'
+            }`}>
               {activeChild.gender === 'L' ? 'Laki-laki 👦' : 'Perempuan 👧'}
             </span>
           </div>
 
-          <hr className="border-border" />
+          <hr className="border-border/50" />
 
           {/* Child Birth Parameters Grid */}
-          <div className="grid grid-cols-3 gap-3 text-center">
-            <div className="bg-bg rounded-xl p-3 border border-border/40">
-              <p className="text-[10px] text-text-muted font-medium font-[var(--font-body)] uppercase">
+          <div className="grid grid-cols-3 gap-3.5 text-center">
+            <div className="bg-bg rounded-xl p-3 border border-border/20">
+              <p className="text-[10px] text-text-muted font-semibold uppercase tracking-wider">
                 Berat Lahir
               </p>
-              <p className="text-sm font-bold text-text font-[var(--font-heading)] mt-0.5">
-                {activeChild.birthWeightKg} <span className="text-[11px] font-medium text-text-secondary">kg</span>
+              <p className="text-sm font-extrabold text-text font-[var(--font-heading)] mt-1">
+                {activeChild.birthWeightKg} <span className="text-[11px] font-semibold text-text-secondary">kg</span>
               </p>
             </div>
-            <div className="bg-bg rounded-xl p-3 border border-border/40">
-              <p className="text-[10px] text-text-muted font-medium font-[var(--font-body)] uppercase">
+            <div className="bg-bg rounded-xl p-3 border border-border/20">
+              <p className="text-[10px] text-text-muted font-semibold uppercase tracking-wider">
                 Tinggi Lahir
               </p>
-              <p className="text-sm font-bold text-text font-[var(--font-heading)] mt-0.5">
-                {activeChild.birthHeightCm} <span className="text-[11px] font-medium text-text-secondary">cm</span>
+              <p className="text-sm font-extrabold text-text font-[var(--font-heading)] mt-1">
+                {activeChild.birthHeightCm} <span className="text-[11px] font-semibold text-text-secondary">cm</span>
               </p>
             </div>
-            <div className="bg-bg rounded-xl p-3 border border-border/40">
-              <p className="text-[10px] text-text-muted font-medium font-[var(--font-body)] uppercase">
+            <div className="bg-bg rounded-xl p-3 border border-border/20">
+              <p className="text-[10px] text-text-muted font-semibold uppercase tracking-wider">
                 Gol. Darah
               </p>
-              <p className="text-sm font-bold text-text font-[var(--font-heading)] mt-0.5">
+              <p className="text-sm font-extrabold text-text font-[var(--font-heading)] mt-1">
                 {activeChild.bloodType || '-'}
               </p>
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-(--radius-card) border border-border shadow-(--shadow-card) p-6 text-center text-text-secondary text-sm">
+        <div className="bg-white rounded-card border border-border/80 shadow-card p-6 text-center text-text-secondary text-sm">
           Menyiapkan data profil anak... 🧡
         </div>
       )}
 
       {/* Offline and Local Storage Security Assurance */}
-      <div className="flex items-start gap-3 p-4 bg-accent/5 border border-accent/10 rounded-(--radius-card)">
-        <span className="text-lg leading-none pt-0.5">🔒</span>
-        <div className="space-y-0.5">
+      <div className="flex items-start gap-3.5 p-5 bg-accent/5 border border-accent/10 rounded-card">
+        <span className="text-xl leading-none pt-0.5">🔒</span>
+        <div className="space-y-1">
           <h4 className="text-xs font-bold text-accent font-[var(--font-heading)]">
             Jaminan Keamanan Data Offline-First
           </h4>
-          <p className="text-[11px] text-text-secondary leading-relaxed font-[var(--font-body)]">
+          <p className="text-[11px] text-text-secondary leading-relaxed">
             Seluruh data tubuh kembang, riwayat imunisasi, dan menu MPASI anak disimpan secara lokal di HP Bunda. Tidak ada data yang dikirim ke server luar.
           </p>
         </div>

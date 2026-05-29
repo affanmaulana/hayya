@@ -153,6 +153,7 @@ export function useChild() {
     updateChild,
     deleteChild,
     activeChildId,
+    setActiveChildId,
     activeChild: context ? context.activeChild : null,
     childrenList: context ? context.childrenList : []
   };
