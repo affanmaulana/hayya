@@ -1,0 +1,70 @@
+import React, { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext.jsx';
+import { useChildContext } from '../context/ChildContext.jsx';
+
+/**
+ * ProfilPage — Placeholder for profile/settings (Lainnya tab).
+ */
+export default function ProfilPage() {
+  const { currentUser, logout } = useContext(AuthContext);
+  const { childrenList } = useChildContext();
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-xl font-bold font-[var(--font-heading)] text-text">
+          Profil Bunda 👩‍👧
+        </h2>
+      </div>
+
+      {/* Profile Card */}
+      <div className="bg-bg-card rounded-(--radius-card) p-5 shadow-(--shadow-card)">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-secondary to-primary flex items-center justify-center shrink-0">
+            <span className="text-xl text-white font-bold font-[var(--font-heading)]">
+              {currentUser?.fullName?.charAt(0)?.toUpperCase() || 'B'}
+            </span>
+          </div>
+          <div>
+            <h3 className="text-base font-bold font-[var(--font-heading)] text-text">
+              {currentUser?.fullName || 'Bunda'}
+            </h3>
+            <p className="text-sm text-text-secondary">{currentUser?.phone || '-'}</p>
+            <p className="text-xs text-text-muted mt-0.5">
+              {childrenList.length} anak terdaftar
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Menu Items Placeholder */}
+      <div className="bg-bg-card rounded-(--radius-card) shadow-(--shadow-card) overflow-hidden divide-y divide-border">
+        {[
+          { icon: '✏️', label: 'Edit Profil' },
+          { icon: '👶', label: 'Kelola Data Anak' },
+          { icon: '📚', label: 'Edukasi & Artikel' },
+          { icon: '🩺', label: 'Cek Gejala' },
+        ].map((item) => (
+          <button
+            key={item.label}
+            className="w-full flex items-center gap-3 px-5 py-4 hover:bg-bg transition-colors duration-150 cursor-pointer min-h-[48px]"
+          >
+            <span className="text-lg">{item.icon}</span>
+            <span className="text-sm font-medium text-text font-[var(--font-body)]">{item.label}</span>
+            <svg className="w-4 h-4 text-text-muted ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+        ))}
+      </div>
+
+      {/* Logout */}
+      <button
+        onClick={logout}
+        className="w-full py-3 rounded-(--radius-button) border-2 border-danger/30 text-danger text-sm font-semibold font-[var(--font-heading)] hover:bg-danger/5 transition-colors duration-200 cursor-pointer min-h-[48px]"
+      >
+        Keluar Akun
+      </button>
+    </div>
+  );
+}
