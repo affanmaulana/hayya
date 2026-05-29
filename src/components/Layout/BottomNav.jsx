@@ -24,9 +24,9 @@ const NAV_ITEMS = [
     ),
   },
   {
-    id: 'perkembangan',
+    id: 'growth',
     label: 'Tumbuh',
-    path: '/dashboard/perkembangan',
+    path: '/dashboard/growth',
     // Chart/growth icon
     icon: (active) => (
       <svg className="w-6 h-6" fill={active ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={active ? 0 : 1.5}>
