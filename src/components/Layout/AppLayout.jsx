@@ -45,7 +45,7 @@ export default function AppLayout() {
   return (
     <div className="relative min-h-dvh bg-bg flex justify-center">
       {/* Mobile container — centered with max-width for desktop */}
-      <div className="w-full max-w-[428px] min-h-dvh flex flex-col bg-bg relative shadow-lg shadow-black/5">
+      <div className="w-full min-h-screen mx-auto bg-white md:max-w-[768px] lg:max-w-[1024px] shadow-sm relative flex flex-col">
         
         {/* ===== MAIN HEADER ===== */}
         {isMainDashboard && (

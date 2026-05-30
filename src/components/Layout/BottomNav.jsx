@@ -15,7 +15,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 /* ── Icon helpers ─────────────────────────────────────────────────────────── */
 
 const HomeIcon = ({ active }) => (
-  <svg className="w-6 h-6" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.5}>
+  <svg className="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.5}>
     {active ? (
       <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 01-.53 1.28H18v7.44a.75.75 0 01-.75.75h-3a.75.75 0 01-.75-.75V16.5h-3v4.75a.75.75 0 01-.75.75h-3a.75.75 0 01-.75-.75v-7.44H3.31a.75.75 0 01-.53-1.28l8.69-8.69z" />
     ) : (
@@ -25,7 +25,7 @@ const HomeIcon = ({ active }) => (
 );
 
 const GrowthIcon = ({ active }) => (
-  <svg className="w-6 h-6" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.5}>
+  <svg className="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.5}>
     {active ? (
       <path d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0zM12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z" />
     ) : (
@@ -41,7 +41,7 @@ const GrowthIcon = ({ active }) => (
  * strokeWidth matches all other icons (1.5 inactive).
  */
 const AppleIcon = ({ active }) => (
-  <svg className="w-6 h-6" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.5} strokeLinecap="round" strokeLinejoin="round">
+  <svg className="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.5} strokeLinecap="round" strokeLinejoin="round">
     {active ? (
       <>
         {/* Stem */}
@@ -61,7 +61,7 @@ const AppleIcon = ({ active }) => (
 );
 
 const ShieldIcon = ({ active }) => (
-  <svg className="w-6 h-6" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.5}>
+  <svg className="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.5}>
     {active ? (
       <path fillRule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08zm3.094 8.016a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
     ) : (
@@ -71,7 +71,7 @@ const ShieldIcon = ({ active }) => (
 );
 
 const UserIcon = ({ active }) => (
-  <svg className="w-6 h-6" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.5}>
+  <svg className="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={active ? 0 : 1.5}>
     {active ? (
       <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clipRule="evenodd" />
     ) : (
@@ -109,12 +109,12 @@ export default function BottomNav() {
   return (
     <nav
       id="bottom-nav"
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-[400px] h-16 rounded-full z-50 bg-white/70 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.06)]"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] md:max-w-[480px] h-16 p-1 bg-white/70 backdrop-blur-md border border-white/50 shadow-[0_8px_24px_rgba(0,0,0,0.06)] rounded-full z-50 flex flex-row items-center justify-between"
       role="navigation"
       aria-label="Navigasi utama"
     >
       {/* Inner wrapper — relative context for the sliding pill */}
-      <div className="relative flex flex-row w-full h-full p-1">
+      <div className="relative flex flex-row w-full h-full p-1 items-center justify-between">
 
         {/* Sliding pill — single element that glides between tabs */}
         <div
@@ -136,14 +136,14 @@ export default function BottomNav() {
               key={id}
               id={`nav-${id}`}
               onClick={() => navigate(path)}
-              className={`relative flex-1 basis-0 flex flex-col items-center justify-center gap-0.5 h-full rounded-full cursor-pointer select-none transition-colors duration-200 ${
+              className={`relative flex-1 basis-0 flex flex-col items-center justify-center h-full rounded-full cursor-pointer select-none transition-colors duration-200 ${
                 isActive ? 'text-primary' : 'text-gray-400 hover:text-gray-600 active:scale-95'
               }`}
               aria-label={label}
               aria-current={isActive ? 'page' : undefined}
             >
               <Icon active={isActive} />
-              <span className="text-xs leading-none font-medium tracking-tight">
+              <span className="text-xs mt-0.5 max-sm:text-[10px] leading-none font-medium tracking-tight whitespace-nowrap">
                 {label}
               </span>
             </button>

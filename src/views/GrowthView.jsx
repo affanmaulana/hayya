@@ -7,7 +7,7 @@ import { formatDate } from '../utils/dateHelpers';
 export default function GrowthView() {
   const navigate = useNavigate();
   const { activeChild, isLoading } = useChild();
-  const { getGrowthRecords, addGrowthRecord } = useGrowth();
+  const { getGrowthRecords, addGrowthRecord, deleteGrowthRecord } = useGrowth();
 
   const [weightKg, setWeightKg] = useState('');
   const [heightCm, setHeightCm] = useState('');
@@ -19,6 +19,7 @@ export default function GrowthView() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState('ringkasan');
   const [activeMetric, setActiveMetric] = useState('tinggi'); // 'berat', 'tinggi', 'lingkarKepala', 'lila'
+  const [editingRecordId, setEditingRecordId] = useState(null);
 
   // Auto-dismiss toast message after 3 seconds
   useEffect(() => {
@@ -71,6 +72,7 @@ export default function GrowthView() {
     setSubmitting(true);
     try {
       if (!activeChild) throw new Error('Tidak ada anak aktif.');
+      
       const record = {
         weightKg,
         heightCm,
@@ -78,16 +80,70 @@ export default function GrowthView() {
         measuredAt,
         notes,
       };
+
+      if (editingRecordId) {
+        // Validate input limits before deletion
+        const w = parseFloat(weightKg);
+        if (isNaN(w) || w < 1.0 || w > 40.0) throw new Error('Berat badan harus di antara 1.0 kg dan 40.0 kg, Bunda. 🧡');
+        const h = parseFloat(heightCm);
+        if (isNaN(h) || h < 30.0 || h > 130.0) throw new Error('Tinggi badan harus di antara 30.0 cm dan 130.0 cm, Bunda. 🧡');
+        if (headCircCm) {
+          const hc = parseFloat(headCircCm);
+          if (isNaN(hc) || hc < 25.0 || hc > 60.0) throw new Error('Lingkar kepala harus di antara 25.0 cm dan 60.0 cm, Bunda. 🧡');
+        }
+        
+        // Date checks
+        const dob = new Date(activeChild.dateOfBirth);
+        const measured = new Date(measuredAt);
+        const today = new Date();
+        const dobDateOnly = new Date(dob.getFullYear(), dob.getMonth(), dob.getDate());
+        const measuredDateOnly = new Date(measured.getFullYear(), measured.getMonth(), measured.getDate());
+        const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+        if (measuredDateOnly > todayDateOnly) throw new Error('Tanggal pengukuran tidak boleh melewati hari ini, Bunda. 🧡');
+        if (measuredDateOnly < dobDateOnly) throw new Error(`Tanggal tidak boleh mendahului tanggal lahir (${activeChild.dateOfBirth}), Bunda. 🧡`);
+
+        // Check duplicates excluding self
+        const otherRecords = records.filter(r => r.id !== editingRecordId);
+        if (otherRecords.some(r => r.measuredAt === measuredAt)) {
+          throw new Error(`Bunda sudah memiliki catatan pertumbuhan pada tanggal ${measuredAt}.`);
+        }
+
+        // Safe delete
+        await deleteGrowthRecord(editingRecordId);
+      }
+
       await addGrowthRecord(activeChild.id, record);
+      
       // clear form
       setWeightKg('');
       setHeightCm('');
       setHeadCircCm('');
       setMeasuredAt('');
       setNotes('');
+      setEditingRecordId(null);
       setIsOpen(false);
     } catch (err) {
       setToastMessage(err.message || 'Gagal menyimpan catatan pertumbuhan.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!editingRecordId) return;
+    setSubmitting(true);
+    try {
+      await deleteGrowthRecord(editingRecordId);
+      setWeightKg('');
+      setHeightCm('');
+      setHeadCircCm('');
+      setMeasuredAt('');
+      setNotes('');
+      setEditingRecordId(null);
+      setIsOpen(false);
+    } catch (err) {
+      setToastMessage(err.message || 'Gagal menghapus catatan.');
     } finally {
       setSubmitting(false);
     }
@@ -310,6 +366,16 @@ export default function GrowthView() {
     }
   };
 
+  const handleEditClick = (record) => {
+    setEditingRecordId(record.id);
+    setWeightKg(record.weightKg.toString());
+    setHeightCm(record.heightCm.toString());
+    setHeadCircCm(record.headCircCm ? record.headCircCm.toString() : '');
+    setMeasuredAt(record.measuredAt);
+    setNotes(record.notes || '');
+    setIsOpen(true);
+  };
+
   return (
     <div className="space-y-3 font-[var(--font-body)] px-0 animate-fade-in relative pb-28">
       {/* CSS style block to hide HTML input number spinners */}
@@ -341,13 +407,21 @@ export default function GrowthView() {
         </h2>
       </div>
 
-      {/* Segmented Control Sub-Tabs */}
-      <div className="flex bg-gray-50 p-1 rounded-2xl mb-3 mx-0">
+      {/* Segmented Control Sub-Tabs with fluid transition capsule */}
+      <div className="relative flex bg-gray-50 p-1 rounded-2xl mb-3 mx-0 md:hidden">
+        {/* Sliding active background indicator */}
+        <div
+          className="absolute top-1 bottom-1 left-1 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-transform duration-300 ease-in-out"
+          style={{
+            width: 'calc(50% - 4px)',
+            transform: activeSubTab === 'riwayat' ? 'translateX(100%)' : 'translateX(0%)'
+          }}
+        />
         <button
           onClick={() => setActiveSubTab('ringkasan')}
-          className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
+          className={`relative z-10 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${
             activeSubTab === 'ringkasan'
-              ? 'bg-white text-gray-900 shadow-[0_2px_8px_rgba(0,0,0,0.04)]'
+              ? 'text-gray-900'
               : 'text-gray-500 hover:text-gray-900'
           }`}
         >
@@ -355,9 +429,9 @@ export default function GrowthView() {
         </button>
         <button
           onClick={() => setActiveSubTab('riwayat')}
-          className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
+          className={`relative z-10 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${
             activeSubTab === 'riwayat'
-              ? 'bg-white text-gray-900 shadow-[0_2px_8px_rgba(0,0,0,0.04)]'
+              ? 'text-gray-900'
               : 'text-gray-500 hover:text-gray-900'
           }`}
         >
@@ -387,54 +461,56 @@ export default function GrowthView() {
             Tambah Catatan Pertama
           </button>
         </div>
-      ) : activeSubTab === 'ringkasan' ? (
-        /* TAB 1: RINGKASAN VIEW - REMOVED horizontal padding */
-        <div className="px-0 space-y-3">
-          {/* Status Indicator Card */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-[0_4px_12px_rgba(0,0,0,0.015)]">
-            <div className="flex items-center gap-2">
-              <span className={`w-2.5 h-2.5 rounded-full ${statusColor} shrink-0`} />
-              <span className={`text-sm font-bold tracking-tight ${statusTextColor}`}>
-                {statusText}
-              </span>
-            </div>
-            <p className="text-xs text-gray-400 mt-1 leading-relaxed">
-              {statusTip}
-            </p>
-          </div>
-
-          {/* Metric Selector (Mini Pills) */}
-          <div className="flex flex-row gap-2 overflow-x-auto pb-3 pt-1 scrollbar-none -mx-4 px-4">
-            {[
-              { id: 'tinggi', label: 'Tinggi (cm)' },
-              { id: 'berat', label: 'Berat (kg)' },
-              { id: 'lingkarKepala', label: 'Lingkar Kepala' },
-              { id: 'lila', label: 'Lengan (LiLA)' },
-            ].map(pill => (
-              <button
-                key={pill.id}
-                onClick={() => setActiveMetric(pill.id)}
-                className={`cursor-pointer transition-all ${
-                  activeMetric === pill.id
-                    ? 'bg-gray-900 text-white text-xs font-medium px-3 py-1.5 rounded-full shrink-0'
-                    : 'bg-gray-50 text-gray-600 border border-gray-100 text-xs px-3 py-1.5 rounded-full hover:bg-gray-100/70 shrink-0'
-                }`}
-              >
-                {pill.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Expanded & Cleaned Trend Chart Container */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-[0_4px_12px_rgba(0,0,0,0.015)]">
-            <div className="mb-4">
-              <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">Kurva Pertumbuhan & WHO Ideal</h3>
-              <p className="text-[10px] text-gray-400 mt-0.5">Membandingkan tren pertumbuhan si kecil dengan batas ideal WHO.</p>
+      ) : (
+        <div className="md:grid md:grid-cols-2 md:gap-6 md:items-start md:px-6">
+          {/* LEFT COLUMN: Houses active Metric Selector and fixed Height Chart */}
+          <div className={`space-y-3 ${activeSubTab === 'ringkasan' ? 'block' : 'hidden md:block'}`}>
+            {/* Metric Selector (Mini Pills) */}
+            <div className="flex flex-row gap-2 overflow-x-auto pb-3 pt-1 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
+              {[
+                { id: 'tinggi', label: 'Tinggi (cm)' },
+                { id: 'berat', label: 'Berat (kg)' },
+                { id: 'lingkarKepala', label: 'Lingkar Kepala' },
+                { id: 'lila', label: 'Lengan (LiLA)' },
+              ].map(pill => (
+                <button
+                  key={pill.id}
+                  onClick={() => setActiveMetric(pill.id)}
+                  className={`cursor-pointer transition-all ${
+                    activeMetric === pill.id
+                      ? 'bg-gray-900 text-white text-xs font-medium px-3 py-1.5 rounded-full shrink-0'
+                      : 'bg-gray-50 text-gray-600 border border-gray-100 text-xs px-3 py-1.5 rounded-full hover:bg-gray-100/70 shrink-0'
+                  }`}
+                >
+                  {pill.label}
+                </button>
+              ))}
+              {/* WebKit scroll-padding right edge spacer */}
+              <div className="w-2 shrink-0 md:hidden pointer-events-none" />
             </div>
 
-            {/* Absolute Height Isolation Wrapper & Secondary Absolute Mask Layer with unique activeMetric key to prevent cache bugs */}
-            <div className="w-full relative" style={{ height: '256px', minHeight: '256px', maxHeight: '256px' }}>
-              <div className="absolute inset-0 w-full h-full">
+            {/* Status Indicator Card A (Mobile-only: shown on mobile inside left column for Ringkasan) */}
+            <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-[0_4px_12px_rgba(0,0,0,0.015)] md:hidden mt-2">
+              <div className="flex items-center gap-2">
+                <span className={`w-2.5 h-2.5 rounded-full ${statusColor} shrink-0`} />
+                <span className={`text-sm font-bold tracking-tight ${statusTextColor}`}>
+                  {statusText}
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+                {statusTip}
+              </p>
+            </div>
+
+            {/* Expanded & Cleaned Trend Chart Container */}
+            <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-[0_4px_12px_rgba(0,0,0,0.015)]">
+              <div className="mb-4">
+                <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">Kurva Pertumbuhan & WHO Ideal</h3>
+                <p className="text-[10px] text-gray-400 mt-0.5">Membandingkan tren pertumbuhan si kecil dengan batas ideal WHO.</p>
+              </div>
+
+              {/* Standard Block Layout Containment */}
+              <div className="w-full block relative" style={{ height: '256px' }}>
                 <svg
                   key={activeMetric}
                   viewBox="0 0 400 200"
@@ -442,7 +518,6 @@ export default function GrowthView() {
                   preserveAspectRatio="none"
                   width="100%"
                   height="100%"
-                  maintainAspectRatio={false}
                 >
                   {/* Horizontal grid lines */}
                   {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
@@ -539,64 +614,94 @@ export default function GrowthView() {
                   })}
                 </svg>
               </div>
+
+              {/* Cleaned Inline Label */}
+              <span className="text-center text-[11px] text-gray-400 mt-2 block">
+                ZONA IDEAL WHO (Z-SCORE ±2)
+              </span>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN: Houses Status Indicator Card and Timeline Feed */}
+          <div className={`space-y-3 ${activeSubTab === 'riwayat' ? 'block' : 'hidden md:block'}`}>
+            {/* Status Indicator Card B (Tablet-only: shown on tablet inside right column above Timeline Feed) */}
+            <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-[0_4px_12px_rgba(0,0,0,0.015)] hidden md:block">
+              <div className="flex items-center gap-2">
+                <span className={`w-2.5 h-2.5 rounded-full ${statusColor} shrink-0`} />
+                <span className={`text-sm font-bold tracking-tight ${statusTextColor}`}>
+                  {statusText}
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+                {statusTip}
+              </p>
             </div>
 
-            {/* Cleaned Inline Label Moved to Quiet Footer Note */}
-            <span className="text-center text-[11px] text-gray-400 mt-2 block">
-              ZONA IDEAL WHO (Z-SCORE ±2)
-            </span>
-          </div>
-        </div>
-      ) : (
-        /* TAB 2: RIWAYAT CATATAN VIEW - Premium iOS Timeline Feed on flat page background */
-        <div className="px-0">
-          <div className="flex flex-col gap-3 w-full">
-            {records.map((r, i) => {
-              const extraDetails = [];
-              if (r.headCircCm) extraDetails.push(`Lingkar Kepala: ${r.headCircCm} cm`);
-              if (r.notes) extraDetails.push(r.notes);
-              
-              return (
-                <div 
-                  key={r.id || i}
-                  className="flex items-center justify-between py-3 border-b border-gray-100/70 last:border-0"
-                >
-                  {/* Left Side: Child's computed Age and exact date */}
-                  <div className="flex-1">
-                    <span className="text-sm font-semibold text-gray-900 block">
-                      {getAgeText(r.measuredAt)}
-                    </span>
-                    <span className="text-xs text-gray-400 font-normal block mt-0.5">
-                      {formatDate(r.measuredAt)}
-                    </span>
-                    {extraDetails.length > 0 && (
-                      <span className="text-xs text-gray-400 font-normal mt-0.5 block">
-                        {extraDetails.join(' • ')}
-                      </span>
-                    )}
-                  </div>
+            {/* Riwayat Catatan Timeline Feed */}
+            <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-[0_4px_12px_rgba(0,0,0,0.015)]">
+              <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-4 hidden md:block">Riwayat Catatan</h3>
+              <div className="flex flex-col gap-3 w-full">
+                {records.map((r, i) => {
+                  const extraDetails = [];
+                  if (r.headCircCm) extraDetails.push(`Lingkar Kepala: ${r.headCircCm} cm`);
+                  if (r.notes) extraDetails.push(r.notes);
+                  
+                  return (
+                    <div 
+                      key={r.id || i}
+                      onClick={() => handleEditClick(r)}
+                      className="flex items-center justify-between py-3 border-b border-gray-100/70 last:border-0 cursor-pointer hover:bg-gray-50/50 active:scale-[0.99] transition-all px-2 -mx-2 rounded-xl"
+                      title="Klik untuk mengubah catatan"
+                    >
+                      {/* Left Side: Child's computed Age and exact date */}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm font-semibold text-gray-900 block">
+                            {getAgeText(r.measuredAt)}
+                          </span>
+                          <span className="text-[9px] text-emerald-600 bg-emerald-50 border border-emerald-100/50 px-1.5 py-0.2 rounded-full font-medium">Ubah ✏️</span>
+                        </div>
+                        <span className="text-xs text-gray-400 font-normal block mt-0.5">
+                          {formatDate(r.measuredAt)}
+                        </span>
+                        {extraDetails.length > 0 && (
+                          <span className="text-xs text-gray-400 font-normal mt-0.5 block">
+                            {extraDetails.join(' • ')}
+                          </span>
+                        )}
+                      </div>
 
-                  {/* Right Side: Core Parameters Badges */}
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-sm font-medium text-gray-800 bg-gray-50 py-1 px-2.5 rounded-full border border-gray-100/80">
-                      {r.weightKg} kg
-                    </span>
-                    <span className="text-gray-300 text-xs">•</span>
-                    <span className="text-sm font-medium text-gray-800 bg-gray-50 py-1 px-2.5 rounded-full border border-gray-100/80">
-                      {r.heightCm} cm
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+                      {/* Right Side: Core Parameters Badges */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-sm font-medium text-gray-800 bg-gray-50 py-1 px-2.5 rounded-full border border-gray-100/80">
+                          {r.weightKg} kg
+                        </span>
+                        <span className="text-gray-300 text-xs">•</span>
+                        <span className="text-sm font-medium text-gray-800 bg-gray-50 py-1 px-2.5 rounded-full border border-gray-100/80">
+                          {r.heightCm} cm
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       )}
 
       {/* Desktop-Safe Premium Liquid Glass Floating Action Button (FAB) */}
       <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 right-6 md:right-[calc(50%-224px+24px)] left-auto z-30 w-14 h-14 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex items-center justify-center text-gray-800 text-3xl font-light hover:bg-black/[0.02] active:scale-95 transition-all cursor-pointer"
+        onClick={() => {
+          setEditingRecordId(null);
+          setWeightKg('');
+          setHeightCm('');
+          setHeadCircCm('');
+          setMeasuredAt('');
+          setNotes('');
+          setIsOpen(true);
+        }}
+        className="fixed bottom-24 right-6 md:right-[calc(50%-384px+24px)] lg:right-[calc(50%-512px+24px)] left-auto z-30 w-14 h-14 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex items-center justify-center text-gray-800 text-3xl font-light hover:bg-black/[0.02] active:scale-95 transition-all cursor-pointer"
         aria-label="Tambah catatan pertumbuhan"
       >
         +
@@ -620,7 +725,9 @@ export default function GrowthView() {
 
         {/* Premium Clean Header */}
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-gray-900 font-bold text-lg tracking-tight">Tambah Catatan</h3>
+          <h3 className="text-gray-900 font-bold text-lg tracking-tight">
+            {editingRecordId ? 'Ubah Catatan Pertumbuhan' : 'Tambah Catatan Pertumbuhan'}
+          </h3>
           <button
             onClick={() => setIsOpen(false)}
             className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-all duration-200 cursor-pointer font-bold text-base focus:outline-none"
@@ -706,8 +813,19 @@ export default function GrowthView() {
             disabled={submitting}
             className="w-full py-3.5 bg-primary hover:bg-primary-dark text-white font-medium text-sm rounded-full shadow-sm transition-all active:scale-[0.98] cursor-pointer"
           >
-            {submitting ? 'Menyimpan...' : 'Simpan Catatan'}
+            {submitting ? 'Menyimpan...' : (editingRecordId ? 'Simpan Perubahan' : 'Simpan Catatan')}
           </button>
+
+          {editingRecordId && (
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={submitting}
+              className="w-full mt-3 py-3.5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-sm rounded-full transition-all active:scale-[0.98] cursor-pointer text-center"
+            >
+              Hapus Catatan
+            </button>
+          )}
         </form>
       </div>
     </div>
