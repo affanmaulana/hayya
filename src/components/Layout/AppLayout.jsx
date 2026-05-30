@@ -49,10 +49,20 @@ export default function AppLayout() {
         
         {/* ===== MAIN HEADER ===== */}
         {isMainDashboard && (
-          <header className="sticky top-0 z-30 bg-white">
+          <header className="sticky top-0 z-40 w-full">
+            {/* Progressive Glass Blur background layer */}
+            <div 
+              className="absolute inset-0 bg-white/20 pointer-events-none -z-10"
+              style={{ 
+                backdropFilter: 'blur(8px)', 
+                WebkitBackdropFilter: 'blur(8px)',
+                WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)', 
+                maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)' 
+              }}
+            />
             <div className="flex items-center justify-between px-6 py-4">
               {/* Greeting */}
-              <div className="flex flex-col">
+              <div className="flex flex-col justify-center">
                 <span className="text-xs text-gray-400 font-medium font-[var(--font-body)]">
                   Halo, Bunda 🧡
                 </span>
@@ -69,20 +79,34 @@ export default function AppLayout() {
 
         {/* ===== SUB-PAGE ACTION BAR ===== */}
         {activeSubPageTitle && (
-          <header className="sticky top-0 z-30 bg-white">
-            <div className="flex items-center gap-3 px-6 py-4">
+          <header className="sticky top-0 z-40 w-full bg-white/20">
+            {/* Progressive Glass Blur background layer */}
+            <div 
+              className="absolute inset-0 pointer-events-none -z-10"
+              style={{ 
+                backdropFilter: 'blur(8px)', 
+                WebkitBackdropFilter: 'blur(8px)',
+                WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)', 
+                maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)' 
+              }}
+            />
+            <div className="px-4 h-16 flex items-center justify-between relative">
               <button
                 onClick={() => navigate('/dashboard/profil')}
-                className="p-1 -ml-1 rounded-full hover:bg-gray-50 text-gray-500 hover:text-gray-900 transition-all duration-200 ease-in-out cursor-pointer focus:outline-none active:scale-95 flex items-center justify-center"
+                className="w-10 h-10 rounded-full bg-white/80 border border-white/60 shadow-sm flex items-center justify-center text-gray-800 hover:bg-black/[0.02] active:scale-95 transition-all cursor-pointer focus:outline-none"
                 aria-label="Kembali ke profil"
               >
                 <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
               </button>
-              <h2 className="text-text font-semibold text-lg leading-tight m-0 font-[var(--font-heading)]">
+              
+              <h2 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-900 font-semibold text-sm tracking-tight bg-white/40 border border-white/20 px-3 py-1 rounded-full whitespace-nowrap">
                 {activeSubPageTitle}
               </h2>
+              
+              {/* Invisible spacer to maintain symmetry for justify-between alignment */}
+              <div className="w-10 h-10 pointer-events-none" />
             </div>
           </header>
         )}
