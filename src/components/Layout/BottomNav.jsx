@@ -104,36 +104,52 @@ export default function BottomNav() {
   };
 
   const activeTab = getActiveTab();
+  const activeIndex = NAV_ITEMS.findIndex(item => item.id === activeTab);
 
   return (
     <nav
       id="bottom-nav"
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-[400px] h-14 p-1 rounded-full z-50 flex flex-row bg-white/70 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.06)]"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-[400px] h-14 rounded-full z-50 bg-white/70 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.06)]"
       role="navigation"
       aria-label="Navigasi utama"
     >
-      {NAV_ITEMS.map(({ id, label, path, Icon }) => {
-        const isActive = activeTab === id;
-        return (
-          <button
-            key={id}
-            id={`nav-${id}`}
-            onClick={() => navigate(path)}
-            className={`flex-1 basis-0 flex flex-col items-center justify-center gap-0.5 h-full rounded-full cursor-pointer transition-all duration-200 ease-out select-none ${
-              isActive
-                ? 'bg-black/5 text-gray-900'
-                : 'text-gray-400 hover:text-gray-600 active:scale-95'
-            }`}
-            aria-label={label}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            <Icon active={isActive} />
-            <span className="text-[9.5px] leading-none font-medium tracking-tight">
-              {label}
-            </span>
-          </button>
-        );
-      })}
+      {/* Inner wrapper — relative context for the sliding pill */}
+      <div className="relative flex flex-row w-full h-full p-1">
+
+        {/* Sliding pill — single element that glides between tabs */}
+        <div
+          aria-hidden="true"
+          className="absolute top-0 bottom-0 rounded-full bg-black/5 pointer-events-none"
+          style={{
+            width: `calc(100% / ${NAV_ITEMS.length})`,
+            left: 0,
+            transform: `translateX(calc(${activeIndex} * 100%))`,
+            transition: 'transform 320ms cubic-bezier(0.34, 1.1, 0.64, 1)',
+          }}
+        />
+
+        {/* Tab buttons — on top of pill, no individual bg */}
+        {NAV_ITEMS.map(({ id, label, path, Icon }) => {
+          const isActive = activeTab === id;
+          return (
+            <button
+              key={id}
+              id={`nav-${id}`}
+              onClick={() => navigate(path)}
+              className={`relative flex-1 basis-0 flex flex-col items-center justify-center gap-0.5 h-full rounded-full cursor-pointer select-none transition-colors duration-200 ${
+                isActive ? 'text-gray-900' : 'text-gray-400 hover:text-gray-600 active:scale-95'
+              }`}
+              aria-label={label}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              <Icon active={isActive} />
+              <span className="text-[9.5px] leading-none font-medium tracking-tight">
+                {label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </nav>
   );
 }

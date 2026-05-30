@@ -1,8 +1,16 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useChild } from '../hooks/useChild';
 import { formatDate } from '../utils/dateHelpers';
 
 export default function ManageChildrenView({ onBack }) {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (onBack) onBack();
+    else navigate('/dashboard/profil');
+  };
+
   const { 
     childrenList, 
     activeChildId, 
@@ -137,22 +145,6 @@ export default function ManageChildrenView({ onBack }) {
 
   return (
     <div className="space-y-6 font-[var(--font-body)] animate-fade-in pb-10">
-      
-      {/* Header with back button */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={onBack}
-          className="p-2 -ml-2 rounded-full hover:bg-gray-50 text-gray-500 hover:text-gray-900 transition-all duration-200 ease-in-out cursor-pointer focus:outline-none active:scale-95"
-          aria-label="Kembali ke profil"
-        >
-          <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-        <h2 className="text-xl font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">
-          Kelola Data Anak 👶
-        </h2>
-      </div>
 
       {/* Children list */}
       <div className="space-y-4">

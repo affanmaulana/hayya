@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useChild } from '../hooks/useChild';
 import useAuth from '../hooks/useAuth';
 import useSymptomCheck from '../hooks/useSymptomCheck';
@@ -6,6 +7,13 @@ import { useEducation } from '../hooks/useEducation';
 import { calculateAgeInMonthsAndDays } from '../utils/dateHelpers';
 
 export default function SymptomCheckView({ onBack }) {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (onBack) onBack();
+    else navigate('/dashboard/profil');
+  };
+
   const { activeChild, childrenList, setActiveChildId } = useChild();
   const { currentUser } = useAuth();
   const { runSymptomCheck } = useSymptomCheck();
@@ -286,7 +294,7 @@ export default function SymptomCheckView({ onBack }) {
           </p>
         </div>
         <button
-          onClick={onBack}
+          onClick={handleBack}
           className="h-11 px-6 rounded-button bg-primary hover:bg-primary-dark text-white text-sm font-semibold transition-colors shadow-md shadow-primary/10 cursor-pointer"
         >
           Kembali ke Profil
@@ -297,22 +305,6 @@ export default function SymptomCheckView({ onBack }) {
 
   return (
     <div className="space-y-6 font-[var(--font-body)] px-0 py-4 animate-fade-in pb-10">
-      
-      {/* Header section with Back navigation */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={step === 4 ? handleResetCheck : onBack}
-          className="p-2 -ml-2 rounded-full hover:bg-gray-50 text-gray-500 hover:text-gray-900 transition-all duration-200 ease-in-out cursor-pointer focus:outline-none active:scale-95"
-          aria-label="Kembali"
-        >
-          <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-        <h2 className="text-xl font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">
-          Cek Gejala Sakit Anak 🩺
-        </h2>
-      </div>
 
       {/* Horizontal Child Switcher Scroll */}
       <div className="w-full max-w-full overflow-hidden select-none bg-white rounded-card border border-gray-100 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.02)] space-y-3">

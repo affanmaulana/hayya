@@ -1,10 +1,7 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { useChildContext } from '../context/ChildContext.jsx';
-import ManageChildrenView from '../views/ManageChildrenView.jsx';
-import EducationView from '../views/EducationView.jsx';
-import SymptomCheckView from '../views/SymptomCheckView.jsx';
-import EditProfileView from '../views/EditProfileView.jsx';
 
 /**
  * ProfilPage — Profile and settings manager (Lainnya tab).
@@ -12,23 +9,7 @@ import EditProfileView from '../views/EditProfileView.jsx';
 export default function ProfilPage() {
   const { currentUser, logout } = useContext(AuthContext);
   const { childrenList } = useChildContext();
-  const [currentView, setCurrentView] = useState('menu'); // 'menu', 'manage-children', 'education', 'symptom-check', or 'edit-profile'
-
-  if (currentView === 'edit-profile') {
-    return <EditProfileView onBack={() => setCurrentView('menu')} />;
-  }
-
-  if (currentView === 'manage-children') {
-    return <ManageChildrenView onBack={() => setCurrentView('menu')} />;
-  }
-
-  if (currentView === 'education') {
-    return <EducationView onBack={() => setCurrentView('menu')} />;
-  }
-
-  if (currentView === 'symptom-check') {
-    return <SymptomCheckView onBack={() => setCurrentView('menu')} />;
-  }
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -61,10 +42,10 @@ export default function ProfilPage() {
       {/* Menu Items */}
       <div className="bg-bg-card rounded-card shadow-card overflow-hidden divide-y divide-border">
         {[
-          { icon: '✏️', label: 'Edit Profil', onClick: () => setCurrentView('edit-profile') },
-          { icon: '👶', label: 'Kelola Data Anak', onClick: () => setCurrentView('manage-children') },
-          { icon: '📚', label: 'Edukasi & Artikel', onClick: () => setCurrentView('education') },
-          { icon: '🩺', label: 'Cek Gejala', onClick: () => setCurrentView('symptom-check') },
+          { icon: '✏️', label: 'Edit Profil', onClick: () => navigate('/dashboard/profil/edit') },
+          { icon: '👶', label: 'Kelola Data Anak', onClick: () => navigate('/dashboard/profil/anak') },
+          { icon: '📚', label: 'Edukasi & Artikel', onClick: () => navigate('/dashboard/profil/edukasi') },
+          { icon: '🩺', label: 'Cek Gejala', onClick: () => navigate('/dashboard/profil/cek-gejala') },
         ].map((item) => (
           <button
             key={item.label}

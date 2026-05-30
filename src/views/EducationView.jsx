@@ -1,9 +1,16 @@
 import { useState, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useEducation } from '../hooks/useEducation';
 import useAuth from '../hooks/useAuth';
 
 export default function EducationView({ onBack }) {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (onBack) onBack();
+    else navigate('/dashboard/profil');
+  };
   
   // Consume hook
   const { 
@@ -129,22 +136,6 @@ export default function EducationView({ onBack }) {
 
   return (
     <div className="space-y-6 font-[var(--font-body)] px-0 py-4 pb-28 animate-fade-in">
-      
-      {/* Header with back button */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={onBack}
-          className="p-2 -ml-2 rounded-full hover:bg-gray-50/80 text-gray-500 transition-colors duration-200 cursor-pointer focus:outline-none"
-          aria-label="Kembali ke profil"
-        >
-          <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-        <h2 className="text-xl font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">
-          Edukasi & Artikel 📚
-        </h2>
-      </div>
 
       {/* SUB-TABS: Catalog vs Saved Articles */}
       <div className="bg-gray-50/50 border border-gray-100 rounded-xl p-1 flex">

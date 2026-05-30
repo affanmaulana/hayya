@@ -1,8 +1,15 @@
 import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
 
 export default function EditProfileView({ onBack }) {
   const { currentUser, updateProfile } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (onBack) onBack();
+    else navigate('/dashboard/profil');
+  };
 
   // Edit Profil Form States
   const [nameInput, setNameInput] = useState(currentUser?.fullName || '');
@@ -33,7 +40,7 @@ export default function EditProfileView({ onBack }) {
       });
       setSuccessMsg("Profil Bunda berhasil diperbarui! 🧡");
       setTimeout(() => {
-        onBack();
+        handleBack();
       }, 1000);
     } catch (err) {
       setErrorMsg(err.message || "Gagal memperbarui profil.");
@@ -44,22 +51,6 @@ export default function EditProfileView({ onBack }) {
 
   return (
     <div className="space-y-6 font-[var(--font-body)] animate-fade-in pb-10">
-      
-      {/* Header with back button */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={onBack}
-          className="p-2 -ml-2 rounded-full hover:bg-gray-50 text-gray-500 hover:text-gray-900 transition-all duration-200 ease-in-out cursor-pointer focus:outline-none active:scale-95"
-          aria-label="Kembali ke profil"
-        >
-          <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-        <h2 className="text-xl font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">
-          Edit Profil Bunda ✏️
-        </h2>
-      </div>
 
       {/* Profile Form Card */}
       <div className="bg-white rounded-card border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-6 space-y-6 hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out">
@@ -123,7 +114,7 @@ export default function EditProfileView({ onBack }) {
           <div className="flex gap-3 pt-3">
             <button
               type="button"
-              onClick={onBack}
+              onClick={handleBack}
               className="flex-1 h-[52px] border border-gray-200 rounded-button text-sm font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-50/50 hover:border-gray-300 cursor-pointer transition-all duration-200 ease-in-out active:scale-[0.98] focus:outline-none"
             >
               Batal

@@ -19,6 +19,12 @@ import MpasiView from './views/MpasiView';
 import ImmunizationView from './views/ImmunizationView';
 import ProfilPage from './pages/ProfilPage';
 
+// Views/Sub-views
+import EditProfileView from './views/EditProfileView';
+import ManageChildrenView from './views/ManageChildrenView';
+import EducationView from './views/EducationView';
+import SymptomCheckView from './views/SymptomCheckView';
+
 /**
  * ProtectedRoute — Redirects to /login if no active session.
  */
@@ -79,6 +85,10 @@ function AppRoutes() {
         <Route path="mpasi" element={<MpasiView />} />
         <Route path="imunisasi" element={<ImmunizationView />} />
         <Route path="profil" element={<ProfilPage />} />
+        <Route path="profil/edit" element={<EditProfileView />} />
+        <Route path="profil/anak" element={<ManageChildrenView />} />
+        <Route path="profil/edukasi" element={<EducationView />} />
+        <Route path="profil/cek-gejala" element={<SymptomCheckView />} />
       </Route>
 
       {/* Default redirect */}
