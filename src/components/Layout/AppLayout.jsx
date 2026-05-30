@@ -60,7 +60,7 @@ export default function AppLayout() {
                 maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)' 
               }}
             />
-            <div className="flex items-center justify-between px-6 py-4">
+            <div className="flex items-center justify-between px-4 py-4">
               {/* Greeting */}
               <div className="flex flex-col justify-center">
                 <span className="text-xs text-gray-400 font-medium font-[var(--font-body)]">
