@@ -296,7 +296,7 @@ export default function SymptomCheckView({ onBack }) {
   }
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] px-1 py-4 animate-fade-in pb-10">
+    <div className="space-y-6 font-[var(--font-body)] px-0 py-4 animate-fade-in pb-10">
       
       {/* Header section with Back navigation */}
       <div className="flex items-center gap-2">

@@ -178,7 +178,7 @@ export default function MpasiView() {
 
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] px-1 py-4 animate-fade-in pb-10">
+    <div className="space-y-6 font-[var(--font-body)] px-0 py-4 animate-fade-in pb-10">
       
       {/* HEADER SECTION - Child Profile Summary */}
       <div className="bg-white rounded-card border border-gray-100 p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out flex items-center gap-4">

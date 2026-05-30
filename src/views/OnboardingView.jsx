@@ -260,7 +260,7 @@ export default function OnboardingView() {
       
       {/* --- STEP 1: WELCOME SCREEN --- */}
       {step === 1 && (
-        <div className="w-full max-w-md mx-auto min-h-screen md:min-h-[90vh] bg-white flex flex-col justify-between px-6 pt-10 pb-8 box-border md:rounded-3xl md:border md:border-border/60 md:shadow-md animate-fade-in overflow-y-auto">
+        <div className="w-full max-w-md mx-auto min-h-screen md:min-h-[90vh] bg-white flex flex-col justify-between px-4 pt-10 pb-8 box-border md:rounded-3xl md:border md:border-border/60 md:shadow-md animate-fade-in overflow-y-auto">
           {/* Upper Section */}
           <div className="space-y-6 flex-1 flex flex-col justify-start">
             {renderProgressHeader(1)}
@@ -312,7 +312,7 @@ export default function OnboardingView() {
 
       {/* --- STEP 2: MOTHER'S IDENTITY --- */}
       {step === 2 && (
-        <form onSubmit={handleStep2Submit} className="w-full max-w-md mx-auto min-h-screen md:min-h-[90vh] bg-white flex flex-col justify-between px-6 pt-10 pb-8 box-border md:rounded-3xl md:border md:border-border/60 md:shadow-md animate-fade-in overflow-y-auto">
+        <form onSubmit={handleStep2Submit} className="w-full max-w-md mx-auto min-h-screen md:min-h-[90vh] bg-white flex flex-col justify-between px-4 pt-10 pb-8 box-border md:rounded-3xl md:border md:border-border/60 md:shadow-md animate-fade-in overflow-y-auto">
           {/* Upper Section */}
           <div className="space-y-6 flex-1 flex flex-col justify-start">
             {renderProgressHeader(2)}
@@ -391,7 +391,7 @@ export default function OnboardingView() {
 
       {/* --- STEP 3: CHILD DATA --- */}
       {step === 3 && (
-        <form onSubmit={handleOnboardingComplete} className="w-full max-w-md mx-auto min-h-screen md:min-h-[90vh] bg-white flex flex-col justify-between px-6 pt-10 pb-8 box-border md:rounded-3xl md:border md:border-border/60 md:shadow-md animate-fade-in overflow-y-auto">
+        <form onSubmit={handleOnboardingComplete} className="w-full max-w-md mx-auto min-h-screen md:min-h-[90vh] bg-white flex flex-col justify-between px-4 pt-10 pb-8 box-border md:rounded-3xl md:border md:border-border/60 md:shadow-md animate-fade-in overflow-y-auto">
           {/* Upper Section */}
           <div className="space-y-6 flex-1 flex flex-col justify-start">
             {renderProgressHeader(3)}
@@ -507,7 +507,7 @@ export default function OnboardingView() {
 
       {/* --- SUB-STEP: SELECT ACCOUNT VIEW --- */}
       {step === 'select_account' && (
-        <div className="w-full max-w-md mx-auto min-h-screen md:min-h-[90vh] bg-white flex flex-col justify-between px-6 pt-10 pb-8 box-border md:rounded-3xl md:border md:border-border/60 md:shadow-md animate-fade-in overflow-y-auto">
+        <div className="w-full max-w-md mx-auto min-h-screen md:min-h-[90vh] bg-white flex flex-col justify-between px-4 pt-10 pb-8 box-border md:rounded-3xl md:border md:border-border/60 md:shadow-md animate-fade-in overflow-y-auto">
           {/* Upper Section */}
           <div className="space-y-6 flex-1 flex flex-col justify-start">
             

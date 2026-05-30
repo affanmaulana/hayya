@@ -103,7 +103,7 @@ export default function DashboardView() {
   // ----- RENDER EMPTY STATE (No Children Registered) -----
   if (childrenList.length === 0) {
     return (
-      <div className="space-y-8 animate-fade-in px-1 py-4 font-[var(--font-body)]">
+      <div className="space-y-8 animate-fade-in px-0 py-4 font-[var(--font-body)]">
         {/* Empty State Banner with generous whitespace */}
         <div className="flex flex-col items-center text-center space-y-5 pt-4">
           <div className="w-24 h-24 bg-primary/5 rounded-full flex items-center justify-center text-primary shadow-sm border border-primary/10">
@@ -287,7 +287,7 @@ export default function DashboardView() {
 
   // ----- RENDER DASHBOARD (Active Child Toggled) -----
   return (
-    <div className="space-y-8 animate-fade-in px-1 py-4 font-[var(--font-body)]">
+    <div className="space-y-8 animate-fade-in px-0 py-4 font-[var(--font-body)]">
       {/* Dynamic Welcome Hero Banner */}
       <div className="bg-gradient-to-br from-primary to-secondary rounded-card p-6 text-white shadow-md shadow-primary/5 relative overflow-hidden">
         {/* Ambient premium background blur shapes */}
@@ -385,18 +385,6 @@ export default function DashboardView() {
         </div>
       )}
 
-      {/* Offline and Local Storage Security Assurance */}
-      <div className="flex items-start gap-3.5 p-5 bg-accent/[0.03] border border-accent/10 rounded-card">
-        <span className="text-xl leading-none pt-0.5">🔒</span>
-        <div className="space-y-1">
-          <h4 className="text-xs font-bold text-accent font-[var(--font-heading)]">
-            Jaminan Keamanan Data Offline-First
-          </h4>
-          <p className="text-[11px] text-gray-500 leading-relaxed">
-            Seluruh data tubuh kembang, riwayat imunisasi, dan menu MPASI anak disimpan secara lokal di HP Bunda. Tidak ada data yang dikirim ke server luar.
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
