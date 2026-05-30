@@ -304,7 +304,7 @@ export default function SymptomCheckView({ onBack }) {
   }
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] px-0 py-4 animate-fade-in pb-10">
+    <div className="space-y-6 font-[var(--font-body)] px-0 animate-fade-in">
 
       {/* Horizontal Child Switcher Scroll */}
       <div className="w-full max-w-full overflow-hidden select-none bg-white rounded-card border border-gray-100 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.02)] space-y-3">

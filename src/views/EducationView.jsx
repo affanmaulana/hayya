@@ -135,7 +135,7 @@ export default function EducationView({ onBack }) {
   };
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] px-0 py-4 pb-28 animate-fade-in">
+    <div className="space-y-6 font-[var(--font-body)] px-0 animate-fade-in">
 
       {/* SUB-TABS: Catalog vs Saved Articles */}
       <div className="bg-gray-50/50 border border-gray-100 rounded-xl p-1 flex">

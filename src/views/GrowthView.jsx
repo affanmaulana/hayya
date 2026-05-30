@@ -93,7 +93,7 @@ export default function GrowthView() {
   }, [activeChild?.id]);
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] px-0 py-4 pb-28 animate-fade-in">
+    <div className="space-y-6 font-[var(--font-body)] px-0 animate-fade-in">
       <h2 className="text-xl font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">Catatan Pertumbuhan {activeChild?.name}</h2>
       
       {error && (

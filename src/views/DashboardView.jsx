@@ -103,7 +103,7 @@ export default function DashboardView() {
   // ----- RENDER EMPTY STATE (No Children Registered) -----
   if (childrenList.length === 0) {
     return (
-      <div className="space-y-8 animate-fade-in px-0 py-4 font-[var(--font-body)]">
+    <div className="space-y-8 animate-fade-in px-0 font-[var(--font-body)]">
         {/* Empty State Banner with generous whitespace */}
         <div className="flex flex-col items-center text-center space-y-5 pt-4">
           <div className="w-24 h-24 bg-primary/5 rounded-full flex items-center justify-center text-primary shadow-sm border border-primary/10">
@@ -287,7 +287,7 @@ export default function DashboardView() {
 
   // ----- RENDER DASHBOARD (Active Child Toggled) -----
   return (
-    <div className="space-y-8 animate-fade-in px-0 py-4 font-[var(--font-body)]">
+    <div className="space-y-8 animate-fade-in px-0 font-[var(--font-body)]">
       {/* Dynamic Welcome Hero Banner */}
       <div className="bg-gradient-to-br from-primary to-secondary rounded-card p-6 text-white shadow-md shadow-primary/5 relative overflow-hidden">
         {/* Ambient premium background blur shapes */}
