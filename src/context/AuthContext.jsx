@@ -194,7 +194,8 @@ export function AuthProvider({ children }) {
         register,
         login,
         logout,
-        updateProfile
+        updateProfile,
+        setCurrentUser
       }}
     >
       {children}

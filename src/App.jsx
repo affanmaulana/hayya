@@ -12,8 +12,7 @@ import { SymptomCheckProvider } from './context/SymptomCheckContext';
 import AppLayout from './components/Layout/AppLayout';
 
 // Pages
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import OnboardingView from './views/OnboardingView';
 import DashboardView from './views/DashboardView';
 import GrowthView from './views/GrowthView';
 import MpasiView from './views/MpasiView';
@@ -53,7 +52,7 @@ function AppRoutes() {
         path="/login"
         element={
           <PublicRoute>
-            <LoginPage />
+            <OnboardingView />
           </PublicRoute>
         }
       />
@@ -61,7 +60,7 @@ function AppRoutes() {
         path="/register"
         element={
           <PublicRoute>
-            <RegisterPage />
+            <OnboardingView />
           </PublicRoute>
         }
       />
