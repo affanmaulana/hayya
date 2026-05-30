@@ -1,16 +1,32 @@
-import React, { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { useChildContext } from '../context/ChildContext.jsx';
+import ManageChildrenView from '../views/ManageChildrenView.jsx';
+import EducationView from '../views/EducationView.jsx';
+import SymptomCheckView from '../views/SymptomCheckView.jsx';
 
 /**
- * ProfilPage — Placeholder for profile/settings (Lainnya tab).
+ * ProfilPage — Profile and settings manager (Lainnya tab).
  */
 export default function ProfilPage() {
   const { currentUser, logout } = useContext(AuthContext);
   const { childrenList } = useChildContext();
+  const [currentView, setCurrentView] = useState('menu'); // 'menu', 'manage-children', 'education', or 'symptom-check'
+
+  if (currentView === 'manage-children') {
+    return <ManageChildrenView onBack={() => setCurrentView('menu')} />;
+  }
+
+  if (currentView === 'education') {
+    return <EducationView onBack={() => setCurrentView('menu')} />;
+  }
+
+  if (currentView === 'symptom-check') {
+    return <SymptomCheckView onBack={() => setCurrentView('menu')} />;
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <div>
         <h2 className="text-xl font-bold font-[var(--font-heading)] text-text">
           Profil Bunda 👩‍👧
@@ -37,17 +53,18 @@ export default function ProfilPage() {
         </div>
       </div>
 
-      {/* Menu Items Placeholder */}
+      {/* Menu Items */}
       <div className="bg-bg-card rounded-card shadow-card overflow-hidden divide-y divide-border">
         {[
           { icon: '✏️', label: 'Edit Profil' },
-          { icon: '👶', label: 'Kelola Data Anak' },
-          { icon: '📚', label: 'Edukasi & Artikel' },
-          { icon: '🩺', label: 'Cek Gejala' },
+          { icon: '👶', label: 'Kelola Data Anak', onClick: () => setCurrentView('manage-children') },
+          { icon: '📚', label: 'Edukasi & Artikel', onClick: () => setCurrentView('education') },
+          { icon: '🩺', label: 'Cek Gejala', onClick: () => setCurrentView('symptom-check') },
         ].map((item) => (
           <button
             key={item.label}
-            className="w-full flex items-center gap-3 px-5 py-4 hover:bg-bg transition-colors duration-150 cursor-pointer min-h-[48px]"
+            onClick={item.onClick || (() => {})}
+            className="w-full flex items-center gap-3 px-5 py-4 hover:bg-bg transition-colors duration-150 cursor-pointer min-h-[48px] focus:outline-none text-left"
           >
             <span className="text-lg">{item.icon}</span>
             <span className="text-sm font-medium text-text font-[var(--font-body)]">{item.label}</span>
@@ -61,10 +78,11 @@ export default function ProfilPage() {
       {/* Logout */}
       <button
         onClick={logout}
-        className="w-full py-3 rounded-button border-2 border-danger/30 text-danger text-sm font-semibold font-[var(--font-heading)] hover:bg-danger/5 transition-colors duration-200 cursor-pointer min-h-[48px]"
+        className="w-full py-3 rounded-button border-2 border-danger/30 text-danger text-sm font-semibold font-[var(--font-heading)] hover:bg-danger/5 transition-colors duration-200 cursor-pointer min-h-[48px] focus:outline-none"
       >
         Keluar Akun
       </button>
     </div>
   );
 }
+

@@ -16,8 +16,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardView from './views/DashboardView';
 import GrowthView from './views/GrowthView';
-import MpasiPage from './pages/MpasiPage';
-import ImunisasiPage from './pages/ImunisasiPage';
+import MpasiView from './views/MpasiView';
+import ImmunizationView from './views/ImmunizationView';
 import ProfilPage from './pages/ProfilPage';
 
 /**
@@ -77,8 +77,8 @@ function AppRoutes() {
       >
         <Route index element={<DashboardView />} />
         <Route path="growth" element={<GrowthView />} />
-        <Route path="mpasi" element={<MpasiPage />} />
-        <Route path="imunisasi" element={<ImunisasiPage />} />
+        <Route path="mpasi" element={<MpasiView />} />
+        <Route path="imunisasi" element={<ImmunizationView />} />
         <Route path="profil" element={<ProfilPage />} />
       </Route>
 
