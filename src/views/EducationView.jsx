@@ -166,14 +166,14 @@ export default function EducationView({ onBack }) {
         <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider pl-1">
           Topik Pembahasan
         </span>
-        <div className="w-full max-w-full overflow-hidden select-none">
+        <div className="w-full max-w-full overflow-visible select-none">
           <div 
             ref={trackRef}
             onMouseDown={handleMouseDown}
             onMouseLeave={handleMouseLeave}
             onMouseUp={handleMouseUp}
             onMouseMove={handleMouseMove}
-            className="flex flex-row overflow-x-auto whitespace-nowrap scroll-smooth gap-2 pb-2"
+            className="-mx-4 px-4 flex flex-row overflow-x-auto whitespace-nowrap scroll-smooth gap-2 pb-2"
             style={{ 
               touchAction: 'pan-x',
               WebkitOverflowScrolling: 'touch',

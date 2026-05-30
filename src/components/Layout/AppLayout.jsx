@@ -112,7 +112,7 @@ export default function AppLayout() {
         )}
 
         {/* ===== MAIN CONTENT ===== */}
-        <main className="flex-1 overflow-y-auto px-(--spacing-page) py-(--spacing-section) pb-28">
+        <main className="flex-1 overflow-y-auto px-(--spacing-page) pt-0 pb-(--spacing-section) pb-28">
           <Outlet />
         </main>
 

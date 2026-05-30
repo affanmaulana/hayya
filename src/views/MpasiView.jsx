@@ -22,6 +22,19 @@ export default function MpasiView() {
   // Active recipe category filter: 'all', '6-8', '9-11', '12+', 'bookmarked'
   const [activeFilter, setActiveFilter] = useState('all');
 
+  // Budget customizer states
+  const [budget, setBudget] = useState(20000);
+  const [appliedBudget, setAppliedBudget] = useState(null);
+  const [isBudgetExpanded, setIsBudgetExpanded] = useState(false);
+
+  const handleLihatResep = (selectedBudget) => {
+    setAppliedBudget(selectedBudget);
+    const catalogElement = document.getElementById('recipes-catalog-section');
+    if (catalogElement) {
+      catalogElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   // Desktop drag-to-scroll support
   const trackRef = useRef(null);
   const [dragState, setDragState] = useState({
@@ -67,6 +80,9 @@ export default function MpasiView() {
     setPrevChildId(activeChild?.id || '');
     setExpandedRecipeIds({});
     setActiveFilter('all');
+    setBudget(20000);
+    setAppliedBudget(null);
+    setIsBudgetExpanded(false);
   }
 
   // Calculate age parameters
@@ -140,6 +156,10 @@ export default function MpasiView() {
   // Filtered recipes list
   const filteredRecipes = useMemo(() => {
     return recipes.filter(r => {
+      // Filter by customizer budget if set
+      if (appliedBudget !== null && (r.estimatedCostIdr || 0) > appliedBudget) {
+        return false;
+      }
       if (activeFilter === 'bookmarked') {
         return isBookmarked(r.id);
       }
@@ -154,7 +174,7 @@ export default function MpasiView() {
       }
       return true; // 'all'
     });
-  }, [recipes, activeFilter, savedRecipesList, currentUser?.id]);
+  }, [recipes, activeFilter, savedRecipesList, currentUser?.id, appliedBudget]);
 
   // Toggle card expansion
   const toggleRecipeExpand = (recipeId) => {
@@ -175,14 +195,12 @@ export default function MpasiView() {
     }
   };
 
-
-
   return (
     <div className="space-y-6 font-[var(--font-body)] px-0 animate-fade-in">
       
       {/* HEADER SECTION - Child Profile Summary */}
       <div className="bg-white rounded-card border border-gray-100 p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out flex items-center gap-4">
-        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold border ${
+        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold border shrink-0 ${
           activeChild.gender === 'L'
             ? 'bg-accent/10 border-accent/15 text-accent'
             : 'bg-primary/10 border-primary/15 text-primary'
@@ -267,23 +285,190 @@ export default function MpasiView() {
         )}
       </div>
 
+      {/* BUDGET CUSTOMIZER SECTION - MATCHED STYLES AND EXPANDABLE BY DEFAULT */}
+      <div className="bg-white rounded-card border border-gray-100 p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out space-y-4">
+        
+        {/* SUMMARY HEADER BAR (COLLAPSIBLE TOGGLE) */}
+        <div 
+          onClick={() => setIsBudgetExpanded(!isBudgetExpanded)}
+          className="flex items-center justify-between cursor-pointer select-none"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-xl">💰</span>
+            <h3 className="text-sm font-extrabold font-[var(--font-heading)] text-gray-900">
+              Atur Anggaran MPASI Hemat
+            </h3>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+              Rp{budget.toLocaleString('id-ID')}
+            </span>
+            <span className="text-xs text-gray-400">
+              {isBudgetExpanded ? '▲' : '▼'}
+            </span>
+          </div>
+        </div>
+
+        {/* EXPANDABLE SECTION */}
+        {isBudgetExpanded && (
+          <div className="space-y-4 pt-1 animate-slide-down">
+            <p className="text-xs text-gray-500 leading-relaxed">
+              MPASI tidak harus mahal, Bunda. Mari sesuaikan menu gizi seimbang dengan anggaran belanja harian di rumah.
+            </p>
+
+            <div className="w-full py-2 px-1">
+              <label htmlFor="budget-slider" className="text-xs font-semibold text-gray-700 mb-2 block">
+                Anggaran Belanja Harian
+              </label>
+              
+              <input 
+                id="budget-slider"
+                type="range" 
+                min="10000" 
+                max="50000" 
+                step="5000" 
+                value={budget} 
+                onChange={(e) => setBudget(Number(e.target.value))}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+              />
+              
+              <div className="flex justify-between text-[10px] text-gray-400 mt-2">
+                <span>Rp10k</span>
+                <span>Rp20k</span>
+                <span>Rp30k</span>
+                <span>Rp40k</span>
+                <span>Rp50k</span>
+              </div>
+
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-xs text-gray-500">Estimasi Budget:</span>
+                <span className="text-base font-bold text-emerald-700">
+                  Rp{budget.toLocaleString('id-ID')}
+                </span>
+              </div>
+            </div>
+
+            {/* Rekomendasi Bahan Seadanya - REMOVED ALL EMOJI */}
+            <div className="p-3 bg-amber-50/80 rounded-xl border border-amber-100">
+              <div className="flex items-center gap-1.5 mb-2">
+                <span className="text-xs font-bold text-amber-800">💡 Rekomendasi Bahan Seadanya</span>
+              </div>
+              <ul className="space-y-1">
+                {budget < 15000 ? (
+                  <>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Nasi
+                    </li>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Sayur Hijau (Kangkung/Bayam)
+                    </li>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Telur / Tempe
+                    </li>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Minyak
+                    </li>
+                  </>
+                ) : budget <= 25000 ? (
+                  <>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Nasi
+                    </li>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Wortel
+                    </li>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Hati Ayam / Tahu
+                    </li>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Sedikit Santan
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Nasi
+                    </li>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Wortel
+                    </li>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Hati Ayam / Tahu
+                    </li>
+                    <li className="text-sm text-gray-700 py-1 flex items-center gap-2">
+                      • Sedikit Santan
+                    </li>
+                    <li className="text-sm text-emerald-700 py-1 flex items-center gap-2 font-semibold mt-1">
+                      • Bahan Tambahan (opsional jika ada):
+                    </li>
+                    <li className="text-sm text-gray-700 py-0.5 pl-4 flex items-center gap-2">
+                      - Daging Ayam Fillet
+                    </li>
+                    <li className="text-sm text-gray-700 py-0.5 pl-4 flex items-center gap-2">
+                      - Brokoli
+                    </li>
+                    <li className="text-sm text-gray-700 py-0.5 pl-4 flex items-center gap-2">
+                      - Keju, dll
+                    </li>
+                  </>
+                )}
+              </ul>
+              
+              <p className="text-xs text-amber-850 mt-3 font-medium">
+                MPASI hemat bukan berarti kurang gizi. Ini rekomendasi sesuai budget.
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => handleLihatResep(budget)}
+                className="flex-1 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <span>Lihat Resep Di Bawah Rp{budget.toLocaleString('id-ID')}</span>
+              </button>
+              {appliedBudget !== null && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAppliedBudget(null);
+                  }}
+                  className="px-3 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
+                >
+                  Mulai Ulang
+                </button>
+              )}
+            </div>
+
+            <div className="text-[11px] text-gray-400 text-center mt-3 italic block">
+              *Rekomendasi bahan di atas disesuaikan untuk kecukupan zat besi, makronutrien, dan mikronutrien penting si kecil tanpa bahan mahal.
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* FILTER BAR FOR MPASI RECIPES */}
-      <div className="space-y-4 pt-2">
+      <div id="recipes-catalog-section" className="space-y-4 pt-2 scroll-mt-20">
         <div className="flex items-center justify-between border-b border-border/60 pb-2">
           <h3 className="text-sm font-extrabold font-[var(--font-heading)] text-text">
-            📖 Katalog Resep MPASI Sehat
+            {appliedBudget !== null ? `📖 Resep Di Bawah Rp${appliedBudget.toLocaleString('id-ID')}` : '📖 Katalog Resep MPASI Sehat'}
           </h3>
+          {appliedBudget !== null && (
+            <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold px-2 py-0.5 rounded-full">
+              Budget Terfilter
+            </span>
+          )}
         </div>
 
         {/* Clean, high-whitespace horizontal filter bar */}
-        <div className="w-full max-w-full overflow-hidden select-none">
+        <div className="w-full max-w-full overflow-visible select-none">
           <div 
             ref={trackRef}
             onMouseDown={handleMouseDown}
             onMouseLeave={handleMouseLeave}
             onMouseUp={handleMouseUp}
             onMouseMove={handleMouseMove}
-            className="flex flex-row overflow-x-auto whitespace-nowrap scroll-smooth gap-2 pb-2"
+            className="-mx-4 px-4 flex flex-row overflow-x-auto whitespace-nowrap scroll-smooth gap-2 pb-2"
             style={{ 
               touchAction: 'pan-x',
               WebkitOverflowScrolling: 'touch',
@@ -342,7 +527,7 @@ export default function MpasiView() {
                     <div className="w-14 h-14 bg-secondary/10 border border-secondary/15 rounded-xl flex items-center justify-center text-2xl shrink-0">
                       🥗
                     </div>
-
+ 
                     {/* Brief specifications */}
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex justify-between items-start gap-2">
@@ -369,7 +554,7 @@ export default function MpasiView() {
                           </svg>
                         </button>
                       </div>
-
+ 
                       {/* Tag badges */}
                       <div className="flex gap-1.5 flex-wrap pt-0.5">
                         <span className="px-2 py-0.5 text-[9px] font-bold bg-bg border border-border text-text-secondary rounded-md">
@@ -386,7 +571,7 @@ export default function MpasiView() {
                       </div>
                     </div>
                   </div>
-
+ 
                   {/* Expanded preparation detail */}
                   {isExpanded && (
                     <div className="px-4 pb-4 pt-2 bg-bg/35 border-t border-border/40 text-xs space-y-3.5 animate-slide-down">
@@ -402,7 +587,7 @@ export default function MpasiView() {
                           ))}
                         </ul>
                       </div>
-
+ 
                       {/* Cook Steps */}
                       <div className="space-y-1.5 pt-1 border-t border-border/30">
                         <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Langkah Pembuatan:</span>
@@ -414,7 +599,7 @@ export default function MpasiView() {
                           ))}
                         </ol>
                       </div>
-
+ 
                       {/* Nutrient Detail Info */}
                       {recipe.nutritionInfo && (
                         <div className="pt-2.5 border-t border-border/30 flex gap-4 text-[10px]">
@@ -440,7 +625,7 @@ export default function MpasiView() {
           </div>
         )}
       </div>
-
+ 
     </div>
   );
 }

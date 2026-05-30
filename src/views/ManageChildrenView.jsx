@@ -144,7 +144,7 @@ export default function ManageChildrenView({ onBack }) {
   };
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] animate-fade-in pb-10">
+    <div className="space-y-6 font-[var(--font-body)] animate-fade-in">
 
       {/* Children list */}
       <div className="space-y-4">

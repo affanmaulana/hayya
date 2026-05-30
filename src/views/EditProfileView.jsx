@@ -50,7 +50,7 @@ export default function EditProfileView({ onBack }) {
   };
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] animate-fade-in pb-10">
+    <div className="space-y-6 font-[var(--font-body)] animate-fade-in">
 
       {/* Profile Form Card */}
       <div className="bg-white rounded-card border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-6 space-y-6 hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out">

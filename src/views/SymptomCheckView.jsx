@@ -311,14 +311,14 @@ export default function SymptomCheckView({ onBack }) {
         <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">
           Pilih Profil Anak Yang Ingin Diperiksa
         </span>
-        <div className="w-full max-w-full overflow-hidden">
+        <div className="w-full max-w-full overflow-visible">
           <div 
             ref={childTrackRef}
             onMouseDown={handleChildMouseDown}
             onMouseLeave={handleChildMouseLeave}
             onMouseUp={handleChildMouseUp}
             onMouseMove={handleChildMouseMove}
-            className="flex flex-row overflow-x-auto whitespace-nowrap scroll-smooth gap-3 pb-2"
+            className="-mx-4 px-4 flex flex-row overflow-x-auto whitespace-nowrap scroll-smooth gap-3 pb-2"
             style={{ 
               touchAction: 'pan-x',
               WebkitOverflowScrolling: 'touch',
