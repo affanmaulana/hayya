@@ -113,7 +113,7 @@ export default function ChildSwitcher() {
       <button
         id="child-switcher-trigger"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-bg border border-border/80 hover:border-primary/20 hover:shadow-card transition-all duration-200 cursor-pointer min-h-[38px] focus:outline-none"
+        className="flex items-center gap-2 py-1 px-3 rounded-full bg-gray-50 border border-gray-100/80 hover:border-primary/20 transition-all duration-200 cursor-pointer focus:outline-none"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-label="Pilih anak aktif"

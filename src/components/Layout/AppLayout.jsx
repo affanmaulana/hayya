@@ -49,14 +49,14 @@ export default function AppLayout() {
         
         {/* ===== MAIN HEADER ===== */}
         {isMainDashboard && (
-          <header className="sticky top-0 z-30 bg-white border-b border-border">
-            <div className="flex items-center justify-between px-(--spacing-page) py-3">
+          <header className="sticky top-0 z-30 bg-white">
+            <div className="flex items-center justify-between px-6 py-4">
               {/* Greeting */}
               <div className="flex flex-col">
-                <span className="text-[13px] text-text-secondary font-[var(--font-body)]">
+                <span className="text-xs text-gray-400 font-medium font-[var(--font-body)]">
                   Halo, Bunda 🧡
                 </span>
-                <h1 className="text-lg font-bold text-text font-[var(--font-heading)] leading-tight m-0">
+                <h1 className="text-xl font-bold text-gray-900 tracking-tight font-[var(--font-heading)] leading-tight m-0">
                   {firstName}
                 </h1>
               </div>
@@ -69,8 +69,8 @@ export default function AppLayout() {
 
         {/* ===== SUB-PAGE ACTION BAR ===== */}
         {activeSubPageTitle && (
-          <header className="sticky top-0 z-30 bg-white border-b border-border">
-            <div className="flex items-center gap-3 px-(--spacing-page) py-3">
+          <header className="sticky top-0 z-30 bg-white">
+            <div className="flex items-center gap-3 px-6 py-4">
               <button
                 onClick={() => navigate('/dashboard/profil')}
                 className="p-1 -ml-1 rounded-full hover:bg-gray-50 text-gray-500 hover:text-gray-900 transition-all duration-200 ease-in-out cursor-pointer focus:outline-none active:scale-95 flex items-center justify-center"
