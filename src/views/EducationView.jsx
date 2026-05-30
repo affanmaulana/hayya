@@ -128,7 +128,7 @@ export default function EducationView({ onBack }) {
   };
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] px-0 py-4 pb-24 animate-fade-in">
+    <div className="space-y-6 font-[var(--font-body)] px-0 py-4 pb-28 animate-fade-in">
       
       {/* Header with back button */}
       <div className="flex items-center gap-2">

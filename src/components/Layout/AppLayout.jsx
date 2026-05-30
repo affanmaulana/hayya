@@ -46,12 +46,12 @@ export default function AppLayout() {
         </header>
 
         {/* ===== MAIN CONTENT ===== */}
-        <main className="flex-1 overflow-y-auto px-(--spacing-page) py-(--spacing-section) pb-24">
+        <main className="flex-1 overflow-y-auto px-(--spacing-page) py-(--spacing-section) pb-28">
           <Outlet />
         </main>
 
         {/* ===== OFFLINE BANNER ===== */}
-        <div className="fixed bottom-[52px] left-1/2 -translate-x-1/2 w-full max-w-[428px] z-30">
+        <div className="fixed bottom-[104px] left-1/2 -translate-x-1/2 w-full max-w-[380px] z-30">
           <OfflineBanner />
         </div>
 
