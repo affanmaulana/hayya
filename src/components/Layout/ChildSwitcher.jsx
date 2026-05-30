@@ -80,7 +80,7 @@ export default function ChildSwitcher() {
       };
 
       addChild(childData);
-      
+
       // Clear form on success
       setName('');
       setDateOfBirth('');
@@ -113,17 +113,16 @@ export default function ChildSwitcher() {
       <button
         id="child-switcher-trigger"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 py-1 px-3 rounded-full bg-gray-50 border border-gray-100/80 hover:border-primary/20 transition-all duration-200 cursor-pointer focus:outline-none"
+        className="bg-white/80 backdrop-blur-md border border-white/60 shadow-[0_2px_12px_rgba(0,0,0,0.03)] rounded-full py-1.5 pl-1.5 pr-3 flex flex-row items-center gap-2 transition-all duration-200 hover:bg-black/[0.02] hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)] cursor-pointer focus:outline-none"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-label="Pilih anak aktif"
       >
         {/* Gender-responsive premium pastel circle */}
-        <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 border font-extrabold text-[11px] ${
-          activeChild?.gender === 'L'
+        <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 border font-extrabold text-[11px] ${activeChild?.gender === 'L'
             ? 'bg-accent/10 border-accent/15 text-accent'
             : 'bg-primary/10 border-primary/15 text-primary'
-        }`}>
+          }`}>
           {activeChild?.name ? activeChild.name.charAt(0).toUpperCase() : '👶'}
         </div>
 
@@ -149,83 +148,65 @@ export default function ChildSwitcher() {
       </button>
 
       {/* Dropdown List */}
-      {isOpen && (
-        <div
-          className="absolute top-full right-0 mt-2 w-56 bg-white rounded-card shadow-card-hover border border-border/80 z-50 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150"
-          role="listbox"
-          aria-label="Daftar anak"
-        >
-          <div className="px-3 py-2.5 border-b border-border/50 bg-bg/50">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider font-[var(--font-heading)]">
-              Pilih Profil Anak
-            </span>
-          </div>
-
-          {/* Children List */}
-          <div className="max-h-48 overflow-y-auto divide-y divide-border/30">
-            {childrenList.map((child) => {
-              const isActive = child.id === activeChildId;
-              return (
-                <button
-                  key={child.id}
-                  role="option"
-                  aria-selected={isActive}
-                  onClick={() => {
-                    setActiveChildId(child.id);
-                    setIsOpen(false);
-                  }}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 transition-colors duration-150 cursor-pointer min-h-[44px] text-left focus:outline-none ${
-                    isActive ? 'bg-primary/5' : 'hover:bg-bg/40'
-                  }`}
-                >
-                  {/* Avatar */}
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 border font-extrabold text-[11px] ${
-                    child.gender === 'L'
+      <div
+        className={`absolute right-0 top-full mt-2 w-56 bg-white/80 backdrop-blur-md border border-white/60 shadow-[0_10px_30px_rgba(0,0,0,0.05)] rounded-[24px] overflow-hidden p-0 z-50 transition-all duration-[300ms] origin-top-right transform ${isOpen
+            ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 scale-95 -translate-y-1 pointer-events-none'
+          }`}
+        style={{ transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+        role="listbox"
+        aria-label="Daftar anak"
+      >
+        <div className="flex flex-col">
+          {childrenList.map((child) => {
+            const isActive = child.id === activeChildId;
+            return (
+              <button
+                key={child.id}
+                role="option"
+                aria-selected={isActive}
+                onClick={() => {
+                  setActiveChildId(child.id);
+                  setIsOpen(false);
+                }}
+                className="w-full h-12 px-4 flex flex-row items-center justify-between text-left text-sm text-gray-800 hover:bg-black/[0.02] active:bg-black/[0.05] bg-transparent transition-colors border-b border-black/[0.04] focus:outline-none cursor-pointer"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  {/* Gender-responsive premium circle */}
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 border font-extrabold text-[10px] ${child.gender === 'L'
                       ? 'bg-accent/10 border-accent/15 text-accent'
                       : 'bg-primary/10 border-primary/15 text-primary'
-                  }`}>
+                    }`}>
                     {child.name?.charAt(0)?.toUpperCase() || '?'}
                   </div>
+                  <span className="font-semibold text-xs text-gray-900 truncate">
+                    {child.name}
+                  </span>
+                </div>
 
-                  {/* Name + age */}
-                  <div className="flex flex-col items-start leading-tight flex-1 min-w-0">
-                    <span className={`text-xs font-[var(--font-heading)] truncate w-full ${
-                      isActive ? 'font-bold text-primary' : 'font-semibold text-text'
-                    }`}>
-                      {child.name}
-                    </span>
-                    {child.dateOfBirth && (
-                      <span className="text-[9px] text-text-secondary mt-0.5">
-                        {getAgeLabel(child.dateOfBirth)}
-                      </span>
-                    )}
-                  </div>
+                {/* Active selection checkmark */}
+                {isActive && (
+                  <svg className="w-4 h-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                )}
+              </button>
+            );
+          })}
 
-                  {/* Active checkmark */}
-                  {isActive && (
-                    <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* "+ Add Child" Button inside Dropdown */}
-          <div className="border-t border-border/50 p-2 bg-bg/30">
-            <button
-              onClick={() => {
-                setFormError('');
-                setIsModalOpen(true);
-              }}
-              className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl border border-dashed border-primary/30 text-primary text-xs font-bold hover:bg-primary/5 transition-all duration-200 cursor-pointer focus:outline-none min-h-[36px]"
-            >
-              <span>➕</span> Tambah Profil Anak
-            </button>
-          </div>
+          {/* "+ Add Child" Button integrated as final list item */}
+          <button
+            onClick={() => {
+              setFormError('');
+              setIsModalOpen(true);
+            }}
+            className="w-full h-12 px-4 flex flex-row items-center justify-between text-left text-sm text-primary hover:bg-black/[0.02] active:bg-black/[0.05] bg-transparent transition-colors border-b border-transparent focus:outline-none cursor-pointer"
+          >
+            <span className="font-semibold text-xs text-primary">Tambah Profil Anak</span>
+            <span className="text-primary text-sm font-bold">+</span>
+          </button>
         </div>
-      )}
+      </div>
 
       {/* Clean Modal for Adding Child */}
       {isModalOpen && (
@@ -292,22 +273,20 @@ export default function ChildSwitcher() {
                   <button
                     type="button"
                     onClick={() => setGender('L')}
-                    className={`flex-1 h-9 rounded-input border text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer focus:outline-none ${
-                      gender === 'L'
+                    className={`flex-1 h-9 rounded-input border text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer focus:outline-none ${gender === 'L'
                         ? 'border-accent bg-accent/5 text-accent'
                         : 'border-border bg-bg-card text-text-secondary'
-                    }`}
+                      }`}
                   >
                     👦 Laki-laki
                   </button>
                   <button
                     type="button"
                     onClick={() => setGender('P')}
-                    className={`flex-1 h-9 rounded-input border text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer focus:outline-none ${
-                      gender === 'P'
+                    className={`flex-1 h-9 rounded-input border text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer focus:outline-none ${gender === 'P'
                         ? 'border-primary bg-primary/5 text-primary'
                         : 'border-border bg-bg-card text-text-secondary'
-                    }`}
+                      }`}
                   >
                     👧 Perempuan
                   </button>
