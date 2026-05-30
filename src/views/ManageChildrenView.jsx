@@ -142,14 +142,14 @@ export default function ManageChildrenView({ onBack }) {
       <div className="flex items-center gap-2">
         <button
           onClick={onBack}
-          className="p-2 -ml-2 rounded-full hover:bg-bg/60 text-text-secondary transition-colors cursor-pointer focus:outline-none"
+          className="p-2 -ml-2 rounded-full hover:bg-gray-50 text-gray-500 hover:text-gray-900 transition-all duration-200 ease-in-out cursor-pointer focus:outline-none active:scale-95"
           aria-label="Kembali ke profil"
         >
           <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
         </button>
-        <h2 className="text-xl font-bold font-[var(--font-heading)] text-text">
+        <h2 className="text-xl font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">
           Kelola Data Anak 👶
         </h2>
       </div>
@@ -157,7 +157,7 @@ export default function ManageChildrenView({ onBack }) {
       {/* Children list */}
       <div className="space-y-4">
         {childrenList.length === 0 ? (
-          <div className="bg-white rounded-card border border-border p-6 text-center text-sm text-text-secondary">
+          <div className="bg-white rounded-card border border-gray-100 p-6 text-center text-sm text-gray-500 shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
             Bunda belum mendaftarkan profil anak. Klik tombol di bawah untuk mendaftarkan si kecil! 🧡
           </div>
         ) : (
@@ -167,14 +167,14 @@ export default function ManageChildrenView({ onBack }) {
               <div
                 key={child.id}
                 onClick={() => setActiveChildId(child.id)}
-                className={`bg-white rounded-card border transition-all p-5 flex items-center gap-4 relative group cursor-pointer ${
+                className={`bg-white rounded-card border p-5 flex items-center gap-4 relative group cursor-pointer transition-all duration-200 ease-in-out ${
                   isActive 
-                    ? 'border-accent shadow-sm' 
-                    : 'border-border hover:border-border hover:shadow-card'
+                    ? 'border-accent shadow-[0_4px_12px_rgba(240,140,82,0.08)]' 
+                    : 'border-gray-100 hover:border-gray-200 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)]'
                 }`}
               >
                 {/* Avatar Icon */}
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold border shrink-0 ${
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold border shrink-0 transition-transform duration-200 group-hover:scale-105 ${
                   child.gender === 'L'
                     ? 'bg-accent/10 border-accent/15 text-accent'
                     : 'bg-primary/10 border-primary/15 text-primary'
@@ -185,7 +185,7 @@ export default function ManageChildrenView({ onBack }) {
                 {/* Details */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-bold font-[var(--font-heading)] text-text truncate">
+                    <h3 className="text-sm font-bold font-[var(--font-heading)] text-gray-900 truncate">
                       {child.name}
                     </h3>
                     {isActive && (
@@ -194,10 +194,10 @@ export default function ManageChildrenView({ onBack }) {
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-text-secondary mt-0.5">
+                  <p className="text-[11px] text-gray-500 mt-0.5">
                     Lahir: {formatDate(child.dateOfBirth)}
                   </p>
-                  <p className="text-[10px] text-text-muted mt-0.5 font-medium">
+                  <p className="text-[10px] text-gray-400 mt-0.5 font-medium">
                     {child.gender === 'L' ? '👦 Laki-laki' : '👧 Perempuan'} • {child.birthWeightKg} kg • {child.birthHeightCm} cm
                   </p>
                 </div>
@@ -209,7 +209,7 @@ export default function ManageChildrenView({ onBack }) {
                     e.stopPropagation(); // Avoid switching active child when clicking edit
                     openEditModal(child);
                   }}
-                  className="px-3 py-1.5 rounded-lg hover:bg-bg border border-border/80 text-[11px] font-bold text-primary font-[var(--font-heading)] hover:text-primary-dark transition-colors cursor-pointer focus:outline-none"
+                  className="px-3 py-1.5 rounded-lg hover:bg-gray-50 border border-gray-200 text-[11px] font-bold text-primary font-[var(--font-heading)] hover:text-primary-dark transition-all duration-200 ease-in-out cursor-pointer active:scale-95 focus:outline-none"
                 >
                   Edit
                 </button>
@@ -222,7 +222,7 @@ export default function ManageChildrenView({ onBack }) {
       {/* Add New Child Button */}
       <button
         onClick={openAddModal}
-        className="w-full h-[52px] rounded-button border-2 border-dashed border-primary text-primary hover:border-primary-dark hover:text-primary-dark hover:bg-primary/5 transition-all text-sm font-bold flex items-center justify-center gap-2 cursor-pointer focus:outline-none"
+        className="w-full h-[52px] rounded-button border-2 border-dashed border-primary text-primary hover:border-primary-dark hover:text-primary-dark hover:bg-primary/5 transition-all duration-200 ease-in-out text-sm font-bold flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] focus:outline-none"
       >
         <span>+</span> Tambah Anak Baru
       </button>
@@ -235,17 +235,17 @@ export default function ManageChildrenView({ onBack }) {
             onClick={() => setIsEditOpen(false)}
           />
 
-          <div className="bg-white rounded-card border border-border w-full max-w-[360px] shadow-2xl relative z-10 overflow-hidden font-[var(--font-body)] animate-scale-up">
-            <div className="bg-primary/5 border-b border-border/50 px-5 py-4 flex justify-between items-center">
+          <div className="bg-white rounded-card border border-gray-100 w-full max-w-[360px] shadow-2xl relative z-10 overflow-hidden font-[var(--font-body)] animate-scale-up">
+            <div className="bg-primary/5 border-b border-gray-100 px-5 py-4 flex justify-between items-center">
               <div>
                 <span className="text-[10px] text-primary font-bold uppercase tracking-widest font-[var(--font-heading)]">Ubah Profil</span>
-                <h3 className="text-sm font-extrabold font-[var(--font-heading)] text-text mt-0.5">
+                <h3 className="text-sm font-extrabold font-[var(--font-heading)] text-gray-900 mt-0.5">
                   {editingChild.name}
                 </h3>
               </div>
               <button 
                 onClick={() => setIsEditOpen(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-text-muted hover:text-text hover:bg-bg/60 transition-all cursor-pointer font-bold text-base focus:outline-none"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200 cursor-pointer font-bold text-base focus:outline-none active:scale-90"
               >
                 ✕
               </button>
@@ -260,7 +260,7 @@ export default function ManageChildrenView({ onBack }) {
 
               {/* Name */}
               <div className="space-y-1.5">
-                <label htmlFor="edit-name" className="text-xs font-bold text-text">
+                <label htmlFor="edit-name" className="text-xs font-semibold text-gray-700">
                   Nama Panggilan *
                 </label>
                 <input
@@ -270,13 +270,13 @@ export default function ManageChildrenView({ onBack }) {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Misal: Rayyan"
                   required
-                  className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                  className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
                 />
               </div>
 
               {/* Date of Birth */}
               <div className="space-y-1.5">
-                <label htmlFor="edit-dob" className="text-xs font-bold text-text">
+                <label htmlFor="edit-dob" className="text-xs font-semibold text-gray-700">
                   Tanggal Lahir *
                 </label>
                 <input
@@ -286,21 +286,21 @@ export default function ManageChildrenView({ onBack }) {
                   onChange={(e) => setDateOfBirth(e.target.value)}
                   max={maxDobString}
                   required
-                  className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors cursor-pointer"
+                  className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out cursor-pointer"
                 />
               </div>
 
               {/* Gender */}
               <div className="space-y-1.5">
-                <span className="text-xs font-bold text-text">Jenis Kelamin *</span>
+                <span className="text-xs font-semibold text-gray-700">Jenis Kelamin *</span>
                 <div className="flex gap-3">
                   <button
                     type="button"
                     onClick={() => setGender('L')}
-                    className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
+                    className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all duration-200 ease-in-out flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
                       gender === 'L'
                         ? 'border-accent bg-accent/5 text-accent'
-                        : 'border-border bg-bg-card text-text-secondary'
+                        : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50/50 hover:border-gray-300'
                     }`}
                   >
                     👦 Laki-laki
@@ -308,10 +308,10 @@ export default function ManageChildrenView({ onBack }) {
                   <button
                     type="button"
                     onClick={() => setGender('P')}
-                    className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
+                    className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all duration-200 ease-in-out flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
                       gender === 'P'
                         ? 'border-primary bg-primary/5 text-primary'
-                        : 'border-border bg-bg-card text-text-secondary'
+                        : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50/50 hover:border-gray-300'
                     }`}
                   >
                     👧 Perempuan
@@ -322,7 +322,7 @@ export default function ManageChildrenView({ onBack }) {
               {/* Weight & Height Grid */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <label htmlFor="edit-weight" className="text-xs font-bold text-text">
+                  <label htmlFor="edit-weight" className="text-xs font-semibold text-gray-700">
                     Berat Lahir (kg)
                   </label>
                   <input
@@ -333,11 +333,11 @@ export default function ManageChildrenView({ onBack }) {
                     max="15"
                     value={birthWeight}
                     onChange={(e) => setBirthWeight(e.target.value)}
-                    className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label htmlFor="edit-height" className="text-xs font-bold text-text">
+                  <label htmlFor="edit-height" className="text-xs font-semibold text-gray-700">
                     Tinggi Lahir (cm)
                   </label>
                   <input
@@ -348,21 +348,21 @@ export default function ManageChildrenView({ onBack }) {
                     max="100"
                     value={birthHeight}
                     onChange={(e) => setBirthHeight(e.target.value)}
-                    className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
                   />
                 </div>
               </div>
 
               {/* Blood Type */}
               <div className="space-y-1.5">
-                <label htmlFor="edit-blood" className="text-xs font-bold text-text">
+                <label htmlFor="edit-blood" className="text-xs font-semibold text-gray-700">
                   Golongan Darah
                 </label>
                 <select
                   id="edit-blood"
                   value={bloodType}
                   onChange={(e) => setBloodType(e.target.value)}
-                  className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors cursor-pointer"
+                  className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out cursor-pointer"
                 >
                   <option value="">Pilih...</option>
                   <option value="A">A</option>
@@ -377,14 +377,14 @@ export default function ManageChildrenView({ onBack }) {
                 <button
                   type="button"
                   onClick={() => setIsEditOpen(false)}
-                  className="flex-1 h-11 border border-border rounded-button text-xs font-semibold text-text-secondary hover:bg-bg/40 cursor-pointer focus:outline-none transition-all"
+                  className="flex-1 h-11 border border-gray-200 rounded-button text-xs font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-50/50 hover:border-gray-300 cursor-pointer focus:outline-none transition-all duration-200 ease-in-out active:scale-[0.98]"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 h-11 rounded-button bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-md shadow-primary/10 cursor-pointer focus:outline-none transition-all"
+                  className="flex-1 h-11 rounded-button bg-primary hover:bg-primary-dark active:scale-[0.98] text-white text-xs font-bold shadow-md shadow-primary/10 cursor-pointer focus:outline-none transition-all duration-200 ease-in-out"
                 >
                   {isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'}
                 </button>
@@ -402,17 +402,17 @@ export default function ManageChildrenView({ onBack }) {
             onClick={() => setIsAddOpen(false)}
           />
 
-          <div className="bg-white rounded-card border border-border w-full max-w-[360px] shadow-2xl relative z-10 overflow-hidden font-[var(--font-body)] animate-scale-up">
-            <div className="bg-primary/5 border-b border-border/50 px-5 py-4 flex justify-between items-center">
+          <div className="bg-white rounded-card border border-gray-100 w-full max-w-[360px] shadow-2xl relative z-10 overflow-hidden font-[var(--font-body)] animate-scale-up">
+            <div className="bg-primary/5 border-b border-gray-100 px-5 py-4 flex justify-between items-center">
               <div>
                 <span className="text-[10px] text-primary font-bold uppercase tracking-widest font-[var(--font-heading)]">Pendaftaran Anak</span>
-                <h3 className="text-sm font-extrabold font-[var(--font-heading)] text-text mt-0.5">
+                <h3 className="text-sm font-extrabold font-[var(--font-heading)] text-gray-900 mt-0.5">
                   Profil Baru
                 </h3>
               </div>
               <button 
                 onClick={() => setIsAddOpen(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-text-muted hover:text-text hover:bg-bg/60 transition-all cursor-pointer font-bold text-base focus:outline-none"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200 cursor-pointer font-bold text-base focus:outline-none active:scale-90"
               >
                 ✕
               </button>
@@ -427,7 +427,7 @@ export default function ManageChildrenView({ onBack }) {
 
               {/* Name */}
               <div className="space-y-1.5">
-                <label htmlFor="add-name" className="text-xs font-bold text-text">
+                <label htmlFor="add-name" className="text-xs font-semibold text-gray-700">
                   Nama Panggilan *
                 </label>
                 <input
@@ -437,13 +437,13 @@ export default function ManageChildrenView({ onBack }) {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Misal: Rayyan"
                   required
-                  className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                  className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
                 />
               </div>
 
               {/* Date of Birth */}
               <div className="space-y-1.5">
-                <label htmlFor="add-dob" className="text-xs font-bold text-text">
+                <label htmlFor="add-dob" className="text-xs font-semibold text-gray-700">
                   Tanggal Lahir *
                 </label>
                 <input
@@ -453,21 +453,21 @@ export default function ManageChildrenView({ onBack }) {
                   onChange={(e) => setDateOfBirth(e.target.value)}
                   max={maxDobString}
                   required
-                  className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors cursor-pointer"
+                  className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out cursor-pointer"
                 />
               </div>
 
               {/* Gender */}
               <div className="space-y-1.5">
-                <span className="text-xs font-bold text-text">Jenis Kelamin *</span>
+                <span className="text-xs font-semibold text-gray-700">Jenis Kelamin *</span>
                 <div className="flex gap-3">
                   <button
                     type="button"
                     onClick={() => setGender('L')}
-                    className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
+                    className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all duration-200 ease-in-out flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
                       gender === 'L'
                         ? 'border-accent bg-accent/5 text-accent'
-                        : 'border-border bg-bg-card text-text-secondary'
+                        : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50/50 hover:border-gray-300'
                     }`}
                   >
                     👦 Laki-laki
@@ -475,10 +475,10 @@ export default function ManageChildrenView({ onBack }) {
                   <button
                     type="button"
                     onClick={() => setGender('P')}
-                    className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
+                    className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all duration-200 ease-in-out flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
                       gender === 'P'
                         ? 'border-primary bg-primary/5 text-primary'
-                        : 'border-border bg-bg-card text-text-secondary'
+                        : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50/50 hover:border-gray-300'
                     }`}
                   >
                     👧 Perempuan
@@ -489,7 +489,7 @@ export default function ManageChildrenView({ onBack }) {
               {/* Weight & Height Grid */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <label htmlFor="add-weight" className="text-xs font-bold text-text">
+                  <label htmlFor="add-weight" className="text-xs font-semibold text-gray-700">
                     Berat Lahir (kg) *
                   </label>
                   <input
@@ -501,11 +501,11 @@ export default function ManageChildrenView({ onBack }) {
                     value={birthWeight}
                     onChange={(e) => setBirthWeight(e.target.value)}
                     required
-                    className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label htmlFor="add-height" className="text-xs font-bold text-text">
+                  <label htmlFor="add-height" className="text-xs font-semibold text-gray-700">
                     Tinggi Lahir (cm) *
                   </label>
                   <input
@@ -517,21 +517,21 @@ export default function ManageChildrenView({ onBack }) {
                     value={birthHeight}
                     onChange={(e) => setBirthHeight(e.target.value)}
                     required
-                    className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                    className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
                   />
                 </div>
               </div>
 
               {/* Blood Type */}
               <div className="space-y-1.5">
-                <label htmlFor="add-blood" className="text-xs font-bold text-text">
+                <label htmlFor="add-blood" className="text-xs font-semibold text-gray-700">
                   Golongan Darah
                 </label>
                 <select
                   id="add-blood"
                   value={bloodType}
                   onChange={(e) => setBloodType(e.target.value)}
-                  className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors cursor-pointer"
+                  className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out cursor-pointer"
                 >
                   <option value="">Pilih...</option>
                   <option value="A">A</option>
@@ -546,14 +546,14 @@ export default function ManageChildrenView({ onBack }) {
                 <button
                   type="button"
                   onClick={() => setIsAddOpen(false)}
-                  className="flex-1 h-11 border border-border rounded-button text-xs font-semibold text-text-secondary hover:bg-bg/40 cursor-pointer focus:outline-none transition-all"
+                  className="flex-1 h-11 border border-gray-200 rounded-button text-xs font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-50/50 hover:border-gray-300 cursor-pointer focus:outline-none transition-all duration-200 ease-in-out active:scale-[0.98]"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 h-11 rounded-button bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-md shadow-primary/10 cursor-pointer focus:outline-none transition-all"
+                  className="flex-1 h-11 rounded-button bg-primary hover:bg-primary-dark active:scale-[0.98] text-white text-xs font-bold shadow-md shadow-primary/10 cursor-pointer focus:outline-none transition-all duration-200 ease-in-out"
                 >
                   {isSubmitting ? 'Menyimpan...' : 'Daftarkan Anak'}
                 </button>

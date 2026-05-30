@@ -93,109 +93,112 @@ export default function GrowthView() {
   }, [activeChild?.id]);
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] p-4">
-      <h2 className="text-xl font-bold font-[var(--font-heading)] text-text">Catatan Pertumbuhan {activeChild?.name}</h2>
+    <div className="space-y-6 font-[var(--font-body)] px-6 py-6 pb-24 animate-fade-in">
+      <h2 className="text-xl font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">Catatan Pertumbuhan {activeChild?.name}</h2>
+      
       {error && (
         <div className="p-3 bg-danger/5 border border-danger/10 text-danger text-sm rounded-input animate-shake">
           {error}
         </div>
       )}
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 max-w-md">
-        <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-text" htmlFor="weightKg">Berat (kg) *</label>
-          <input
-            id="weightKg"
-            type="number"
-            step="0.01"
-            min="1"
-            max="40"
-            value={weightKg}
-            onChange={(e) => setWeightKg(e.target.value)}
-            required
-            className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-text" htmlFor="heightCm">Tinggi (cm) *</label>
-          <input
-            id="heightCm"
-            type="number"
-            step="0.1"
-            min="30"
-            max="130"
-            value={heightCm}
-            onChange={(e) => setHeightCm(e.target.value)}
-            required
-            className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-text" htmlFor="headCircCm">Lingkar Kepala (cm) (opsional)</label>
-          <input
-            id="headCircCm"
-            type="number"
-            step="0.1"
-            min="25"
-            max="60"
-            value={headCircCm}
-            onChange={(e) => setHeadCircCm(e.target.value)}
-            className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-text" htmlFor="measuredAt">Tanggal Pengukuran *</label>
-          <input
-            id="measuredAt"
-            type="date"
-            value={measuredAt}
-            onChange={(e) => setMeasuredAt(e.target.value)}
-            max={new Date().toISOString().split('T')[0]}
-            required
-            className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors cursor-pointer"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-text" htmlFor="notes">Catatan (opsional)</label>
-          <textarea
-            id="notes"
-            rows={2}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="w-full px-4 py-2 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full h-[48px] rounded-button bg-primary text-white font-semibold hover:bg-primary-dark transition-colors flex items-center justify-center"
-        >
-          {submitting ? 'Menyimpan...' : 'Simpan Catatan'}
-        </button>
-      </form>
+
+      {/* Styled Inputs Form Card */}
+      <div className="bg-white rounded-card border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-6 hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-gray-700" htmlFor="weightKg">Berat (kg) *</label>
+            <input
+              id="weightKg"
+              type="number"
+              step="0.01"
+              min="1"
+              max="40"
+              value={weightKg}
+              onChange={(e) => setWeightKg(e.target.value)}
+              required
+              className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-gray-700" htmlFor="heightCm">Tinggi (cm) *</label>
+            <input
+              id="heightCm"
+              type="number"
+              step="0.1"
+              min="30"
+              max="130"
+              value={heightCm}
+              onChange={(e) => setHeightCm(e.target.value)}
+              required
+              className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-gray-700" htmlFor="headCircCm">Lingkar Kepala (cm) (opsional)</label>
+            <input
+              id="headCircCm"
+              type="number"
+              step="0.1"
+              min="25"
+              max="60"
+              value={headCircCm}
+              onChange={(e) => setHeadCircCm(e.target.value)}
+              className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-gray-700" htmlFor="measuredAt">Tanggal Pengukuran *</label>
+            <input
+              id="measuredAt"
+              type="date"
+              value={measuredAt}
+              onChange={(e) => setMeasuredAt(e.target.value)}
+              max={new Date().toISOString().split('T')[0]}
+              required
+              className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out cursor-pointer"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-gray-700" htmlFor="notes">Catatan (opsional)</label>
+            <textarea
+              id="notes"
+              rows={2}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full h-[52px] mt-2 rounded-button bg-primary hover:bg-primary-dark active:scale-[0.98] text-white font-bold text-sm transition-all duration-200 ease-in-out flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-primary/10"
+          >
+            {submitting ? 'Menyimpan...' : 'Simpan Catatan'}
+          </button>
+        </form>
+      </div>
 
       {/* Table of records */}
       {records.length > 0 && (
-        <div className="overflow-x-auto mt-6">
-          <table className="min-w-full bg-white border border-border rounded-card shadow-card">
-            <thead className="bg-bg-card">
+        <div className="overflow-x-auto mt-6 bg-white border border-gray-100 rounded-card shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
+          <table className="min-w-full">
+            <thead className="bg-gray-50/50">
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Tanggal</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Berat (kg)</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Tinggi (cm)</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Lingkar Kepala (cm)</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Catatan</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tanggal</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Berat (kg)</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tinggi (cm)</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Lingkar</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Catatan</th>
               </tr>
             </thead>
             <tbody>
               {records.map((r) => (
-                <tr key={r.id} className="border-t border-border/30">
-                  <td className="px-4 py-2 text-sm text-text">{formatDate(r.measuredAt)}</td>
-                  <td className="px-4 py-2 text-sm text-text">{r.weightKg}</td>
-                  <td className="px-4 py-2 text-sm text-text">{r.heightCm}</td>
-                  <td className="px-4 py-2 text-sm text-text">{r.headCircCm ?? '-'}
-</td>
-                  <td className="px-4 py-2 text-sm text-text-muted">{r.notes || '-'}
-</td>
+                <tr key={r.id} className="border-t border-gray-100/80 hover:bg-gray-50/30 transition-colors">
+                  <td className="px-4 py-3 text-xs font-bold text-gray-900">{formatDate(r.measuredAt)}</td>
+                  <td className="px-4 py-3 text-xs font-bold text-gray-900">{r.weightKg}</td>
+                  <td className="px-4 py-3 text-xs font-bold text-gray-900">{r.heightCm}</td>
+                  <td className="px-4 py-3 text-xs font-bold text-gray-900">{r.headCircCm ?? '-'}</td>
+                  <td className="px-4 py-3 text-xs text-gray-500 truncate max-w-[120px]">{r.notes || '-'}</td>
                 </tr>
               ))}
             </tbody>

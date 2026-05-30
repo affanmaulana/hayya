@@ -128,42 +128,42 @@ export default function EducationView({ onBack }) {
   };
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] animate-fade-in pb-10">
+    <div className="space-y-6 font-[var(--font-body)] px-6 py-6 pb-24 animate-fade-in">
       
       {/* Header with back button */}
       <div className="flex items-center gap-2">
         <button
           onClick={onBack}
-          className="p-2 -ml-2 rounded-full hover:bg-bg/60 text-text-secondary transition-colors cursor-pointer focus:outline-none"
+          className="p-2 -ml-2 rounded-full hover:bg-gray-50/80 text-gray-500 transition-colors duration-200 cursor-pointer focus:outline-none"
           aria-label="Kembali ke profil"
         >
           <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
         </button>
-        <h2 className="text-xl font-bold font-[var(--font-heading)] text-text">
+        <h2 className="text-xl font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">
           Edukasi & Artikel 📚
         </h2>
       </div>
 
       {/* SUB-TABS: Catalog vs Saved Articles */}
-      <div className="bg-bg border border-border rounded-xl p-1 flex">
+      <div className="bg-gray-50/50 border border-gray-100 rounded-xl p-1 flex">
         <button
           onClick={() => handleTabChange('catalog')}
-          className={`flex-1 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all focus:outline-none ${
+          className={`flex-1 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all duration-200 ease-in-out focus:outline-none ${
             activeTab === 'catalog'
-              ? 'bg-white text-primary shadow-sm'
-              : 'text-text-secondary hover:text-text'
+              ? 'bg-white text-primary shadow-[0_2px_8px_rgba(0,0,0,0.01)] border border-gray-100/50'
+              : 'text-gray-500 hover:text-gray-900'
           }`}
         >
           Artikel Edukasi
         </button>
         <button
           onClick={() => handleTabChange('saved')}
-          className={`flex-1 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all focus:outline-none ${
+          className={`flex-1 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all duration-200 ease-in-out focus:outline-none ${
             activeTab === 'saved'
-              ? 'bg-white text-primary shadow-sm'
-              : 'text-text-secondary hover:text-text'
+              ? 'bg-white text-primary shadow-[0_2px_8px_rgba(0,0,0,0.01)] border border-gray-100/50'
+              : 'text-gray-500 hover:text-gray-900'
           }`}
         >
           Simpanan Bunda ({savedArticlesList.length})
@@ -172,7 +172,7 @@ export default function EducationView({ onBack }) {
 
       {/* HORIZONTAL CATEGORY FILTER BAR */}
       <div className="space-y-2">
-        <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider pl-1">
+        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider pl-1">
           Topik Pembahasan
         </span>
         <div className="w-full max-w-full overflow-hidden select-none">
@@ -202,10 +202,10 @@ export default function EducationView({ onBack }) {
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`px-4 py-2 text-xs font-bold rounded-full border cursor-pointer flex-shrink-0 transition-all focus:outline-none ${
+                  className={`px-4 py-2 text-xs font-bold rounded-full border cursor-pointer flex-shrink-0 transition-all duration-200 ease-in-out focus:outline-none ${
                     isActive
                       ? 'bg-primary border-primary text-white shadow-sm'
-                      : 'bg-white border-border text-text-secondary hover:bg-bg/40'
+                      : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50/50 hover:border-gray-300'
                   }`}
                 >
                   {cat.label}
@@ -218,7 +218,7 @@ export default function EducationView({ onBack }) {
 
       {/* ARTICLES CONTENT LIST */}
       {filteredArticles.length === 0 ? (
-        <div className="p-8 bg-white border border-border rounded-card text-center text-xs text-text-muted">
+        <div className="p-8 bg-white border border-gray-100 rounded-card text-center text-xs text-gray-400 shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
           {activeTab === 'saved'
             ? 'Bunda belum menyimpan artikel apa pun. Tekan ikon hati pada artikel bermanfaat untuk menyimpannya di sini! 🧡'
             : 'Tidak ada artikel yang ditemukan untuk kategori ini.'}
@@ -231,7 +231,7 @@ export default function EducationView({ onBack }) {
             return (
               <div
                 key={article.id}
-                className="bg-white rounded-card border border-border/80 hover:border-border hover:shadow-card transition-all duration-300 overflow-hidden"
+                className="bg-white rounded-card border border-gray-100 hover:border-gray-200 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out overflow-hidden"
               >
                 
                 {/* Article Header Card */}
@@ -249,12 +249,12 @@ export default function EducationView({ onBack }) {
                     <button
                       type="button"
                       onClick={(e) => handleBookmarkToggle(e, article.id)}
-                      className="p-1 -mr-1 text-text-muted hover:text-primary transition-all focus:outline-none cursor-pointer"
+                      className="p-1 -mr-1 text-gray-400 hover:text-primary transition-all duration-200 ease-in-out focus:outline-none cursor-pointer"
                       aria-label={bookmarked ? 'Hapus dari simpanan' : 'Simpan artikel'}
                     >
                       <svg
                         className={`w-5 h-5 transition-transform duration-200 active:scale-125 ${
-                          bookmarked ? 'fill-primary text-primary' : 'fill-transparent text-text-muted hover:text-primary'
+                          bookmarked ? 'fill-primary text-primary' : 'fill-transparent text-gray-400 hover:text-primary'
                         }`}
                         stroke="currentColor"
                         strokeWidth="2"
@@ -266,7 +266,7 @@ export default function EducationView({ onBack }) {
                   </div>
 
                   {/* Title wrapping naturally */}
-                  <h3 className="text-sm font-extrabold font-[var(--font-heading)] text-text leading-snug whitespace-normal break-words">
+                  <h3 className="text-sm font-semibold font-[var(--font-heading)] text-gray-900 leading-snug whitespace-normal break-words">
                     {article.title}
                   </h3>
 
@@ -287,12 +287,12 @@ export default function EducationView({ onBack }) {
 
                 {/* Expanded article detailed content */}
                 {isExpanded && (
-                  <div className="px-5 pb-5 pt-1.5 border-t border-border/40 bg-bg/25 text-xs text-text-secondary leading-relaxed space-y-3 whitespace-normal break-words animate-slide-down font-[var(--font-body)]">
+                  <div className="px-5 pb-5 pt-2 border-t border-gray-100 bg-gray-50/40 text-xs text-gray-600 leading-relaxed space-y-3 whitespace-normal break-words animate-slide-down font-[var(--font-body)]">
                     {/* Render paragraphs cleanly */}
                     {article.contentBody.split('\n\n').map((paragraph, index) => {
                       if (paragraph.startsWith('###')) {
                         return (
-                          <h4 key={`header-${index}`} className="text-xs font-bold text-text pt-2 font-[var(--font-heading)]">
+                          <h4 key={`header-${index}`} className="text-xs font-semibold text-gray-900 pt-2 font-[var(--font-heading)]">
                             {paragraph.replace('###', '').trim()}
                           </h4>
                         );
@@ -310,7 +310,7 @@ export default function EducationView({ onBack }) {
                                   <span>
                                     {isBoldTitle ? (
                                       <>
-                                        <span className="text-text font-bold mr-1">{isBoldTitle[1]}</span>
+                                        <span className="text-gray-900 font-semibold mr-1">{isBoldTitle[1]}</span>
                                         {cleanedLine.replace(isBoldTitle[1], '')}
                                       </>
                                     ) : (

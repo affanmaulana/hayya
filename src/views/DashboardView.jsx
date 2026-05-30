@@ -134,12 +134,12 @@ export default function DashboardView() {
         </div>
 
         {/* Premium Integrated Registration Form Card */}
-        <div className="bg-white rounded-card border border-border/80 shadow-card p-6 space-y-6">
-          <div className="border-b border-border/50 pb-4">
-            <h3 className="text-base font-bold font-[var(--font-heading)] text-text">
+        <div className="bg-white rounded-card border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-6 space-y-6 hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out">
+          <div className="border-b border-gray-100 pb-4">
+            <h3 className="text-base font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">
               Daftarkan Profil Si Kecil
             </h3>
-            <p className="text-xs text-text-secondary mt-1">
+            <p className="text-xs text-gray-500 mt-1">
               Masukkan informasi dasar kelahiran si kecil secara lengkap.
             </p>
           </div>
@@ -153,7 +153,7 @@ export default function DashboardView() {
           <form onSubmit={handleAddChildSubmit} className="space-y-4">
             {/* Child Name */}
             <div className="space-y-1.5">
-              <label htmlFor="child-name" className="text-xs font-semibold text-text">
+              <label htmlFor="child-name" className="text-xs font-semibold text-gray-700">
                 Nama Panggilan <span className="text-primary">*</span>
               </label>
               <input
@@ -162,14 +162,14 @@ export default function DashboardView() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Misal: Rayyan, Kiran"
-                className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
                 required
               />
             </div>
 
             {/* Birth Date */}
             <div className="space-y-1.5">
-              <label htmlFor="birth-date" className="text-xs font-semibold text-text">
+              <label htmlFor="birth-date" className="text-xs font-semibold text-gray-700">
                 Tanggal Lahir <span className="text-primary">*</span>
               </label>
               <input
@@ -178,24 +178,24 @@ export default function DashboardView() {
                 value={dateOfBirth}
                 onChange={(e) => setDateOfBirth(e.target.value)}
                 max={todayString}
-                className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors cursor-pointer"
+                className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out cursor-pointer"
                 required
               />
             </div>
 
             {/* Gender Selection */}
             <div className="space-y-1.5">
-              <span className="text-xs font-semibold text-text">
+              <span className="text-xs font-semibold text-gray-700">
                 Jenis Kelamin <span className="text-primary">*</span>
               </span>
               <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => setGender('L')}
-                  className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
+                  className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all duration-200 ease-in-out flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
                     gender === 'L'
                       ? 'border-accent bg-accent/5 text-accent'
-                      : 'border-border bg-bg-card text-text-secondary hover:bg-bg/40'
+                      : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50/50 hover:border-gray-300'
                   }`}
                 >
                   👦 Laki-laki
@@ -203,10 +203,10 @@ export default function DashboardView() {
                 <button
                   type="button"
                   onClick={() => setGender('P')}
-                  className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
+                  className={`flex-1 h-11 rounded-input border text-sm font-semibold transition-all duration-200 ease-in-out flex items-center justify-center gap-2 cursor-pointer focus:outline-none ${
                     gender === 'P'
                       ? 'border-primary bg-primary/5 text-primary'
-                      : 'border-border bg-bg-card text-text-secondary hover:bg-bg/40'
+                      : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50/50 hover:border-gray-300'
                   }`}
                 >
                   👧 Perempuan
@@ -217,7 +217,7 @@ export default function DashboardView() {
             {/* Birth Weight & Height Grid */}
             <div className="grid grid-cols-2 gap-3.5">
               <div className="space-y-1.5">
-                <label htmlFor="weight" className="text-xs font-semibold text-text">
+                <label htmlFor="weight" className="text-xs font-semibold text-gray-700">
                   Berat Lahir (kg) <span className="text-primary">*</span>
                 </label>
                 <input
@@ -229,12 +229,12 @@ export default function DashboardView() {
                   value={birthWeight}
                   onChange={(e) => setBirthWeight(e.target.value)}
                   placeholder="Misal: 3.2"
-                  className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                  className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
                   required
                 />
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="height" className="text-xs font-semibold text-text">
+                <label htmlFor="height" className="text-xs font-semibold text-gray-700">
                   Tinggi Lahir (cm) <span className="text-primary">*</span>
                 </label>
                 <input
@@ -246,7 +246,7 @@ export default function DashboardView() {
                   value={birthHeight}
                   onChange={(e) => setBirthHeight(e.target.value)}
                   placeholder="Misal: 49"
-                  className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors"
+                  className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
                   required
                 />
               </div>
@@ -254,14 +254,14 @@ export default function DashboardView() {
 
             {/* Blood Type (Optional) */}
             <div className="space-y-1.5">
-              <label htmlFor="blood-type" className="text-xs font-semibold text-text">
+              <label htmlFor="blood-type" className="text-xs font-semibold text-gray-700">
                 Golongan Darah <span className="text-text-muted text-[10px] font-normal">(Opsional)</span>
               </label>
               <select
                 id="blood-type"
                 value={bloodType}
                 onChange={(e) => setBloodType(e.target.value)}
-                className="w-full h-11 px-4 border border-border rounded-input text-sm bg-bg-card focus:border-primary focus:outline-none transition-colors cursor-pointer"
+                className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out cursor-pointer"
               >
                 <option value="">Pilih golongan darah...</option>
                 <option value="A">A</option>
@@ -275,7 +275,7 @@ export default function DashboardView() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-[52px] mt-3 rounded-button bg-primary hover:bg-primary-dark active:scale-[0.98] text-white font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-primary/10"
+              className="w-full h-[52px] mt-3 rounded-button bg-primary hover:bg-primary-dark active:scale-[0.98] text-white font-bold text-sm transition-all duration-200 ease-in-out flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-primary/10"
             >
               {isSubmitting ? 'Mendaftarkan...' : 'Daftarkan Profil Si Kecil 🧡'}
             </button>
@@ -320,7 +320,7 @@ export default function DashboardView() {
 
       {/* Core Active Child Profile Card - matching the empty state's clean design system */}
       {activeChild ? (
-        <div className="bg-white rounded-card border border-border/80 shadow-card p-6 space-y-6 hover:shadow-card-hover transition-all duration-300">
+        <div className="bg-white rounded-card border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-6 space-y-6 hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out">
           <div className="flex items-center gap-4">
             {/* Elegant and gender-responsive pastel profile avatar */}
             <div className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-extrabold font-[var(--font-heading)] border ${
@@ -332,10 +332,10 @@ export default function DashboardView() {
             </div>
             
             <div className="flex-1 min-w-0">
-              <h3 className="text-base font-extrabold font-[var(--font-heading)] text-text truncate">
+              <h3 className="text-base font-extrabold font-[var(--font-heading)] text-gray-900 truncate">
                 {activeChild.name}
               </h3>
-              <p className="text-xs text-text-secondary mt-0.5">
+              <p className="text-xs text-gray-500 mt-0.5">
                 Lahir pada {formatDate(activeChild.dateOfBirth)}
               </p>
             </div>
@@ -349,50 +349,50 @@ export default function DashboardView() {
             </span>
           </div>
 
-          <hr className="border-border/50" />
+          <hr className="border-gray-100/80" />
 
           {/* Child Birth Parameters Grid */}
           <div className="grid grid-cols-3 gap-3.5 text-center">
-            <div className="bg-bg rounded-xl p-3 border border-border/20">
-              <p className="text-[10px] text-text-muted font-semibold uppercase tracking-wider">
+            <div className="bg-gray-50/40 rounded-xl p-3 border border-gray-100">
+              <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">
                 Berat Lahir
               </p>
-              <p className="text-sm font-extrabold text-text font-[var(--font-heading)] mt-1">
-                {activeChild.birthWeightKg} <span className="text-[11px] font-semibold text-text-secondary">kg</span>
+              <p className="text-sm font-extrabold text-gray-900 font-[var(--font-heading)] mt-1">
+                {activeChild.birthWeightKg} <span className="text-[11px] font-semibold text-gray-500">kg</span>
               </p>
             </div>
-            <div className="bg-bg rounded-xl p-3 border border-border/20">
-              <p className="text-[10px] text-text-muted font-semibold uppercase tracking-wider">
+            <div className="bg-gray-50/40 rounded-xl p-3 border border-gray-100">
+              <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">
                 Tinggi Lahir
               </p>
-              <p className="text-sm font-extrabold text-text font-[var(--font-heading)] mt-1">
-                {activeChild.birthHeightCm} <span className="text-[11px] font-semibold text-text-secondary">cm</span>
+              <p className="text-sm font-extrabold text-gray-900 font-[var(--font-heading)] mt-1">
+                {activeChild.birthHeightCm} <span className="text-[11px] font-semibold text-gray-500">cm</span>
               </p>
             </div>
-            <div className="bg-bg rounded-xl p-3 border border-border/20">
-              <p className="text-[10px] text-text-muted font-semibold uppercase tracking-wider">
+            <div className="bg-gray-50/40 rounded-xl p-3 border border-gray-100">
+              <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">
                 Gol. Darah
               </p>
-              <p className="text-sm font-extrabold text-text font-[var(--font-heading)] mt-1">
+              <p className="text-sm font-extrabold text-gray-900 font-[var(--font-heading)] mt-1">
                 {activeChild.bloodType || '-'}
               </p>
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-card border border-border/80 shadow-card p-6 text-center text-text-secondary text-sm">
+        <div className="bg-white rounded-card border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-6 text-center text-gray-500 text-sm">
           Menyiapkan data profil anak... 🧡
         </div>
       )}
 
       {/* Offline and Local Storage Security Assurance */}
-      <div className="flex items-start gap-3.5 p-5 bg-accent/5 border border-accent/10 rounded-card">
+      <div className="flex items-start gap-3.5 p-5 bg-accent/[0.03] border border-accent/10 rounded-card">
         <span className="text-xl leading-none pt-0.5">🔒</span>
         <div className="space-y-1">
           <h4 className="text-xs font-bold text-accent font-[var(--font-heading)]">
             Jaminan Keamanan Data Offline-First
           </h4>
-          <p className="text-[11px] text-text-secondary leading-relaxed">
+          <p className="text-[11px] text-gray-500 leading-relaxed">
             Seluruh data tubuh kembang, riwayat imunisasi, dan menu MPASI anak disimpan secara lokal di HP Bunda. Tidak ada data yang dikirim ke server luar.
           </p>
         </div>

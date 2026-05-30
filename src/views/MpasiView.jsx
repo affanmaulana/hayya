@@ -181,7 +181,7 @@ export default function MpasiView() {
     <div className="space-y-6 font-[var(--font-body)] px-1 py-4 animate-fade-in pb-10">
       
       {/* HEADER SECTION - Child Profile Summary */}
-      <div className="bg-white rounded-card border border-border/80 p-5 shadow-card flex items-center gap-4">
+      <div className="bg-white rounded-card border border-gray-100 p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out flex items-center gap-4">
         <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold border ${
           activeChild.gender === 'L'
             ? 'bg-accent/10 border-accent/15 text-accent'
@@ -190,21 +190,21 @@ export default function MpasiView() {
           {activeChild.name ? activeChild.name.charAt(0).toUpperCase() : '👶'}
         </div>
         <div>
-          <h2 className="text-base font-extrabold font-[var(--font-heading)] text-text leading-tight">
+          <h2 className="text-base font-extrabold font-[var(--font-heading)] text-gray-900 leading-tight">
             Menu MPASI {activeChild.name}
           </h2>
-          <p className="text-xs text-text-secondary mt-0.5">
+          <p className="text-xs text-gray-500 mt-0.5">
             Lahir: {formatDate(activeChild.dateOfBirth)} • <span className="font-semibold text-primary">Usia {childAgeMonths} Bulan {childAgeDays} Hari</span>
           </p>
         </div>
       </div>
 
       {/* DAILY MEAL PLANNER TEMPLATE CARD */}
-      <div className="bg-white rounded-card border border-border/80 p-5 shadow-card space-y-4">
-        <div className="border-b border-border/50 pb-3 flex justify-between items-center">
+      <div className="bg-white rounded-card border border-gray-100 p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out space-y-4">
+        <div className="border-b border-gray-100 pb-3 flex justify-between items-center">
           <div className="space-y-0.5">
             <span className="text-[10px] text-primary font-bold uppercase tracking-wider font-[var(--font-heading)]">Rekomendasi Tahapan</span>
-            <h3 className="text-sm font-extrabold font-[var(--font-heading)] text-text">
+            <h3 className="text-sm font-extrabold font-[var(--font-heading)] text-gray-900">
               {clinicalGuide.stage}
             </h3>
           </div>
@@ -215,7 +215,7 @@ export default function MpasiView() {
           /* ASI Eksklusif Phase under 6 Months */
           <div className="p-4 bg-primary/[0.02] border border-primary/15 rounded-xl space-y-2">
             <p className="text-xs text-primary font-bold">Bunda, Si Kecil belum waktunya MPASI 🧡</p>
-            <p className="text-xs text-text-secondary leading-relaxed">
+            <p className="text-xs text-gray-500 leading-relaxed">
               Berdasarkan anjuran medis IDAI dan Kementerian Kesehatan, bayi di bawah 6 bulan disarankan mendapatkan **ASI Eksklusif** saja demi menjaga kesehatan pencernaannya. Bunda bisa mulai menyusun rencana MPASI setelah si kecil genap 6 bulan.
             </p>
           </div>
@@ -225,21 +225,21 @@ export default function MpasiView() {
             
             {/* Texture and Portion specs */}
             <div className="grid grid-cols-2 gap-3 text-xs pt-1">
-              <div className="bg-bg rounded-xl p-3 border border-border/30">
-                <span className="text-[9px] text-text-muted font-bold uppercase tracking-wider">Tekstur Anjuran</span>
-                <p className="text-text font-bold mt-1 leading-tight">{clinicalGuide.texture}</p>
+              <div className="bg-gray-50/40 rounded-xl p-3 border border-gray-100">
+                <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Tekstur Anjuran</span>
+                <p className="text-gray-900 font-bold mt-1 leading-tight">{clinicalGuide.texture}</p>
               </div>
-              <div className="bg-bg rounded-xl p-3 border border-border/30">
-                <span className="text-[9px] text-text-muted font-bold uppercase tracking-wider">Frekuensi & Porsi</span>
-                <p className="text-text font-bold mt-1 leading-tight">{clinicalGuide.frequency}</p>
+              <div className="bg-gray-50/40 rounded-xl p-3 border border-gray-100">
+                <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Frekuensi & Porsi</span>
+                <p className="text-gray-900 font-bold mt-1 leading-tight">{clinicalGuide.frequency}</p>
               </div>
             </div>
 
-            <hr className="border-border/40" />
+            <hr className="border-gray-100/80" />
 
             {/* Daily Planner Meal Slots */}
             <div className="space-y-3">
-              <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Jadwal Makan Harian</span>
+              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Jadwal Makan Harian</span>
               
               <div className="space-y-2.5">
                 {[
@@ -248,16 +248,16 @@ export default function MpasiView() {
                   { slot: 'Makan Siang ☀️', time: '12.00 - 13.00', texture: clinicalGuide.texture },
                   { slot: 'Makan Malam 🌙', time: '18.00 - 19.00', texture: clinicalGuide.texture }
                 ].map((item, idx) => (
-                  <div key={`slot-${idx}`} className="flex items-center gap-3 p-3 bg-bg border border-border/30 rounded-xl">
-                    <div className="shrink-0 w-8 h-8 rounded-full bg-secondary/15 flex items-center justify-center text-xs">
+                  <div key={`slot-${idx}`} className="flex items-center gap-3 p-3 bg-gray-50/20 border border-gray-100 rounded-xl hover:bg-gray-50/50 transition-all duration-200 ease-in-out">
+                    <div className="shrink-0 w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-xs font-bold text-secondary">
                       {idx + 1}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-center gap-1.5">
-                        <span className="text-xs font-bold text-text whitespace-normal break-words">{item.slot}</span>
-                        <span className="text-[10px] text-text-muted font-semibold shrink-0">{item.time}</span>
+                        <span className="text-xs font-bold text-gray-900 whitespace-normal break-words">{item.slot}</span>
+                        <span className="text-[10px] text-gray-400 font-semibold shrink-0">{item.time}</span>
                       </div>
-                      <p className="text-[11px] text-text-secondary mt-0.5 whitespace-normal break-words">{item.texture}</p>
+                      <p className="text-[11px] text-gray-500 mt-0.5 whitespace-normal break-words leading-relaxed">{item.texture}</p>
                     </div>
                   </div>
                 ))}
@@ -318,7 +318,7 @@ export default function MpasiView() {
 
         {/* RECIPES LIST GRID */}
         {filteredRecipes.length === 0 ? (
-          <div className="p-8 bg-white border border-border rounded-card text-center text-xs text-text-muted">
+          <div className="p-8 bg-white border border-gray-100 rounded-card text-center text-xs text-gray-400 shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
             {activeFilter === 'bookmarked' 
               ? 'Buku resep Bunda masih kosong. Simpan resep pilihan Bunda dengan menekan ikon hati pada kartu resep!' 
               : 'Tidak ada resep yang ditemukan untuk kategori ini.'}
@@ -331,7 +331,7 @@ export default function MpasiView() {
               return (
                 <div
                   key={recipe.id}
-                  className="bg-white rounded-card border border-border/85 hover:border-border hover:shadow-card transition-all duration-300 overflow-hidden"
+                  className="bg-white rounded-card border border-gray-100 hover:border-gray-200 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out overflow-hidden"
                 >
                   {/* Recipe Header Card */}
                   <div
