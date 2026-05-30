@@ -6,13 +6,15 @@ import { calculateAgeInMonthsAndDays, formatDate } from '../utils/dateHelpers';
 
 export default function ImmunizationView() {
   const navigate = useNavigate();
-  const { activeChild } = useChild();
+  const { activeChild, loading } = useChild();
+
+  if (!activeChild) return null;
   
   // Consume hook with reactive activeChild ID
   const { 
     calendar, 
     progress, 
-    loading, 
+    loading: immunizationLoading, 
     error, 
     updateImmunizationRecord 
   } = useImmunization(activeChild?.id);
@@ -194,30 +196,7 @@ export default function ImmunizationView() {
     }));
   };
 
-  // ----- RENDER EMPTY STATE (No Active Child) -----
-  if (!activeChild) {
-    return (
-      <div className="flex flex-col items-center justify-center text-center py-12 px-4 space-y-5 font-[var(--font-body)]">
-        <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center text-3xl shadow-sm border border-primary/10">
-          💉
-        </div>
-        <div className="space-y-2">
-          <h2 className="text-lg font-bold font-[var(--font-heading)] text-text">
-            Bunda Belum Memilih Profil Si Kecil
-          </h2>
-          <p className="text-sm text-text-secondary max-w-[280px] leading-relaxed mx-auto">
-            Yuk, daftarkan atau pilih profil si kecil terlebih dahulu di Beranda untuk memantau jadwal imunisasinya. 🧡
-          </p>
-        </div>
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="h-11 px-6 rounded-button bg-primary hover:bg-primary-dark text-white text-sm font-semibold transition-colors shadow-md shadow-primary/10 cursor-pointer"
-        >
-          Ke Beranda
-        </button>
-      </div>
-    );
-  }
+
 
   return (
     <div className="space-y-6 font-[var(--font-body)] px-1 py-4 animate-fade-in relative pb-10">
@@ -271,7 +250,7 @@ export default function ImmunizationView() {
           </h3>
         </div>
 
-        {loading ? (
+        {immunizationLoading ? (
           <div className="py-6 text-center text-sm text-text-secondary">Memuat data jadwal imunisasi...</div>
         ) : error ? (
           <div className="p-3 bg-danger/5 border border-danger/10 text-danger text-xs rounded-input">{error}</div>

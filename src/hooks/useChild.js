@@ -155,6 +155,7 @@ export function useChild() {
     activeChildId,
     setActiveChildId,
     activeChild: context ? context.activeChild : null,
-    childrenList: context ? context.childrenList : []
+    childrenList: context ? context.childrenList : [],
+    loading: context ? context.loading : false
   };
 }

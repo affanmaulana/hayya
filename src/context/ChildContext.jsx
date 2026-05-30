@@ -7,6 +7,7 @@ export const ChildProvider = ({ children }) => {
   const [childrenList, setChildrenList] = useState([]);
   const [activeChildId, setActiveChildIdState] = useState('');
   const [activeChild, setActiveChild] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Helper to get logged-in user ID
   const getLoggedInUserId = useCallback(() => {
@@ -107,6 +108,7 @@ export const ChildProvider = ({ children }) => {
   // Initialize on mount
   useEffect(() => {
     refreshChildren();
+    setLoading(false);
   }, [refreshChildren]);
 
   // Synchronize across multiple tabs or when login status changes in localStorage
@@ -127,13 +129,18 @@ export const ChildProvider = ({ children }) => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [refreshChildren]);
 
+  if (loading) {
+    return <div className="p-8 text-center text-sm font-medium">Loading Hayya App Data...</div>;
+  }
+
   return (
     <ChildContext.Provider value={{
       childrenList,
       activeChildId,
       activeChild,
       setActiveChildId,
-      refreshChildren
+      refreshChildren,
+      loading
     }}>
       {children}
     </ChildContext.Provider>

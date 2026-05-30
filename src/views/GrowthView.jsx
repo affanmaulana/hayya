@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGrowth } from '../hooks/useGrowth';
 import { useChild } from '../hooks/useChild';
 import { formatDate } from '../utils/dateHelpers';
 
 export default function GrowthView() {
-  const { activeChild } = useChild();
+  const navigate = useNavigate();
+  const { activeChild, isLoading } = useChild();
   const { getGrowthRecords, addGrowthRecord } = useGrowth();
 
   const [weightKg, setWeightKg] = useState('');
@@ -14,6 +16,41 @@ export default function GrowthView() {
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  // ----- RENDER LOADING STATE -----
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 px-4 space-y-4 font-[var(--font-body)]">
+        <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+        <p className="text-sm text-text-secondary font-medium">Memuat data si kecil...</p>
+      </div>
+    );
+  }
+
+  // ----- RENDER EMPTY STATE (No Active Child) -----
+  if (!activeChild) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center py-12 px-4 space-y-5 font-[var(--font-body)]">
+        <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center text-3xl shadow-sm border border-primary/10">
+          📈
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-lg font-bold font-[var(--font-heading)] text-text">
+            Bunda Belum Memilih Profil Si Kecil
+          </h2>
+          <p className="text-sm text-text-secondary max-w-[280px] leading-relaxed mx-auto">
+            Yuk, daftarkan atau pilih profil si kecil terlebih dahulu di Beranda untuk mencatat data pertumbuhannya. 🧡
+          </p>
+        </div>
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="h-11 px-6 rounded-button bg-primary hover:bg-primary-dark text-white text-sm font-semibold transition-colors shadow-md shadow-primary/10 cursor-pointer"
+        >
+          Ke Beranda
+        </button>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e) => {
     // existing submit logic

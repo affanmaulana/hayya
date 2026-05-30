@@ -7,8 +7,10 @@ import { calculateAgeInMonthsAndDays, formatDate } from '../utils/dateHelpers';
 
 export default function MpasiView() {
   const navigate = useNavigate();
-  const { activeChild } = useChild();
+  const { activeChild, loading } = useChild();
   const { currentUser } = useAuth();
+  
+  if (!activeChild) return null;
   
   // Consume MPASI hooks & contexts
   const { 
@@ -173,30 +175,7 @@ export default function MpasiView() {
     }
   };
 
-  // ----- RENDER EMPTY STATE (No Active Child) -----
-  if (!activeChild) {
-    return (
-      <div className="flex flex-col items-center justify-center text-center py-12 px-4 space-y-5 font-[var(--font-body)]">
-        <div className="w-20 h-20 bg-secondary/5 rounded-full flex items-center justify-center text-3xl shadow-sm border border-secondary/10">
-          🥣
-        </div>
-        <div className="space-y-2">
-          <h2 className="text-lg font-bold font-[var(--font-heading)] text-text">
-            Bunda Belum Memilih Profil Si Kecil
-          </h2>
-          <p className="text-sm text-text-secondary max-w-[280px] leading-relaxed mx-auto">
-            Yuk, daftarkan atau pilih profil si kecil terlebih dahulu di Beranda untuk memantau menu & panduan MPASI. 🧡
-          </p>
-        </div>
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="h-11 px-6 rounded-button bg-primary hover:bg-primary-dark text-white text-sm font-semibold transition-colors shadow-md shadow-primary/10 cursor-pointer"
-        >
-          Ke Beranda
-        </button>
-      </div>
-    );
-  }
+
 
   return (
     <div className="space-y-6 font-[var(--font-body)] px-1 py-4 animate-fade-in pb-10">

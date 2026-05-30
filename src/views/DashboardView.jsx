@@ -5,7 +5,7 @@ import { calculateAgeInMonthsAndDays, formatDate } from '../utils/dateHelpers';
 
 export default function DashboardView() {
   const { currentUser } = useAuth();
-  const { activeChild, childrenList, addChild } = useChild();
+  const { activeChild, childrenList, addChild, isLoading } = useChild();
 
   // Local states for child form
   const [name, setName] = useState('');
@@ -89,6 +89,16 @@ export default function DashboardView() {
       setIsSubmitting(false);
     }
   };
+
+  // ----- RENDER LOADING STATE -----
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 px-4 space-y-4 font-[var(--font-body)]">
+        <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+        <p className="text-sm text-text-secondary font-medium">Memuat data si kecil...</p>
+      </div>
+    );
+  }
 
   // ----- RENDER EMPTY STATE (No Children Registered) -----
   if (childrenList.length === 0) {
