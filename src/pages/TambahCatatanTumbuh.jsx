@@ -24,6 +24,11 @@ export default function TambahCatatanTumbuh() {
   const [errorMsg, setErrorMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleBack = () => {
     setIsLeaving(true);
@@ -151,7 +156,15 @@ export default function TambahCatatanTumbuh() {
   }
 
   return (
-    <div className={`space-y-6 font-[var(--font-body)] ${isLeaving ? 'animate-slide-out-right-fade' : 'animate-slide-in-right-fade'}`}>
+    <div
+      className="space-y-6 font-[var(--font-body)] transition-all ease-out"
+      style={{
+        opacity: isLeaving ? 0.3 : (mounted ? 1 : 0),
+        transform: isLeaving ? 'translateX(48px)' : (mounted ? 'translateX(0)' : 'translateX(32px)'),
+        transitionDuration: isLeaving ? '220ms' : '400ms',
+        transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
+      }}
+    >
       {/* Sovereign iOS centered Action Bar header rendered directly inside the page to participate in slide animations */}
       <div className="-mx-4 px-4 h-16 flex items-center justify-between relative border-b border-gray-100 bg-white/40 backdrop-blur-sm mb-2 shrink-0">
         <button

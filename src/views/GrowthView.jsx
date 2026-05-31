@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGrowth } from '../hooks/useGrowth';
 import { useChild } from '../hooks/useChild';
 import { formatDate } from '../utils/dateHelpers';
+import growthStandards from '../data/growthStandards.json';
 
 export default function GrowthView() {
   const navigate = useNavigate();
@@ -14,59 +15,46 @@ export default function GrowthView() {
 
   const records = activeChild ? getGrowthRecords(activeChild.id) : [];
 
-  // WHO Growth Standard approximation for range [z-score -2, z-score +2]
+  // WHO Growth Standard interpolation for z-score [-2, +2] from JSON
   const getIdealRangeForMetric = (metric, ageInMonths) => {
-    const months = Math.max(0, Math.min(60, ageInMonths));
-    let idealMin = 0;
-    let idealMax = 0;
+    if (!activeChild) return { idealMin: 0, idealMax: 0 };
+    const gender = activeChild.gender === 'P' ? 'P' : 'L';
+    const metricKey = metric === 'lingkarKepala' ? 'headCirc' : metric; // 'weight', 'height', 'headCirc', 'lila'
+    const table = growthStandards[gender][metricKey];
 
-    if (metric === 'berat') {
-      if (months <= 12) {
-        idealMin = 2.5 + months * 0.41;
-        idealMax = 4.5 + months * 0.58;
-      } else if (months <= 24) {
-        idealMin = 7.5 + (months - 12) * 0.2;
-        idealMax = 11.5 + (months - 12) * 0.29;
-      } else {
-        idealMin = 10 + (months - 24) * 0.16;
-        idealMax = 15 + (months - 24) * 0.22;
-      }
-    } else if (metric === 'lingkarKepala') {
-      if (months <= 12) {
-        idealMin = 32 + months * 0.91;
-        idealMax = 37 + months * 0.91;
-      } else if (months <= 24) {
-        idealMin = 43 + (months - 12) * 0.25;
-        idealMax = 48 + (months - 12) * 0.25;
-      } else {
-        idealMin = 46 + (months - 24) * 0.08;
-        idealMax = 51 + (months - 24) * 0.08;
-      }
-    } else if (metric === 'lila') {
-      if (months <= 12) {
-        idealMin = 9.0 + months * 0.21;
-        idealMax = 11.0 + months * 0.29;
-      } else if (months <= 24) {
-        idealMin = 11.5 + (months - 12) * 0.08;
-        idealMax = 14.5 + (months - 12) * 0.08;
-      } else {
-        idealMin = 12.5 + (months - 24) * 0.04;
-        idealMax = 15.5 + (months - 24) * 0.04;
-      }
-    } else {
-      // Default: 'tinggi'
-      if (months <= 12) {
-        idealMin = 45 + months * 2.08;
-        idealMax = 55 + months * 2.08;
-      } else if (months <= 24) {
-        idealMin = 70 + (months - 12) * 0.83;
-        idealMax = 80 + (months - 12) * 1.16;
-      } else {
-        idealMin = 80 + (months - 24) * 0.55;
-        idealMax = 94 + (months - 24) * 0.77;
+    if (!table || table.length === 0) {
+      return { idealMin: 0, idealMax: 0 };
+    }
+
+    const getValues = (item) => {
+      return {
+        idealMin: item["-2SD"],
+        idealMax: item["+2SD"]
+      };
+    };
+
+    if (ageInMonths <= table[0].age) {
+      return getValues(table[0]);
+    }
+    const lastIndex = table.length - 1;
+    if (ageInMonths >= table[lastIndex].age) {
+      return getValues(table[lastIndex]);
+    }
+
+    for (let i = 0; i < table.length - 1; i++) {
+      const current = table[i];
+      const next = table[i + 1];
+      if (ageInMonths >= current.age && ageInMonths <= next.age) {
+        const ratio = (ageInMonths - current.age) / (next.age - current.age);
+        const curVals = getValues(current);
+        const nextVals = getValues(next);
+        const idealMin = curVals.idealMin + ratio * (nextVals.idealMin - curVals.idealMin);
+        const idealMax = curVals.idealMax + ratio * (nextVals.idealMax - curVals.idealMax);
+        return { idealMin, idealMax };
       }
     }
-    return { idealMin, idealMax };
+
+    return getValues(table[0]);
   };
 
   // Evaluate the latest record for status assessment
@@ -148,8 +136,16 @@ export default function GrowthView() {
     return { ageInMonths, val };
   });
 
-  const minAge = 0;
-  const maxAge = Math.max(24, ...chartData.map(d => d.ageInMonths));
+  const recordedAges = chartData.filter(d => d.val !== null).map(d => d.ageInMonths);
+  let minAge = 0;
+  let maxAge = 24;
+
+  if (recordedAges.length > 0) {
+    const minRec = Math.min(...recordedAges);
+    const maxRec = Math.max(...recordedAges);
+    minAge = Math.max(0, minRec - 1);
+    maxAge = maxRec + 1;
+  }
 
   // Y-Axis flexible auto domain scaling including both actual data AND ideal ranges to prevent clipping/flying lines
   const allYValues = [];
@@ -160,7 +156,7 @@ export default function GrowthView() {
   });
 
   // Sample WHO ideal limits across the age range to guarantee they are fully bounded
-  for (let age = 0; age <= maxAge; age += Math.max(1, maxAge / 5)) {
+  for (let age = minAge; age <= maxAge; age += Math.max(1, (maxAge - minAge) / 5)) {
     const { idealMin, idealMax } = getIdealRangeForMetric(activeMetric, age);
     allYValues.push(idealMin, idealMax);
   }
