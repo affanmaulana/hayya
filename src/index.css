@@ -206,8 +206,6 @@ input[type="date"] {
   position: relative;
   font-family: var(--font-body) !important;
   color: var(--color-text) !important;
-  appearance: none !important;
-  -webkit-appearance: none !important;
 }
 
 /* Beautiful custom calendar indicator icon colored in primary pink (#C2185B) */
