@@ -38,7 +38,6 @@ export default function AppLayout() {
     '/dashboard/profil/anak': 'Kelola Data Anak',
     '/dashboard/profil/edukasi': 'Edukasi & Artikel',
     '/dashboard/profil/cek-gejala': 'Cek Gejala',
-    '/dashboard/growth/tambah': 'Tambah Catatan Tumbuh',
   };
 
   const activeSubPageTitle = subPageTitles[location.pathname];
