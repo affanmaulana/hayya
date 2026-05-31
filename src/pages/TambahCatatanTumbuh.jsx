@@ -29,7 +29,7 @@ export default function TambahCatatanTumbuh() {
     setIsLeaving(true);
     setTimeout(() => {
       navigate('/dashboard/growth');
-    }, 350);
+    }, 220);
   };
 
   useEffect(() => {
