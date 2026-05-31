@@ -23,6 +23,20 @@ export default function TambahCatatanTumbuh() {
   const [notes, setNotes] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLeaving, setIsLeaving] = useState(false);
+
+  const handleBack = () => {
+    setIsLeaving(true);
+    setTimeout(() => {
+      navigate('/dashboard/growth');
+    }, 350);
+  };
+
+  useEffect(() => {
+    const onAnimateOut = () => handleBack();
+    window.addEventListener('animate-out-tambah', onAnimateOut);
+    return () => window.removeEventListener('animate-out-tambah', onAnimateOut);
+  }, [activeChild, navigate]);
 
   // Load existing record details if editing
   useEffect(() => {
@@ -104,8 +118,8 @@ export default function TambahCatatanTumbuh() {
 
       await addGrowthRecord(activeChild.id, recordData);
       
-      // Go back to growth timeline
-      navigate('/dashboard/growth');
+      // Go back to growth timeline with exit animation
+      handleBack();
     } catch (err) {
       setErrorMsg(err.message || 'Gagal menyimpan catatan pertumbuhan.');
     } finally {
@@ -119,7 +133,7 @@ export default function TambahCatatanTumbuh() {
     setIsSubmitting(true);
     try {
       await deleteGrowthRecord(editId);
-      navigate('/dashboard/growth');
+      handleBack();
     } catch (err) {
       setErrorMsg(err.message || 'Gagal menghapus catatan.');
     } finally {
@@ -137,7 +151,7 @@ export default function TambahCatatanTumbuh() {
   }
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] animate-slide-up-fade">
+    <div className={`space-y-6 font-[var(--font-body)] ${isLeaving ? 'animate-slide-down-fade' : 'animate-slide-up-fade'}`}>
       {/* Form Fields sit directly on background */}
       <div className="space-y-6">
         <div className="border-b border-gray-200/60 pb-4">
@@ -251,7 +265,7 @@ export default function TambahCatatanTumbuh() {
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={() => navigate('/dashboard/growth')}
+                onClick={handleBack}
                 className="flex-1 h-[52px] border border-gray-200 rounded-button text-sm font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-50/50 hover:border-gray-300 cursor-pointer transition-all duration-200 ease-in-out active:scale-[0.98] focus:outline-none"
               >
                 Batal

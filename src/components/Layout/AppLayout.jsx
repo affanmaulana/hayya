@@ -95,7 +95,7 @@ export default function AppLayout() {
               <button
                 onClick={() => {
                   if (location.pathname === '/dashboard/growth/tambah') {
-                    navigate('/dashboard/growth');
+                    window.dispatchEvent(new CustomEvent('animate-out-tambah'));
                   } else {
                     navigate('/dashboard/profil');
                   }

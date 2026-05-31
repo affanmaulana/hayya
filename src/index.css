@@ -248,4 +248,20 @@ input[type="date"]:focus::-webkit-calendar-picker-indicator {
   animation: slide-up-fade 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Premium Apple-style slide-down-fade animation for leaving standalone sub-pages */
+@keyframes slide-down-fade {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+.animate-slide-down-fade {
+  animation: slide-down-fade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 
