@@ -707,17 +707,17 @@ export default function GrowthView() {
         +
       </button>
 
-      {/* Backdrop overlay - z-30 to stay in front of main content and behind modal */}
+      {/* Backdrop overlay - z-40 to stay in front of main content and behind modal */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-30 transition-opacity duration-300"
+          className="fixed inset-0 bg-black/40 z-40 transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      {/* STRICT iOS-Style Bottom Sheet Modal - max-h-[85vh], flex flex-col, z-40 */}
+      {/* STRICT iOS-Style Bottom Sheet Modal - max-h-[85vh], flex flex-col, z-50 */}
       <div
-        className="fixed bottom-0 left-1/2 w-full max-w-[448px] max-h-[85vh] bg-white rounded-t-[32px] p-6 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] z-40 flex flex-col transition-transform duration-300 ease-in-out"
+        className="fixed bottom-0 left-1/2 w-full max-w-[448px] max-h-[85vh] bg-white rounded-t-[32px] p-6 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] z-50 flex flex-col transition-transform duration-300 ease-in-out"
         style={{ transform: isOpen ? 'translate(-50%, 0)' : 'translate(-50%, 100%)' }}
       >
         {/* Top Accent Bar */}
@@ -740,7 +740,7 @@ export default function GrowthView() {
         {/* Clean Input Fields Form with isolated scroll wrapper and static bottom actions */}
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
           {/* Isolated Scrollable Body Container */}
-          <div className="w-full flex-1 overflow-y-auto pr-1 my-3 scrollbar-none pb-24">
+          <div className="w-full flex-1 overflow-y-auto pr-1 my-3 scrollbar-none pb-28">
             <div className="space-y-1">
               <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="weightKg">Berat (kg) *</label>
               <input
@@ -753,7 +753,7 @@ export default function GrowthView() {
                 value={weightKg}
                 onChange={(e) => setWeightKg(e.target.value)}
                 required
-                className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 overflow-hidden transition-all mb-4"
               />
             </div>
             <div className="space-y-1">
@@ -768,7 +768,7 @@ export default function GrowthView() {
                 value={heightCm}
                 onChange={(e) => setHeightCm(e.target.value)}
                 required
-                className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 overflow-hidden transition-all mb-4"
               />
             </div>
             <div className="space-y-1">
@@ -782,7 +782,7 @@ export default function GrowthView() {
                 placeholder="0.0"
                 value={headCircCm}
                 onChange={(e) => setHeadCircCm(e.target.value)}
-                className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 overflow-hidden transition-all mb-4"
               />
             </div>
             <div className="space-y-1">
@@ -794,7 +794,7 @@ export default function GrowthView() {
                 onChange={(e) => setMeasuredAt(e.target.value)}
                 max={new Date().toISOString().split('T')[0]}
                 required
-                className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4 cursor-pointer"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 overflow-hidden transition-all mb-4 cursor-pointer"
               />
             </div>
             <div className="space-y-1">
@@ -805,7 +805,7 @@ export default function GrowthView() {
                 placeholder="Tambahkan catatan di sini..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 overflow-hidden transition-all mb-4"
               />
             </div>
           </div>

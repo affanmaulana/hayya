@@ -49,7 +49,7 @@ export default function AppLayout() {
         
         {/* ===== MAIN HEADER ===== */}
         {isMainDashboard && (
-          <header className="sticky top-0 z-40 w-full">
+          <header className="sticky top-0 z-10 w-full">
             {/* Progressive Glass Blur background layer */}
             <div 
               className="absolute inset-0 bg-white/20 pointer-events-none -z-10"

@@ -109,7 +109,7 @@ export default function BottomNav() {
   return (
     <nav
       id="bottom-nav"
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] md:max-w-[480px] h-16 p-1 bg-white/70 backdrop-blur-md border border-white/50 shadow-[0_8px_24px_rgba(0,0,0,0.06)] rounded-full z-50 flex flex-row items-center justify-between"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] md:max-w-[480px] h-16 p-1 bg-white/70 backdrop-blur-md border border-white/50 shadow-[0_8px_24px_rgba(0,0,0,0.06)] rounded-full z-30 flex flex-row items-center justify-between"
       role="navigation"
       aria-label="Navigasi utama"
     >
