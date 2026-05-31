@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGrowth } from '../hooks/useGrowth';
 import { useChild } from '../hooks/useChild';
 import { formatDate } from '../utils/dateHelpers';
+import { calculateZScores } from '../utils/growthCalculations.js';
 import growthStandards from '../data/growthStandards.json';
 
 export default function GrowthView() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { activeChild, isLoading } = useChild();
   const { getGrowthRecords } = useGrowth();
 
-  const [activeSubTab, setActiveSubTab] = useState('ringkasan');
+  const tabParam = searchParams.get('tab');
+  const [activeSubTab, setActiveSubTab] = useState(tabParam === 'riwayat' ? 'riwayat' : 'grafik');
   const [activeMetric, setActiveMetric] = useState('tinggi'); // 'berat', 'tinggi', 'lingkarKepala', 'lila'
 
   const records = activeChild ? getGrowthRecords(activeChild.id) : [];
@@ -71,12 +74,12 @@ export default function GrowthView() {
     const measured = new Date(latestRecord.measuredAt);
     const ageInMonths = (measured.getFullYear() - birth.getFullYear()) * 12 + (measured.getMonth() - birth.getMonth());
     const { idealMin, idealMax } = getIdealRangeForMetric(activeMetric, ageInMonths);
-    
+
     // Dynamic value mapping based on active metric
     let currentVal = 0;
     let unit = "";
     let label = "";
-    
+
     if (activeMetric === 'berat') {
       currentVal = parseFloat(latestRecord.weightKg);
       unit = "kg";
@@ -120,7 +123,7 @@ export default function GrowthView() {
     const birth = new Date(activeChild.dateOfBirth);
     const measured = new Date(r.measuredAt);
     const ageInMonths = Math.max(0, (measured.getFullYear() - birth.getFullYear()) * 12 + (measured.getMonth() - birth.getMonth()));
-    
+
     // Dynamic value getter
     let val = 0;
     if (activeMetric === 'berat') {
@@ -195,7 +198,7 @@ export default function GrowthView() {
   const bottomLine = [...idealPoints].reverse().map(p => `${getX(p.age)},${getY(p.idealMin)}`).join(' ');
   const areaPath = `M ${getX(idealPoints[0].age)},${getY(idealPoints[0].idealMax)} L ${topLine} L ${bottomLine} Z`;
 
-  const trendLinePath = chartData.filter(d => d.val !== null).length > 0 
+  const trendLinePath = chartData.filter(d => d.val !== null).length > 0
     ? `M ${chartData.filter(d => d.val !== null).map(d => `${getX(d.ageInMonths)},${getY(d.val)}`).join(' L ')}`
     : '';
 
@@ -207,7 +210,7 @@ export default function GrowthView() {
     const diffTime = Math.abs(measured - birth);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     const ageInMonths = (measured.getFullYear() - birth.getFullYear()) * 12 + (measured.getMonth() - birth.getMonth());
-    
+
     if (diffDays < 30) {
       return `Usia ${diffDays} Hari`;
     } else {
@@ -239,12 +242,104 @@ export default function GrowthView() {
         }
       `}</style>
 
-      {/* Dynamic Header Title - REMOVED horizontal padding */}
-      <div className="mt-1 px-0">
-        <h2 className="text-xl font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">
-          Catatan Pertumbuhan {activeChild?.name}
-        </h2>
-      </div>
+
+      {/* Qualitative Growth Assessment Card */}
+      {(() => {
+        if (!activeChild) return null;
+        
+        let badgeText = 'Gizi & Tumbuh Ideal';
+        let hugeStatus = 'Ideal';
+        let desc = `Luar biasa, Bunda! Tinggi dan berat badan ${activeChild.name} saat ini tumbuh dengan sangat baik sesuai dengan standar kurva WHO.`;
+        // Use brand design tokens: Accent Teal gradient for Ideal
+        let cardBgStyle = { background: 'linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%)', boxShadow: 'inset 0 0 0 1.5px rgba(255,255,255,0.22), 0 2px 8px rgba(0,0,0,0.05)' };
+        let badgeBg = 'bg-white/20 text-white backdrop-blur-md border border-white/10';
+        let emoji = '✨';
+
+        if (records.length === 0) {
+          badgeText = 'Belum Ada Data';
+          hugeStatus = 'Mulai';
+          desc = `Ayo Bunda, catat tinggi dan berat badan ${activeChild.name} secara berkala untuk memantau tumbuh kembangnya secara presisi.`;
+          // Neutral slate gradient for empty state
+          cardBgStyle = { background: 'linear-gradient(135deg, #78909C 0%, #CFD8DC 100%)', boxShadow: 'inset 0 0 0 1.5px rgba(255,255,255,0.22), 0 2px 8px rgba(0,0,0,0.05)' };
+          badgeBg = 'bg-white/20 text-white backdrop-blur-md border border-white/10';
+          emoji = '📈';
+        } else if (latestRecord && activeChild.dateOfBirth) {
+          const birth = new Date(activeChild.dateOfBirth);
+          const measured = new Date(latestRecord.measuredAt);
+          const ageInMonths = (measured.getFullYear() - birth.getFullYear()) * 12 + (measured.getMonth() - birth.getMonth());
+          
+          const zScores = calculateZScores(
+            activeChild.gender,
+            ageInMonths,
+            parseFloat(latestRecord.weightKg),
+            parseFloat(latestRecord.heightCm),
+            latestRecord.headCircCm ? parseFloat(latestRecord.headCircCm) : null
+          );
+
+          const bbStatus = zScores.weightForAge.status;
+          const tbStatus = zScores.heightForAge.status;
+
+          const isKurang = ['Gizi Buruk', 'Gizi Kurang', 'Sangat Pendek (Severely Stunted)', 'Pendek (Stunted)'].includes(bbStatus) || 
+                           ['Sangat Pendek (Severely Stunted)', 'Pendek (Stunted)'].includes(tbStatus);
+          const isLebih = ['Risiko Gizi Lebih'].includes(bbStatus) || ['Tinggi'].includes(tbStatus);
+
+          if (isKurang) {
+            badgeText = 'Butuh Perhatian Khusus';
+            hugeStatus = 'Kurang';
+            desc = `Tinggi atau berat badan ${activeChild.name} berada di bawah kurva normal seusianya. Tetap pantau asupan nutrisi dan konsultasikan ke dokter ya, Bun.`;
+            // Warning brand colors: Gold-orange gradient
+            cardBgStyle = { background: 'linear-gradient(135deg, var(--color-warning) 0%, #FFB74D 100%)', boxShadow: 'inset 0 0 0 1.5px rgba(255,255,255,0.22), 0 2px 8px rgba(0,0,0,0.05)' };
+            badgeBg = 'bg-white/20 text-white backdrop-blur-md border border-white/10';
+            emoji = '🧡';
+          } else if (isLebih) {
+            badgeText = 'Perkembangan Sangat Pesat';
+            hugeStatus = 'Pesat';
+            desc = `Tinggi atau berat badan ${activeChild.name} berada di atas kurva rata-rata. Jaga pola makan seimbang dan tetap stimulasi keaktifan si kecil ya, Bunda.`;
+            // Primary/Secondary brand colors: Premium pink gradient
+            cardBgStyle = { background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%)', boxShadow: 'inset 0 0 0 1.5px rgba(255,255,255,0.22), 0 2px 8px rgba(0,0,0,0.05)' };
+            badgeBg = 'bg-white/20 text-white backdrop-blur-md border border-white/10';
+            emoji = '💙';
+          }
+        }
+
+        return (
+          <div 
+            style={cardBgStyle}
+            className="p-6 md:p-8 rounded-[36px] transition-all duration-300 relative overflow-hidden flex flex-col justify-between min-h-[360px] md:min-h-[290px] mb-8"
+          >
+            {/* Ambient visual background glow details */}
+            <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute left-10 bottom-0 w-32 h-32 bg-black/10 rounded-full blur-2xl pointer-events-none" />
+            
+            {/* Top row: Status Badge */}
+            <div className="flex items-center justify-between z-10 relative">
+              <span className={`text-[9px] uppercase tracking-widest font-black px-3 py-1 rounded-full ${badgeBg}`}>
+                {badgeText} {emoji}
+              </span>
+            </div>
+            
+            {/* Center: Huge prominent qualitative status text - strictly white/light contrasting colors */}
+            <div className="my-5 z-10 relative flex flex-col">
+              <span style={{ color: 'rgba(255, 255, 255, 0.8)' }} className="text-[10px] uppercase tracking-widest font-extrabold">
+                Status Pertumbuhan
+              </span>
+              <h3 
+                style={{ color: '#ffffff' }}
+                className="text-6xl md:text-7xl font-black font-[var(--font-heading)] tracking-tighter leading-none mt-2 drop-shadow-lg"
+              >
+                {hugeStatus}
+              </h3>
+            </div>
+            
+            {/* Bottom: Friendly detailed description */}
+            <div className="z-10 relative border-t border-white/10 pt-4 mt-auto">
+              <p style={{ color: 'rgba(255, 255, 255, 0.95)' }} className="text-xs leading-relaxed font-semibold">
+                {desc}
+              </p>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Segmented Control Sub-Tabs with fluid transition capsule */}
       <div className="relative flex bg-gray-50 p-1 rounded-2xl mb-3 mx-0 md:hidden">
@@ -257,22 +352,20 @@ export default function GrowthView() {
           }}
         />
         <button
-          onClick={() => setActiveSubTab('ringkasan')}
-          className={`relative z-1 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${
-            activeSubTab === 'ringkasan'
+          onClick={() => setActiveSubTab('grafik')}
+          className={`relative z-1 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${activeSubTab === 'grafik'
               ? 'text-gray-900'
               : 'text-gray-500 hover:text-gray-900'
-          }`}
+            }`}
         >
-          Ringkasan
+          Grafik
         </button>
         <button
           onClick={() => setActiveSubTab('riwayat')}
-          className={`relative z-1 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${
-            activeSubTab === 'riwayat'
+          className={`relative z-1 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${activeSubTab === 'riwayat'
               ? 'text-gray-900'
               : 'text-gray-500 hover:text-gray-900'
-          }`}
+            }`}
         >
           Riwayat Catatan
         </button>
@@ -303,7 +396,7 @@ export default function GrowthView() {
       ) : (
         <div className="md:grid md:grid-cols-2 md:gap-6 md:items-start md:px-6">
           {/* LEFT COLUMN: Houses active Metric Selector and fixed Height Chart */}
-          <div className={`space-y-3 ${activeSubTab === 'ringkasan' ? 'block' : 'hidden md:block'}`}>
+          <div className={`space-y-3 ${activeSubTab === 'grafik' ? 'block' : 'hidden md:block'}`}>
             {/* Metric Selector (Mini Pills) */}
             <div className="flex flex-row gap-2 overflow-x-auto pb-3 pt-1 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
               {[
@@ -315,11 +408,10 @@ export default function GrowthView() {
                 <button
                   key={pill.id}
                   onClick={() => setActiveMetric(pill.id)}
-                  className={`cursor-pointer transition-all ${
-                    activeMetric === pill.id
+                  className={`cursor-pointer transition-all ${activeMetric === pill.id
                       ? 'bg-gray-900 text-white text-xs font-medium px-3 py-1.5 rounded-full shrink-0'
                       : 'bg-gray-50 text-gray-600 border border-gray-100 text-xs px-3 py-1.5 rounded-full hover:bg-gray-100/70 shrink-0'
-                  }`}
+                    }`}
                 >
                   {pill.label}
                 </button>
@@ -328,7 +420,7 @@ export default function GrowthView() {
               <div className="w-2 shrink-0 md:hidden pointer-events-none" />
             </div>
 
-            {/* Status Indicator Card A (Mobile-only: shown on mobile inside left column for Ringkasan) */}
+            {/* Status Indicator Card A (Mobile-only: shown on mobile inside left column for Grafik) */}
             <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-[0_4px_12px_rgba(0,0,0,0.015)] md:hidden mt-2">
               <div className="flex items-center gap-2">
                 <span className={`w-2.5 h-2.5 rounded-full ${statusColor} shrink-0`} />
@@ -496,9 +588,9 @@ export default function GrowthView() {
                   const extraDetails = [];
                   if (r.headCircCm) extraDetails.push(`Lingkar Kepala: ${r.headCircCm} cm`);
                   if (r.notes) extraDetails.push(r.notes);
-                  
+
                   return (
-                    <div 
+                    <div
                       key={r.id || i}
                       onClick={() => navigate(`/dashboard/growth/tambah?edit=${r.id}`)}
                       className="flex items-center justify-between py-3 border-b border-gray-100/70 last:border-0 cursor-pointer hover:bg-gray-50/50 active:scale-[0.99] transition-all px-2 -mx-2 rounded-xl"
@@ -544,7 +636,7 @@ export default function GrowthView() {
       {/* Desktop-Safe Premium Liquid Glass Floating Action Button (FAB) */}
       <button
         onClick={() => navigate('/dashboard/growth/tambah')}
-        className="fixed bottom-24 right-6 md:right-[calc(50%-384px+24px)] lg:right-[calc(50%-512px+24px)] left-auto z-30 w-14 h-14 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex items-center justify-center text-gray-800 text-3xl font-light hover:bg-black/[0.02] active:scale-95 transition-all cursor-pointer"
+        className="fixed bottom-24 right-6 md:right-[calc(50%-384px+24px)] lg:right-[calc(50%-512px+24px)] left-auto z-30 w-14 h-14 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex items-center justify-center text-[var(--color-primary)] text-3xl font-light hover:bg-black/[0.02] active:scale-95 transition-all cursor-pointer"
         aria-label="Tambah catatan pertumbuhan"
       >
         +

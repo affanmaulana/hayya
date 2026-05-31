@@ -33,7 +33,7 @@ export default function TambahCatatanTumbuh() {
   const handleBack = () => {
     setIsLeaving(true);
     setTimeout(() => {
-      navigate('/dashboard/growth');
+      navigate('/dashboard/growth?tab=riwayat');
     }, 220);
   };
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
 
 export default function EditProfileView({ onBack }) {
-  const { currentUser, updateProfile } = useContext(AuthContext);
+  const { currentUser, updateProfile, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -50,7 +50,7 @@ export default function EditProfileView({ onBack }) {
   };
 
   return (
-    <div className="space-y-6 font-[var(--font-body)] animate-fade-in">
+    <div className="space-y-6 font-[var(--font-body)] animate-fade-in pb-10">
 
       {/* Profile Form Card */}
       <div className="bg-white rounded-card border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-6 space-y-6 hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out">
@@ -128,6 +128,16 @@ export default function EditProfileView({ onBack }) {
             </button>
           </div>
         </form>
+      </div>
+
+      {/* Account actions - Keluar Akun */}
+      <div className="pt-2">
+        <button
+          onClick={logout}
+          className="w-full h-12 rounded-button border-2 border-danger/20 text-danger text-xs font-black font-[var(--font-heading)] hover:bg-danger/5 hover:border-danger/30 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 focus:outline-none active:scale-[0.98] shadow-xs"
+        >
+          <span>🚪</span> Keluar dari Akun
+        </button>
       </div>
 
     </div>
