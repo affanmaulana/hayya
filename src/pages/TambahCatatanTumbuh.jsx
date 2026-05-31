@@ -176,7 +176,17 @@ export default function TambahCatatanTumbuh() {
       }}
     >
       {/* Sovereign iOS centered Action Bar header rendered directly inside the page to participate in slide animations */}
-      <div className="-mx-4 px-4 h-16 flex items-center justify-between relative border-b border-gray-100 bg-white/40 backdrop-blur-sm mb-2 shrink-0">
+      <header className="sticky top-0 z-30 -mx-4 px-4 h-16 flex items-center justify-between border-b border-gray-100 mb-2 shrink-0">
+        {/* Progressive Glass Blur background layer matching main header */}
+        <div 
+          className="absolute inset-0 bg-white/20 pointer-events-none -z-10"
+          style={{ 
+            backdropFilter: 'blur(8px)', 
+            WebkitBackdropFilter: 'blur(8px)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)', 
+            maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)' 
+          }}
+        />
         <button
           onClick={handleBack}
           className="w-10 h-10 rounded-full bg-white/80 border border-white/60 shadow-sm flex items-center justify-center text-gray-800 hover:bg-black/[0.02] active:scale-95 transition-all cursor-pointer focus:outline-none"
@@ -193,7 +203,7 @@ export default function TambahCatatanTumbuh() {
         
         {/* Invisible spacer to maintain symmetry for justify-between alignment */}
         <div className="w-10 h-10 pointer-events-none" />
-      </div>
+      </header>
 
       {/* Form Fields sit directly on background */}
       <div className="space-y-6">

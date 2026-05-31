@@ -219,7 +219,7 @@ export default function MpasiView() {
           <div className="p-3 bg-primary/5 border border-primary/15 rounded-xl space-y-1">
             <p className="text-xs font-bold text-primary">Bunda, Si Kecil belum waktunya MPASI</p>
             <p className="text-[11px] text-gray-600 leading-relaxed">
-              Berdasarkan anjuran medis IDAI dan Kementerian Kesehatan, bayi di bawah 6 bulan disarankan mendapatkan **ASI Eksklusif** saja demi menjaga kesehatan pencernaannya. Bunda bisa mulai menyusun rencana MPASI setelah si kecil genap 6 bulan.
+              Berdasarkan anjuran medis IDAI dan Kementerian Kesehatan, bayi di bawah 6 bulan disarankan mendapatkan <strong className="font-bold">ASI Eksklusif</strong> saja demi menjaga kesehatan pencernaannya. Bunda bisa mulai menyusun rencana MPASI setelah si kecil genap 6 bulan.
             </p>
           </div>
         ) : (
