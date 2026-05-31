@@ -739,8 +739,8 @@ export default function GrowthView() {
 
         {/* Clean Input Fields Form with isolated scroll wrapper and static bottom actions */}
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
-          {/* Isolated Scrollable Body Container */}
-          <div className="w-full flex-1 overflow-y-auto pr-1 my-3 scrollbar-none pb-28">
+          {/* Isolated Scrollable Body Container with gentle horizontal padding to prevent focused border clipping */}
+          <div className="w-full flex-1 overflow-y-auto px-1.5 pr-2.5 my-3 scrollbar-none pb-28">
             <div className="space-y-1">
               <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="weightKg">Berat (kg) *</label>
               <input
@@ -753,7 +753,7 @@ export default function GrowthView() {
                 value={weightKg}
                 onChange={(e) => setWeightKg(e.target.value)}
                 required
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 overflow-hidden transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-4"
               />
             </div>
             <div className="space-y-1">
@@ -768,7 +768,7 @@ export default function GrowthView() {
                 value={heightCm}
                 onChange={(e) => setHeightCm(e.target.value)}
                 required
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 overflow-hidden transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-4"
               />
             </div>
             <div className="space-y-1">
@@ -782,7 +782,7 @@ export default function GrowthView() {
                 placeholder="0.0"
                 value={headCircCm}
                 onChange={(e) => setHeadCircCm(e.target.value)}
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 overflow-hidden transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-4"
               />
             </div>
             <div className="space-y-1">
@@ -794,7 +794,7 @@ export default function GrowthView() {
                 onChange={(e) => setMeasuredAt(e.target.value)}
                 max={new Date().toISOString().split('T')[0]}
                 required
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 overflow-hidden transition-all mb-4 cursor-pointer"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-4 cursor-pointer"
               />
             </div>
             <div className="space-y-1">
@@ -805,7 +805,7 @@ export default function GrowthView() {
                 placeholder="Tambahkan catatan di sini..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 overflow-hidden transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-4"
               />
             </div>
           </div>
