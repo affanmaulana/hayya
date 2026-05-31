@@ -153,7 +153,7 @@ export default function TambahCatatanTumbuh() {
   return (
     <div className={`space-y-6 font-[var(--font-body)] ${isLeaving ? 'animate-slide-out-right-fade' : 'animate-slide-in-right-fade'}`}>
       {/* Sovereign iOS centered Action Bar header rendered directly inside the page to participate in slide animations */}
-      <div className="-mx-4 px-4 h-16 flex items-center justify-between relative border-b border-gray-100 bg-white/40 backdrop-blur-sm -mt-6 mb-2 shrink-0">
+      <div className="-mx-4 px-4 h-16 flex items-center justify-between relative border-b border-gray-100 bg-white/40 backdrop-blur-sm mb-2 shrink-0">
         <button
           onClick={handleBack}
           className="w-10 h-10 rounded-full bg-white/80 border border-white/60 shadow-sm flex items-center justify-center text-gray-800 hover:bg-black/[0.02] active:scale-95 transition-all cursor-pointer focus:outline-none"
