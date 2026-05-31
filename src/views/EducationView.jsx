@@ -2,6 +2,7 @@ import { useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEducation } from '../hooks/useEducation';
 import useAuth from '../hooks/useAuth';
+import TabSwitcher from '../components/TabSwitcher';
 
 export default function EducationView({ onBack }) {
   const { currentUser } = useAuth();
@@ -138,28 +139,14 @@ export default function EducationView({ onBack }) {
     <div className="space-y-6 font-[var(--font-body)] px-0 animate-fade-in">
 
       {/* SUB-TABS: Catalog vs Saved Articles */}
-      <div className="bg-gray-50/50 border border-gray-100 rounded-xl p-1 flex">
-        <button
-          onClick={() => handleTabChange('catalog')}
-          className={`flex-1 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all duration-200 ease-in-out focus:outline-none ${
-            activeTab === 'catalog'
-              ? 'bg-white text-primary shadow-[0_2px_8px_rgba(0,0,0,0.01)] border border-gray-100/50'
-              : 'text-gray-500 hover:text-gray-900'
-          }`}
-        >
-          Artikel Edukasi
-        </button>
-        <button
-          onClick={() => handleTabChange('saved')}
-          className={`flex-1 py-2 text-xs font-bold rounded-lg cursor-pointer transition-all duration-200 ease-in-out focus:outline-none ${
-            activeTab === 'saved'
-              ? 'bg-white text-primary shadow-[0_2px_8px_rgba(0,0,0,0.01)] border border-gray-100/50'
-              : 'text-gray-500 hover:text-gray-900'
-          }`}
-        >
-          Simpanan Bunda ({savedArticlesList.length})
-        </button>
-      </div>
+      <TabSwitcher
+        tabs={[
+          { id: 'catalog', label: 'Artikel Edukasi' },
+          { id: 'saved', label: `Simpanan Bunda (${savedArticlesList.length})` }
+        ]}
+        activeTab={activeTab}
+        onChange={handleTabChange}
+      />
 
       {/* HORIZONTAL CATEGORY FILTER BAR */}
       <div className="space-y-2">

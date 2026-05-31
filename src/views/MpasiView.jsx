@@ -102,7 +102,7 @@ export default function MpasiView() {
   const clinicalGuide = useMemo(() => {
     if (childAgeMonths < 6) {
       return {
-        stage: 'ASI Eksklusif 🤱',
+        stage: 'ASI Eksklusif',
         texture: 'Cairan (Hanya ASI)',
         frequency: 'Sesuai kebutuhan bayi (on demand), minimal 8-12 kali sehari',
         portion: 'Sesuai kebutuhan kenyang si kecil',
@@ -110,7 +110,7 @@ export default function MpasiView() {
       };
     } else if (childAgeMonths <= 8) {
       return {
-        stage: 'MPASI Awal (6-8 Bulan) 🥣',
+        stage: 'MPASI Awal (6-8 Bulan)',
         texture: 'Bubur Saring Halus / Puree (lembut, kental, tidak encer)',
         frequency: '2-3 kali makan besar + 1-2 kali makanan selingan',
         portion: '2-3 sendok makan bertahap hingga setengah mangkuk kecil (125 ml)',
@@ -118,7 +118,7 @@ export default function MpasiView() {
       };
     } else if (childAgeMonths <= 11) {
       return {
-        stage: 'MPASI Lanjutan (9-11 Bulan) 🍲',
+        stage: 'MPASI Lanjutan (9-11 Bulan)',
         texture: 'Bubur Kasar / Cincang Halus / Nasi Tim Lembek',
         frequency: '3-4 kali makan besar + 1-2 kali makanan selingan',
         portion: 'Setengah hingga tiga perempat mangkuk kecil (125 ml - 250 ml)',
@@ -126,7 +126,7 @@ export default function MpasiView() {
       };
     } else {
       return {
-        stage: 'Makanan Keluarga (12 Bulan+) 🍽️',
+        stage: 'Makanan Keluarga (12 Bulan+)',
         texture: 'Makanan Keluarga (nasi, lauk dipotong kecil, makanan padat)',
         frequency: '3-4 kali makan besar + 1-2 kali makanan selingan',
         portion: 'Semangkuk penuh ukuran 250 ml',
@@ -198,42 +198,27 @@ export default function MpasiView() {
   return (
     <div className="space-y-6 font-[var(--font-body)] px-0 animate-fade-in">
       
-      {/* HEADER SECTION - Child Profile Summary */}
-      <div className="bg-white rounded-card border border-gray-100 p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out flex items-center gap-4">
-        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold border shrink-0 ${
-          activeChild.gender === 'L'
-            ? 'bg-accent/10 border-accent/15 text-accent'
-            : 'bg-primary/10 border-primary/15 text-primary'
-        }`}>
-          {activeChild.name ? activeChild.name.charAt(0).toUpperCase() : '👶'}
-        </div>
-        <div>
-          <h2 className="text-base font-extrabold font-[var(--font-heading)] text-gray-900 leading-tight">
-            Menu MPASI {activeChild.name}
-          </h2>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Lahir: {formatDate(activeChild.dateOfBirth)} • <span className="font-semibold text-primary">Usia {childAgeMonths} Bulan {childAgeDays} Hari</span>
-          </p>
-        </div>
-      </div>
-
-      {/* DAILY MEAL PLANNER TEMPLATE CARD */}
-      <div className="bg-white rounded-card border border-gray-100 p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out space-y-4">
-        <div className="border-b border-gray-100 pb-3 flex justify-between items-center">
-          <div className="space-y-0.5">
-            <span className="text-[10px] text-primary font-bold uppercase tracking-wider font-[var(--font-heading)]">Rekomendasi Tahapan</span>
-            <h3 className="text-sm font-extrabold font-[var(--font-heading)] text-gray-900">
+      {/* DAILY MEAL PLANNER TEMPLATE CARD - PLAIN CONTENT STYLE */}
+      <div className="space-y-4 animate-fade-in">
+        <div className="border-b border-gray-200/60 pb-3 flex justify-between items-center">
+          <div className="space-y-1">
+            <span className="text-[9px] uppercase tracking-widest font-black bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full">
+              Rekomendasi Tahapan
+            </span>
+            <h3 className="text-lg font-black font-[var(--font-heading)] leading-none mt-1 text-gray-900">
               {clinicalGuide.stage}
             </h3>
           </div>
-          <span className="text-2xl">🥣</span>
+          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-xl border border-primary/20 shrink-0">
+            🥣
+          </div>
         </div>
 
         {clinicalGuide.isAsiOnly ? (
           /* ASI Eksklusif Phase under 6 Months */
-          <div className="p-4 bg-primary/[0.02] border border-primary/15 rounded-xl space-y-2">
-            <p className="text-xs text-primary font-bold">Bunda, Si Kecil belum waktunya MPASI 🧡</p>
-            <p className="text-xs text-gray-500 leading-relaxed">
+          <div className="p-3 bg-primary/5 border border-primary/15 rounded-xl space-y-1">
+            <p className="text-xs font-bold text-primary">Bunda, Si Kecil belum waktunya MPASI</p>
+            <p className="text-[11px] text-gray-600 leading-relaxed">
               Berdasarkan anjuran medis IDAI dan Kementerian Kesehatan, bayi di bawah 6 bulan disarankan mendapatkan **ASI Eksklusif** saja demi menjaga kesehatan pencernaannya. Bunda bisa mulai menyusun rencana MPASI setelah si kecil genap 6 bulan.
             </p>
           </div>
@@ -242,40 +227,40 @@ export default function MpasiView() {
           <div className="space-y-4">
             
             {/* Texture and Portion specs */}
-            <div className="grid grid-cols-2 gap-3 text-xs pt-1">
-              <div className="bg-gray-50/40 rounded-xl p-3 border border-gray-100">
-                <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Tekstur Anjuran</span>
-                <p className="text-gray-900 font-bold mt-1 leading-tight">{clinicalGuide.texture}</p>
+            <div className="grid grid-cols-2 gap-3 text-[11px]">
+              <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm flex flex-col justify-between hover:border-primary/20 transition-colors">
+                <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest">Tekstur Anjuran</span>
+                <p className="text-gray-900 font-extrabold text-xs mt-1 leading-tight">{clinicalGuide.texture}</p>
               </div>
-              <div className="bg-gray-50/40 rounded-xl p-3 border border-gray-100">
-                <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Frekuensi & Porsi</span>
-                <p className="text-gray-900 font-bold mt-1 leading-tight">{clinicalGuide.frequency}</p>
+              <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm flex flex-col justify-between hover:border-primary/20 transition-colors">
+                <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest">Frekuensi & Porsi</span>
+                <p className="text-gray-900 font-extrabold text-xs mt-1 leading-tight">{clinicalGuide.frequency}</p>
               </div>
             </div>
 
-            <hr className="border-gray-100/80" />
+            <hr className="border-gray-150" />
 
             {/* Daily Planner Meal Slots */}
             <div className="space-y-3">
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Jadwal Makan Harian</span>
+              <span className="text-[9px] text-gray-400 font-black uppercase tracking-widest block">Jadwal Makan Harian</span>
               
-              <div className="space-y-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {[
-                  { slot: 'Sarapan 🌅', time: '07.00 - 08.00', texture: clinicalGuide.texture },
-                  { slot: 'Selingan Pagi 🍎', time: '10.00', texture: 'Selingan (Buah Lembut / Puree Buah)' },
-                  { slot: 'Makan Siang ☀️', time: '12.00 - 13.00', texture: clinicalGuide.texture },
-                  { slot: 'Makan Malam 🌙', time: '18.00 - 19.00', texture: clinicalGuide.texture }
+                  { slot: 'Sarapan', time: '07.00 - 08.00', texture: clinicalGuide.texture },
+                  { slot: 'Selingan Pagi', time: '10.00', texture: 'Selingan (Buah Lembut / Puree Buah)' },
+                  { slot: 'Makan Siang', time: '12.00 - 13.00', texture: clinicalGuide.texture },
+                  { slot: 'Makan Malam', time: '18.00 - 19.00', texture: clinicalGuide.texture }
                 ].map((item, idx) => (
-                  <div key={`slot-${idx}`} className="flex items-center gap-3 p-3 bg-gray-50/20 border border-gray-100 rounded-xl hover:bg-gray-50/50 transition-all duration-200 ease-in-out">
-                    <div className="shrink-0 w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-xs font-bold text-secondary">
+                  <div key={`slot-${idx}`} className="flex items-center gap-2.5 p-2.5 bg-white hover:border-primary/10 border border-gray-100 rounded-xl transition-all duration-200 ease-in-out shadow-sm">
+                    <div className="shrink-0 w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center text-[10px] font-black text-secondary border border-secondary/20">
                       {idx + 1}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-center gap-1.5">
+                      <div className="flex justify-between items-center gap-1">
                         <span className="text-xs font-bold text-gray-900 whitespace-normal break-words">{item.slot}</span>
-                        <span className="text-[10px] text-gray-400 font-semibold shrink-0">{item.time}</span>
+                        <span className="text-[8px] text-gray-400 font-bold shrink-0">{item.time}</span>
                       </div>
-                      <p className="text-[11px] text-gray-500 mt-0.5 whitespace-normal break-words leading-relaxed">{item.texture}</p>
+                      <p className="text-[10px] text-gray-500 mt-0.5 whitespace-normal break-words leading-relaxed">{item.texture}</p>
                     </div>
                   </div>
                 ))}
@@ -312,9 +297,6 @@ export default function MpasiView() {
         {/* EXPANDABLE SECTION */}
         {isBudgetExpanded && (
           <div className="space-y-4 pt-1 animate-slide-down">
-            <p className="text-xs text-gray-500 leading-relaxed">
-              MPASI tidak harus mahal, Bunda. Mari sesuaikan menu gizi seimbang dengan anggaran belanja harian di rumah.
-            </p>
 
             <div className="w-full py-2 px-1">
               <label htmlFor="budget-slider" className="text-xs font-semibold text-gray-700 mb-2 block">
@@ -413,10 +395,6 @@ export default function MpasiView() {
                   </>
                 )}
               </ul>
-              
-              <p className="text-xs text-amber-850 mt-3 font-medium">
-                MPASI hemat bukan berarti kurang gizi. Ini rekomendasi sesuai budget.
-              </p>
             </div>
 
             <div className="flex gap-2">
@@ -438,10 +416,6 @@ export default function MpasiView() {
                   Mulai Ulang
                 </button>
               )}
-            </div>
-
-            <div className="text-[11px] text-gray-400 text-center mt-3 italic block">
-              *Rekomendasi bahan di atas disesuaikan untuk kecukupan zat besi, makronutrien, dan mikronutrien penting si kecil tanpa bahan mahal.
             </div>
           </div>
         )}
@@ -591,10 +565,11 @@ export default function MpasiView() {
                       {/* Cook Steps */}
                       <div className="space-y-1.5 pt-1 border-t border-border/30">
                         <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Langkah Pembuatan:</span>
-                        <ol className="list-decimal list-inside text-text-secondary font-medium leading-relaxed space-y-1 pl-0.5">
+                        <ol className="list-none text-text-secondary font-medium leading-relaxed space-y-1.5 pl-0.5">
                           {recipe.steps.map((step, idx) => (
-                            <li key={`step-${idx}`} className="align-top">
-                              <span className="text-text font-semibold mr-1">{idx + 1}.</span> {step}
+                            <li key={`step-${idx}`} className="flex items-start gap-1">
+                              <span className="text-text font-semibold shrink-0 min-w-[18px]">{idx + 1}.</span>
+                              <span>{step}</span>
                             </li>
                           ))}
                         </ol>

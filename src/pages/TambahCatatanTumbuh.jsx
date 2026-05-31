@@ -19,6 +19,7 @@ export default function TambahCatatanTumbuh() {
   const [weightKg, setWeightKg] = useState('');
   const [heightCm, setHeightCm] = useState('');
   const [headCircCm, setHeadCircCm] = useState('');
+  const [lilaCm, setLilaCm] = useState('');
   const [measuredAt, setMeasuredAt] = useState('');
   const [notes, setNotes] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -52,6 +53,7 @@ export default function TambahCatatanTumbuh() {
         setWeightKg(record.weightKg.toString());
         setHeightCm(record.heightCm.toString());
         setHeadCircCm(record.headCircCm ? record.headCircCm.toString() : '');
+        setLilaCm(record.lila ? record.lila.toString() : '');
         setMeasuredAt(record.measuredAt);
         setNotes(record.notes || '');
       }
@@ -86,6 +88,13 @@ export default function TambahCatatanTumbuh() {
         }
       }
 
+      if (lilaCm) {
+        const l = parseFloat(lilaCm);
+        if (isNaN(l) || l < 5.0 || l > 30.0) {
+          throw new Error('Lingkar lengan atas harus di antara 5.0 cm dan 30.0 cm, Bunda. 🧡');
+        }
+      }
+
       // Date constraints
       const dob = new Date(activeChild.dateOfBirth);
       const measured = new Date(measuredAt);
@@ -112,6 +121,7 @@ export default function TambahCatatanTumbuh() {
         weightKg: w,
         heightCm: h,
         headCircCm: headCircCm ? parseFloat(headCircCm) : null,
+        lila: lilaCm ? parseFloat(lilaCm) : null,
         measuredAt,
         notes: notes.trim(),
       };
@@ -157,10 +167,10 @@ export default function TambahCatatanTumbuh() {
 
   return (
     <div
-      className="space-y-6 font-[var(--font-body)] transition-all ease-out"
+      className="space-y-6 font-[var(--font-body)] transition-all ease-out pb-44"
       style={{
         opacity: isLeaving ? 0.3 : (mounted ? 1 : 0),
-        transform: isLeaving ? 'translateX(48px)' : (mounted ? 'translateX(0)' : 'translateX(32px)'),
+        transform: isLeaving ? 'translateX(48px)' : (mounted ? 'none' : 'translateX(32px)'),
         transitionDuration: isLeaving ? '220ms' : '400ms',
         transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
       }}
@@ -266,6 +276,24 @@ export default function TambahCatatanTumbuh() {
             />
           </div>
 
+          {/* Upper Arm Circumference (LiLA) */}
+          <div className="space-y-1.5">
+            <label htmlFor="lilaCm" className="text-xs font-semibold text-gray-700">
+              Lingkar Lengan Atas (LiLA) (cm) <span className="text-text-muted text-[10px] font-normal">(opsional)</span>
+            </label>
+            <input
+              id="lilaCm"
+              type="number"
+              step="0.1"
+              min="5"
+              max="30"
+              placeholder="Contoh: 12.5"
+              value={lilaCm}
+              onChange={(e) => setLilaCm(e.target.value)}
+              className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out"
+            />
+          </div>
+
           {/* Date of Measurement */}
           <div className="space-y-1.5">
             <label htmlFor="measuredAt" className="text-xs font-semibold text-gray-700">
@@ -297,20 +325,20 @@ export default function TambahCatatanTumbuh() {
             />
           </div>
 
-          {/* Actions Bottom Buttons */}
-          <div className="flex flex-col gap-3 pt-3">
-            <div className="flex gap-3">
+          {/* Sticky Actions Bottom Buttons Panel */}
+          <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-100 p-4 z-40 flex flex-col gap-2">
+            <div className="flex gap-3 max-w-md mx-auto w-full">
               <button
                 type="button"
                 onClick={handleBack}
-                className="flex-1 h-[52px] border border-gray-200 rounded-button text-sm font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-50/50 hover:border-gray-300 cursor-pointer transition-all duration-200 ease-in-out active:scale-[0.98] focus:outline-none"
+                className="flex-1 h-[50px] border border-gray-200 rounded-button text-sm font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-50/50 hover:border-gray-300 cursor-pointer transition-all duration-200 ease-in-out active:scale-[0.98] focus:outline-none"
               >
                 Batal
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 h-[52px] rounded-button bg-primary hover:bg-primary-dark active:scale-[0.98] text-white text-sm font-bold shadow-md shadow-primary/10 cursor-pointer transition-all duration-200 ease-in-out focus:outline-none flex items-center justify-center gap-2"
+                className="flex-1 h-[50px] rounded-button bg-primary hover:bg-primary-dark active:scale-[0.98] text-white text-sm font-bold shadow-md shadow-primary/10 cursor-pointer transition-all duration-200 ease-in-out focus:outline-none flex items-center justify-center gap-2"
               >
                 {isSubmitting ? 'Menyimpan...' : (editId ? 'Simpan Perubahan' : 'Simpan Catatan 🧡')}
               </button>
@@ -321,7 +349,7 @@ export default function TambahCatatanTumbuh() {
                 type="button"
                 onClick={handleDelete}
                 disabled={isSubmitting}
-                className="w-full h-[52px] bg-red-50 hover:bg-red-100 text-red-600 font-bold text-sm rounded-button transition-all duration-200 ease-in-out active:scale-[0.98] cursor-pointer text-center focus:outline-none"
+                className="w-full max-w-md mx-auto h-[44px] bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-button transition-all duration-200 ease-in-out active:scale-[0.98] cursor-pointer text-center focus:outline-none"
               >
                 Hapus Catatan Ini
               </button>

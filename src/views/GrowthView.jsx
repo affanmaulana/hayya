@@ -5,6 +5,7 @@ import { useChild } from '../hooks/useChild';
 import { formatDate } from '../utils/dateHelpers';
 import { calculateZScores } from '../utils/growthCalculations.js';
 import growthStandards from '../data/growthStandards.json';
+import TabSwitcher from '../components/TabSwitcher';
 
 export default function GrowthView() {
   const navigate = useNavigate();
@@ -342,34 +343,15 @@ export default function GrowthView() {
       })()}
 
       {/* Segmented Control Sub-Tabs with fluid transition capsule */}
-      <div className="relative flex bg-gray-50 p-1 rounded-2xl mb-3 mx-0 md:hidden">
-        {/* Sliding active background indicator */}
-        <div
-          className="absolute top-1 bottom-1 left-1 rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-transform duration-300 ease-in-out"
-          style={{
-            width: 'calc(50% - 4px)',
-            transform: activeSubTab === 'riwayat' ? 'translateX(100%)' : 'translateX(0%)'
-          }}
-        />
-        <button
-          onClick={() => setActiveSubTab('grafik')}
-          className={`relative z-1 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${activeSubTab === 'grafik'
-              ? 'text-gray-900'
-              : 'text-gray-500 hover:text-gray-900'
-            }`}
-        >
-          Grafik
-        </button>
-        <button
-          onClick={() => setActiveSubTab('riwayat')}
-          className={`relative z-1 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${activeSubTab === 'riwayat'
-              ? 'text-gray-900'
-              : 'text-gray-500 hover:text-gray-900'
-            }`}
-        >
-          Riwayat Catatan
-        </button>
-      </div>
+      <TabSwitcher
+        tabs={[
+          { id: 'grafik', label: 'Grafik' },
+          { id: 'riwayat', label: 'Riwayat Catatan' }
+        ]}
+        activeTab={activeSubTab}
+        onChange={setActiveSubTab}
+        className="md:hidden"
+      />
 
       {/* STATE-DRIVEN VIEW INJECTION */}
       {records.length === 0 ? (
@@ -587,6 +569,7 @@ export default function GrowthView() {
                 {records.map((r, i) => {
                   const extraDetails = [];
                   if (r.headCircCm) extraDetails.push(`Lingkar Kepala: ${r.headCircCm} cm`);
+                  if (r.lila) extraDetails.push(`Lengan Atas: ${r.lila} cm`);
                   if (r.notes) extraDetails.push(r.notes);
 
                   return (
