@@ -68,6 +68,17 @@ export default function ImmunizationView() {
     return [monthText, dayText].filter(Boolean).join(' ');
   }, [activeChild]);
 
+  const formatDateShort = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      const d = new Date(dateStr);
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      return `${d.getDate()} ${months[d.getMonth()]}`;
+    } catch (e) {
+      return '';
+    }
+  };
+
   // Split calendar into Scheduled (Upcoming) and Completed (Done)
   const scheduledVaccines = useMemo(() => {
     return calendar.filter(item => item.status !== 'done');
@@ -202,41 +213,55 @@ export default function ImmunizationView() {
   return (
     <div className="space-y-6 font-[var(--font-body)] px-0 animate-fade-in relative">
       
-      {/* HEADER SECTION - Child Profile Summary */}
-      <div className="bg-white rounded-card border border-gray-100 p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out flex items-center gap-4">
-        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold border ${
-          activeChild.gender === 'L'
-            ? 'bg-accent/10 border-accent/15 text-accent'
-            : 'bg-primary/10 border-primary/15 text-primary'
-        }`}>
-          {activeChild.name ? activeChild.name.charAt(0).toUpperCase() : '👶'}
-        </div>
-        <div>
-          <h2 className="text-base font-extrabold font-[var(--font-heading)] text-gray-900 leading-tight">
-            Jadwal Imunisasi {activeChild.name}
-          </h2>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Lahir: {formatDate(activeChild.dateOfBirth)} • <span className="font-semibold text-primary">{ageString}</span>
-          </p>
-        </div>
-      </div>
-
-      {/* PROGRESS TRACKER */}
-      <div className="bg-white rounded-card border border-gray-100 p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out space-y-3.5">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col">
-            <span className="text-xs text-gray-700 font-semibold">Cakupan Imunisasi</span>
-            <span className="text-[10px] text-gray-400 mt-0.5">Berdasarkan vaksinasi yang selesai</span>
+      {/* CAKUPAN IMUNISASI SECTION - PLAIN CONTENT STYLE */}
+      <div className="space-y-4 animate-fade-in p-0">
+        <div className="border-b border-gray-200/60 pb-3 flex justify-between items-center">
+          <div className="space-y-1">
+            <span className="text-[9px] uppercase tracking-widest font-black bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full">
+              Cakupan Imunisasi
+            </span>
+            <h3 className="text-lg font-black font-[var(--font-heading)] leading-none mt-1 text-gray-900">
+              {progress}% Selesai
+            </h3>
           </div>
-          <span className="text-lg font-black text-accent font-[var(--font-heading)]">
-            {progress}%
-          </span>
+          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 shrink-0 text-primary">
+            <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.745 3.745 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+            </svg>
+          </div>
         </div>
-        <div className="w-full h-2.5 bg-gray-50 border border-gray-100 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-accent rounded-full transition-all duration-500 ease-out" 
-            style={{ width: `${progress}%` }}
-          />
+
+        <div className="space-y-4">
+          {/* Status Specs Grid matching MPASI texture/frequency grid */}
+          <div className="grid grid-cols-2 gap-3 text-[11px]">
+            <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm flex flex-col justify-between hover:border-primary/20 transition-colors">
+              <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest">Status Imunisasi</span>
+              <p className="text-gray-900 font-extrabold text-xs mt-1 leading-tight">{completedVaccines.length} Vaksin Selesai</p>
+            </div>
+            <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm flex flex-col justify-between hover:border-primary/20 transition-colors">
+              <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest">Sisa Jadwal</span>
+              <p className="text-gray-900 font-extrabold text-xs mt-1 leading-tight">{scheduledVaccines.length} Vaksin Terjadwal</p>
+            </div>
+          </div>
+
+          <hr className="border-gray-200/60" />
+
+          {/* Progress Bar directly on background */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+              <span>Kemajuan Vaksinasi {activeChild.name}</span>
+              <span className="text-primary font-black">{progress}%</span>
+            </div>
+            <div className="w-full h-3 bg-gray-100 border border-gray-200/60 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-primary rounded-full transition-all duration-500 ease-out" 
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <p className="text-[10px] text-gray-400 leading-relaxed">
+              Berdasarkan anjuran medis IDAI dan Kementerian Kesehatan RI untuk {ageString} ({activeChild.name}).
+            </p>
+          </div>
         </div>
       </div>
 
@@ -290,57 +315,68 @@ export default function ImmunizationView() {
                     </svg>
                   </button>
 
-                  {/* Vaccine Cards under this milestone */}
+                  {/* Vaccine Cards under this milestone (Timeline Style) */}
                   {!isCollapsed && (
-                    <div className="space-y-3 pl-1.5 animate-slide-down">
+                    <div className="relative pl-1.5 space-y-4 animate-slide-down">
                       {group.items.map((item) => (
                         <div 
                           key={item.id}
-                          className={`bg-white rounded-card border transition-all duration-200 ease-in-out p-4 flex gap-3.5 items-start ${
-                            item.isLate 
-                              ? 'border-danger/25 bg-danger/[0.01] shadow-[0_4px_12px_rgba(0,0,0,0.02)]' 
-                              : 'border-gray-100 hover:border-gray-200 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)]'
-                          }`}
+                          className="relative flex gap-1.5 items-stretch min-h-[70px]"
                         >
-                          {/* Minimalist custom interactive checkbox toggle */}
-                          <button
-                            type="button"
-                            onClick={() => handleToggleStatus(item)}
-                            className={`w-6 h-6 shrink-0 rounded-full border-2 transition-all duration-200 ease-in-out flex items-center justify-center cursor-pointer focus:outline-none ${
-                              item.isLate
-                                ? 'border-danger/30 hover:border-danger hover:bg-danger/5'
-                                : 'border-gray-200 hover:border-primary hover:bg-primary/5 hover:scale-105 active:scale-95'
-                            }`}
-                            aria-label={`Tandai ${item.vaccine?.name || 'Vaksin'} selesai`}
-                          >
-                            <div className="w-2.5 h-2.5 rounded-full bg-transparent" />
-                          </button>
+                          {/* Left Column: Recommended Age & Target Date */}
+                          <div className="w-14 shrink-0 flex flex-col justify-center text-right pr-2 select-none">
+                            <span className="text-[11px] font-black text-gray-900 leading-tight">
+                              {item.vaccine?.recommendedAgeMonths === 0 ? "Lahir" : `${item.vaccine?.recommendedAgeMonths} Bln`}
+                            </span>
+                            <span className="text-[9px] text-gray-400 font-bold mt-0.5 leading-none">
+                              {formatDateShort(item.scheduledDate)}
+                            </span>
+                          </div>
 
-                          {/* Vaccine Details Info */}
-                          <div className="flex-1 min-w-0 space-y-1">
-                            <div className="flex items-center justify-between gap-2 flex-wrap">
-                              <h4 className="text-sm font-semibold font-[var(--font-heading)] text-gray-900 truncate">
+                          {/* Timeline node line & dot */}
+                          <div className="relative w-6 shrink-0 flex items-center justify-center">
+                            {/* Line */}
+                            <div className="absolute top-0 bottom-0 w-0 border-l border-dashed border-gray-200" />
+                            {/* Circular Checkbox Node */}
+                            <div className="relative z-10 bg-white rounded-full p-0.5">
+                              <button
+                                type="button"
+                                onClick={() => handleToggleStatus(item)}
+                                className={`w-5.5 h-5.5 rounded-full border-2 bg-white transition-all duration-200 flex items-center justify-center cursor-pointer hover:scale-105 group/btn ${
+                                  item.isLate
+                                    ? 'border-danger/35 hover:border-danger hover:bg-danger/5 text-danger/30 hover:text-danger'
+                                    : 'border-gray-200 hover:border-primary hover:bg-primary/5 text-gray-300 hover:text-primary'
+                                }`}
+                                aria-label={`Tandai ${item.vaccine?.name || 'Vaksin'} selesai`}
+                              >
+                                <svg className="w-3 h-3 stroke-current transition-colors duration-200" fill="none" viewBox="0 0 24 24" strokeWidth="3.5">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Right Column: Premium Card Content */}
+                          <div 
+                            className={`flex-1 bg-white rounded-card border p-3.5 space-y-1.5 transition-all duration-200 hover:shadow-sm ${
+                              item.isLate 
+                                ? 'border-danger/25 bg-danger/[0.01]' 
+                                : 'border-gray-100 hover:border-primary/20'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-1.5 flex-wrap">
+                              <h4 className="text-xs font-black font-[var(--font-heading)] text-gray-900 leading-tight">
                                 {item.vaccine?.name} {item.vaccine?.doseNumber > 1 && `(Dosis ${item.vaccine?.doseNumber})`}
                               </h4>
-                              
-                              {/* Dynamic Status Badge */}
                               {item.isLate && (
-                                <span className="px-2 py-0.5 text-[9px] font-bold bg-danger/10 border border-danger/15 text-danger rounded-full uppercase tracking-wider">
+                                <span className="px-1.5 py-0.5 text-[8px] font-black bg-danger/10 text-danger rounded-md uppercase tracking-wider">
                                   Terlambat
                                 </span>
                               )}
                             </div>
-
-                            <p className="text-xs text-gray-500 leading-relaxed">
+                            <p className="text-[10px] text-gray-500 leading-relaxed font-medium">
                               {item.vaccine?.description}
                             </p>
-
-                            <div className="pt-1 flex items-center justify-between text-[11px] text-gray-400">
-                              <span>Target Tanggal:</span>
-                              <span className={`font-semibold ${item.isLate ? 'text-danger' : 'text-gray-500'}`}>
-                                {formatDate(item.scheduledDate)}
-                              </span>
-                            </div>
                           </div>
                         </div>
                       ))}
@@ -399,97 +435,119 @@ export default function ImmunizationView() {
                     </svg>
                   </button>
 
-                  {/* Completed Vaccine Cards */}
+                  {/* Completed Vaccine Cards (Timeline Style) */}
                   {!isCollapsed && (
-                    <div className="space-y-3 pl-1.5 animate-slide-down">
+                    <div className="relative pl-1.5 space-y-4 animate-slide-down">
                       {group.items.map((item) => {
                         const isExpanded = !!expandedVaccineIds[item.id];
                         return (
                           <div 
                             key={item.id}
-                            className="bg-white rounded-card border border-gray-100 hover:border-gray-200 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out overflow-hidden"
+                            className="relative flex gap-1.5 items-stretch min-h-[70px]"
                           >
-                            <div 
-                              className="p-4 flex gap-3.5 items-start cursor-pointer select-none"
-                              onClick={() => toggleExpanded(item.id)}
-                            >
-                              {/* Active completed checkbox */}
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation(); // Avoid triggering card expansion
-                                  handleToggleStatus(item);
-                                }}
-                                className="w-6 h-6 shrink-0 rounded-full border-2 border-accent bg-accent/5 flex items-center justify-center cursor-pointer focus:outline-none hover:border-danger hover:bg-danger/5 transition-all duration-200 ease-in-out text-accent hover:text-danger group"
-                                aria-label={`Batalkan centang ${item.vaccine?.name || 'Vaksin'}`}
-                                title="Klik untuk membatalkan"
-                              >
-                                <svg className="w-3.5 h-3.5 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="3">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                </svg>
-                              </button>
+                            {/* Left Column: Recommended Age & Target Date */}
+                            <div className="w-14 shrink-0 flex flex-col justify-center text-right pr-2 select-none">
+                              <span className="text-[11px] font-black text-gray-900 leading-tight">
+                                {item.vaccine?.recommendedAgeMonths === 0 ? "Lahir" : `${item.vaccine?.recommendedAgeMonths} Bln`}
+                              </span>
+                              <span className="text-[9px] text-gray-400 font-bold mt-0.5 leading-none">
+                                {formatDateShort(item.actualDate)}
+                              </span>
+                            </div>
 
-                              {/* Vaccine Info Header */}
-                              <div className="flex-1 min-w-0 space-y-0.5">
-                                <div className="flex items-center justify-between gap-2 flex-wrap">
-                                  <h4 className="text-sm font-semibold text-gray-900 truncate">
-                                    {item.vaccine?.name} {item.vaccine?.doseNumber > 1 && `(Dosis ${item.vaccine?.doseNumber})`}
-                                  </h4>
-                                </div>
-                                
-                                <div className="flex items-center justify-between text-[11px] text-gray-500 pt-0.5">
-                                  <span>Diberikan Pada:</span>
-                                  <span className="font-bold text-accent">
-                                    {formatDate(item.actualDate)}
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Expand icon arrow */}
-                              <div className="shrink-0 pt-1.5 pl-1 text-gray-400">
-                                <svg 
-                                  className={`w-3.5 h-3.5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-                                  fill="none" 
-                                  stroke="currentColor" 
-                                  strokeWidth="2.5" 
-                                  viewBox="0 0 24 24"
+                            {/* Timeline node line & dot */}
+                            <div className="relative w-6 shrink-0 flex items-center justify-center">
+                              {/* Line */}
+                              <div className="absolute top-0 bottom-0 w-0 border-l border-solid border-primary/25" />
+                              {/* Circular Checkbox Node */}
+                              <div className="relative z-10 bg-white rounded-full p-0.5">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // Avoid triggering card expansion
+                                    handleToggleStatus(item);
+                                  }}
+                                  className="w-5.5 h-5.5 rounded-full bg-primary text-white flex items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-105 hover:bg-danger hover:border-danger hover:text-white"
+                                  aria-label={`Batalkan centang ${item.vaccine?.name || 'Vaksin'}`}
+                                  title="Klik untuk membatalkan"
                                 >
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                                </svg>
+                                  <svg className="w-3 h-3 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="3.5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                  </svg>
+                                </button>
                               </div>
                             </div>
 
-                            {/* Expandable record details */}
-                            {isExpanded && (
-                              <div className="px-4 pb-4 pt-2 bg-gray-50/40 border-t border-gray-100 text-xs space-y-2.5 animate-slide-down">
-                                {item.vaccine?.description && (
-                                  <div className="space-y-0.5">
-                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Deskripsi Vaksin</span>
-                                    <p className="text-gray-500 font-medium leading-relaxed">{item.vaccine?.description}</p>
+                            {/* Completed Card */}
+                            <div 
+                              className="flex-1 bg-white rounded-card border border-gray-100 hover:border-primary/20 shadow-sm hover:shadow-md transition-all duration-200 ease-in-out overflow-hidden"
+                            >
+                              <div 
+                                className="p-3.5 flex gap-3.5 items-start cursor-pointer select-none"
+                                onClick={() => toggleExpanded(item.id)}
+                              >
+                                {/* Vaccine Info Header */}
+                                <div className="flex-1 min-w-0 space-y-0.5">
+                                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                                    <h4 className="text-xs font-black font-[var(--font-heading)] text-gray-900 leading-tight">
+                                      {item.vaccine?.name} {item.vaccine?.doseNumber > 1 && `(Dosis ${item.vaccine?.doseNumber})`}
+                                    </h4>
                                   </div>
-                                )}
-                                
-                                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100/60">
-                                  <div>
-                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Tempat/Lokasi</span>
-                                    <p className="text-gray-900 font-semibold mt-0.5">{item.location || '-'}</p>
-                                  </div>
-                                  <div>
-                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Tenaga Medis</span>
-                                    <p className="text-gray-900 font-semibold mt-0.5">{item.healthcareWorker || '-'}</p>
+                                  
+                                  <div className="flex items-center justify-between text-[9px] text-gray-500 pt-0.5">
+                                    <span>Diberikan Pada:</span>
+                                    <span className="font-bold text-primary">
+                                      {formatDate(item.actualDate)}
+                                    </span>
                                   </div>
                                 </div>
 
-                                {item.sideEffectsNoted && (
-                                  <div className="pt-2 border-t border-gray-100/60 space-y-0.5">
-                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Efek Samping (KIPI)</span>
-                                    <p className="text-gray-600 font-medium leading-relaxed bg-warning/5 border border-warning/10 p-2.5 rounded-lg">
-                                      {item.sideEffectsNoted}
-                                    </p>
-                                  </div>
-                                )}
+                                {/* Expand icon arrow */}
+                                <div className="shrink-0 pt-0.5 text-gray-400">
+                                  <svg 
+                                    className={`w-3.5 h-3.5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    strokeWidth="2.5" 
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </div>
                               </div>
-                            )}
+
+                              {/* Expandable record details */}
+                              {isExpanded && (
+                                <div className="px-3.5 pb-3.5 pt-2 bg-gray-50/40 border-t border-gray-100 text-[10px] space-y-2.5 animate-slide-down">
+                                  {item.vaccine?.description && (
+                                    <div className="space-y-0.5">
+                                      <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Deskripsi Vaksin</span>
+                                      <p className="text-gray-500 font-medium leading-relaxed">{item.vaccine?.description}</p>
+                                    </div>
+                                  )}
+                                  
+                                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100/60">
+                                    <div>
+                                      <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Tempat/Lokasi</span>
+                                      <p className="text-gray-900 font-semibold mt-0.5">{item.location || '-'}</p>
+                                    </div>
+                                    <div>
+                                      <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Tenaga Medis</span>
+                                      <p className="text-gray-900 font-semibold mt-0.5">{item.healthcareWorker || '-'}</p>
+                                    </div>
+                                  </div>
+
+                                  {item.sideEffectsNoted && (
+                                    <div className="pt-2 border-t border-gray-100/60 space-y-0.5">
+                                      <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Efek Samping (KIPI)</span>
+                                      <p className="text-gray-600 font-medium leading-relaxed bg-warning/5 border border-warning/10 p-2 rounded-lg">
+                                        {item.sideEffectsNoted}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         );
                       })}

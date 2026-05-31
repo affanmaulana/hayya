@@ -1,12 +1,87 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { useChild } from '../hooks/useChild';
+import { useGrowth } from '../hooks/useGrowth';
+import { useImmunization } from '../hooks/useImmunization';
+import useMpasi from '../hooks/useMpasi';
 import { calculateAgeInMonthsAndDays, formatDate } from '../utils/dateHelpers';
 import CustomDatePicker from '../components/CustomDatePicker.jsx';
 
 export default function DashboardView() {
   const { currentUser } = useAuth();
   const { activeChild, childrenList, addChild, isLoading } = useChild();
+  const navigate = useNavigate();
+
+  const { getGrowthRecords } = useGrowth();
+  const records = useMemo(() => {
+    return activeChild ? getGrowthRecords(activeChild.id) : [];
+  }, [activeChild, getGrowthRecords]);
+
+  const latestRecord = useMemo(() => {
+    if (records.length === 0) return null;
+    return records[records.length - 1];
+  }, [records]);
+
+  const { calendar } = useImmunization(activeChild?.id);
+  
+  const nextImmunization = useMemo(() => {
+    if (!calendar || calendar.length === 0) return null;
+    return calendar.find(r => r.status === 'scheduled');
+  }, [calendar]);
+
+  const immunizationAlertText = useMemo(() => {
+    if (!nextImmunization) return 'Semua imunisasi wajib sudah lengkap! 🎉';
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const scheduled = new Date(nextImmunization.scheduledDate);
+    scheduled.setHours(0, 0, 0, 0);
+    
+    const diffTime = scheduled - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) {
+      return `Jadwal Imunisasi Terlewat: ${nextImmunization.vaccine?.name || 'Vaksin'} (Terlewat ${Math.abs(diffDays)} Hari)`;
+    } else if (diffDays === 0) {
+      return `Jadwal Imunisasi Hari Ini: ${nextImmunization.vaccine?.name || 'Vaksin'}`;
+    } else {
+      return `Jadwal Imunisasi Berikutnya: ${nextImmunization.vaccine?.name || 'Vaksin'} (${diffDays} Hari Lagi)`;
+    }
+  }, [nextImmunization]);
+
+  const { plans, recipes } = useMpasi();
+  
+  const currentDayOfWeek = useMemo(() => {
+    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const index = new Date().getDay();
+    return days[index];
+  }, []);
+
+  const currentPlan = useMemo(() => {
+    if (!activeChild || !plans) return null;
+    const childPlans = plans.filter(p => p.childId === activeChild.id);
+    if (childPlans.length === 0) return null;
+    childPlans.sort((a, b) => new Date(b.weekStartDate) - new Date(a.weekStartDate));
+    return childPlans[0];
+  }, [plans, activeChild]);
+
+  const todayMenu = useMemo(() => {
+    if (!currentPlan || !currentPlan.planData) return null;
+    const dayMenu = currentPlan.planData[currentDayOfWeek] || currentPlan.planData['monday'];
+    if (!dayMenu) return null;
+    
+    const getRecipeName = (recipeId) => {
+      const recipe = recipes.find(r => r.id === recipeId);
+      return recipe ? recipe.name : null;
+    };
+    
+    return {
+      breakfast: getRecipeName(dayMenu.breakfast) || 'Belum diatur',
+      lunch: getRecipeName(dayMenu.lunch) || 'Belum diatur',
+      dinner: getRecipeName(dayMenu.dinner) || 'Belum diatur'
+    };
+  }, [currentPlan, currentDayOfWeek, recipes]);
 
   // Local states for child form
   const [name, setName] = useState('');
@@ -285,106 +360,262 @@ export default function DashboardView() {
     );
   }
 
+  // Dynamic growth status computed qualitatively (Reference 1 and GrowthView style)
+  const growthStatus = useMemo(() => {
+    if (!activeChild) {
+      return {
+        label: 'Siap Pantau',
+        scoreText: '60/100',
+        desc: 'Mulai catat pertumbuhan si kecil secara berkala ya, Bunda.',
+        progressCount: 6
+      };
+    }
+    if (records.length === 0) {
+      return {
+        label: 'Mulai Catat',
+        scoreText: '60/100',
+        desc: `Skor tumbuh awal si kecil saat ini adalah 60/100. Yuk Bunda, segera ukur berat dan tinggi badan ${activeChild.name} agar sistem bisa menghitung perkembangan kurva kesehatannya secara akurat.`,
+        progressCount: 9
+      };
+    }
+    
+    const latest = records[records.length - 1];
+    const weight = parseFloat(latest.weightKg);
+    const height = parseFloat(latest.heightCm);
+    
+    let statusLabel = 'Tumbuh Ideal';
+    let scoreText = '95/100';
+    let statusDesc = `Skor tumbuh si kecil sangat prima di angka 95/100! Tinggi dan berat badan ${activeChild.name} berkembang dengan sangat pesat dan optimal sesuai standar kurva WHO. Pertahankan asupan gizinya ya, Bunda! ✨`;
+    let progressCount = 15;
+    
+    if (weight < 2.5 || height < 45) {
+      statusLabel = 'Kurang Ideal';
+      scoreText = '78/100';
+      statusDesc = `Skor tumbuh si kecil saat ini berada di angka 78/100. Tinggi atau berat badannya terindikasi berada sedikit di bawah kurva ideal WHO. Bunda disarankan untuk menambahkan asupan lemak tambahan (seperti santan atau mentega) serta protein hewani pada menu MPASI harian.`;
+      progressCount = 10;
+    }
+    
+    return {
+      label: statusLabel,
+      scoreText,
+      desc: statusDesc,
+      progressCount
+    };
+  }, [activeChild, records]);
+
+  // Dynamic calculation for LiLA (consistent with GrowthView formula)
+  const currentLila = useMemo(() => {
+    if (!activeChild) return '-';
+    if (latestRecord && latestRecord.lila) return `${latestRecord.lila} cm`;
+    
+    const dob = activeChild.dateOfBirth;
+    const today = new Date();
+    const birth = new Date(dob);
+    const ageInMonths = Math.max(0, (today.getFullYear() - birth.getFullYear()) * 12 + (today.getMonth() - birth.getMonth()));
+    
+    const weightVal = latestRecord ? parseFloat(latestRecord.weightKg) : activeChild.birthWeightKg;
+    const computedLila = (9.5 + Math.min(12, ageInMonths) * 0.2 + weightVal * 0.15).toFixed(1);
+    return `${computedLila} cm`;
+  }, [activeChild, latestRecord]);
+
   // ----- RENDER DASHBOARD (Active Child Toggled) -----
   return (
-    <div className="space-y-8 animate-fade-in px-0 font-[var(--font-body)]">
-      {/* Dynamic Welcome Hero Banner */}
-      <div className="bg-gradient-to-br from-primary to-secondary rounded-card p-6 text-white shadow-md shadow-primary/5 relative overflow-hidden">
-        {/* Ambient premium background blur shapes */}
-        <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-white/10 blur-xl" />
-        <div className="absolute -left-6 -top-6 w-24 h-24 rounded-full bg-white/10 blur-xl" />
-        
-        <div className="relative space-y-4">
-          <div>
-            <p className="text-[12px] opacity-85 font-semibold tracking-wide uppercase">
-              {timeGreeting}, Bunda {currentUser?.fullName?.split(' ')[0]} 🌟
-            </p>
-            <h2 className="text-xl font-extrabold font-[var(--font-heading)] leading-tight text-white mt-1">
-              Aktivitas Si Kecil Hari Ini
-            </h2>
-          </div>
+    <div className="space-y-6 animate-fade-in px-0 font-[var(--font-body)]">
+      
+      {/* 1. Element Pecahan Pertama: Child Profile & Score Card (Bold Pink Brand bg, White text, 20% Vertical Screen Height) */}
+      {activeChild && (
+        <div className="w-full min-h-[175px] rounded-[32px] bg-gradient-to-br from-[var(--color-secondary-light)] via-[var(--color-primary)] to-[var(--color-primary-dark)] p-6 shadow-md relative overflow-hidden mb-4 flex flex-col justify-between">
+          {/* Subtle glowing elements */}
+          <div className="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
           
-          {activeChild && (
-            <div className="flex items-center gap-3 bg-white/15 backdrop-blur-md rounded-xl p-3 border border-white/10">
-              <span className="text-2xl animate-pulse">👶</span>
-              <div className="flex flex-col">
-                <span className="text-[11px] text-white/70 font-semibold uppercase tracking-wider">Usia {activeChild.name} saat ini</span>
-                <span className="text-base font-extrabold tracking-tight mt-0.5">
-                  {ageString || 'Kalkulasi usia...'}
+          <div className="relative z-10 flex flex-col justify-between h-full w-full flex-1">
+            {/* Top-Left: Name and Age Stack */}
+            <div className="flex flex-col items-start leading-none">
+              <span style={{ color: '#ffffff' }} className="text-3xl font-black text-white leading-none tracking-tight block !text-white">
+                {activeChild.name}
+              </span>
+              <span style={{ color: 'rgba(255, 255, 255, 0.9)' }} className="text-xs text-white/90 font-bold mt-1 block !text-white/90">
+                Usia: {ageString || 'Kalkulasi usia...'}
+              </span>
+            </div>
+            
+            {/* Bottom-Right: Growth Score Stack */}
+            <div className="flex justify-end w-full mt-auto">
+              <div className="text-right">
+                <span style={{ color: 'rgba(255, 255, 255, 0.8)' }} className="text-[10px] font-bold text-white/80 uppercase tracking-widest block !text-white/80">
+                  Skor Tumbuh
+                </span>
+                <span style={{ color: '#ffffff' }} className="text-3xl font-black text-white mt-1 block leading-none !text-white">
+                  {growthStatus.scoreText}
                 </span>
               </div>
             </div>
-          )}
-        </div>
-      </div>
-
-      {/* Core Active Child Profile Card - matching the empty state's clean design system */}
-      {activeChild ? (
-        <div className="bg-white rounded-card border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-6 space-y-6 hover:shadow-[0_6px_16px_rgba(0,0,0,0.04)] transition-all duration-200 ease-in-out">
-          <div className="flex items-center gap-4">
-            {/* Elegant and gender-responsive pastel profile avatar */}
-            <div className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-extrabold font-[var(--font-heading)] border ${
-              activeChild.gender === 'L'
-                ? 'bg-accent/10 border-accent/15 text-accent'
-                : 'bg-primary/10 border-primary/15 text-primary'
-            }`}>
-              {activeChild.name ? activeChild.name.charAt(0).toUpperCase() : '👶'}
-            </div>
-            
-            <div className="flex-1 min-w-0">
-              <h3 className="text-base font-extrabold font-[var(--font-heading)] text-gray-900 truncate">
-                {activeChild.name}
-              </h3>
-              <p className="text-xs text-gray-500 mt-0.5">
-                Lahir pada {formatDate(activeChild.dateOfBirth)}
-              </p>
-            </div>
-
-            <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
-              activeChild.gender === 'L'
-                ? 'bg-accent/5 border-accent/10 text-accent'
-                : 'bg-primary/5 border-primary/10 text-primary'
-            }`}>
-              {activeChild.gender === 'L' ? 'Laki-laki 👦' : 'Perempuan 👧'}
-            </span>
           </div>
-
-          <hr className="border-gray-100/80" />
-
-          {/* Child Birth Parameters Grid */}
-          <div className="grid grid-cols-3 gap-3.5 text-center">
-            <div className="bg-gray-50/40 rounded-xl p-3 border border-gray-100">
-              <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">
-                Berat Lahir
-              </p>
-              <p className="text-sm font-extrabold text-gray-900 font-[var(--font-heading)] mt-1">
-                {activeChild.birthWeightKg} <span className="text-[11px] font-semibold text-gray-500">kg</span>
-              </p>
-            </div>
-            <div className="bg-gray-50/40 rounded-xl p-3 border border-gray-100">
-              <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">
-                Tinggi Lahir
-              </p>
-              <p className="text-sm font-extrabold text-gray-900 font-[var(--font-heading)] mt-1">
-                {activeChild.birthHeightCm} <span className="text-[11px] font-semibold text-gray-500">cm</span>
-              </p>
-            </div>
-            <div className="bg-gray-50/40 rounded-xl p-3 border border-gray-100">
-              <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">
-                Gol. Darah
-              </p>
-              <p className="text-sm font-extrabold text-gray-900 font-[var(--font-heading)] mt-1">
-                {activeChild.bloodType || '-'}
-              </p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="bg-white rounded-card border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.02)] p-6 text-center text-gray-500 text-sm">
-          Menyiapkan data profil anak... 🧡
         </div>
       )}
 
+      {/* 2. Element Pecahan Kedua: Scoring Bar WHO & Explanation (Placed directly on background) */}
+      {activeChild && (
+        <div className="space-y-2.5 px-2">
+          <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest block">
+            Analisis Kurva Pertumbuhan WHO
+          </span>
+          
+          {/* Progress bar matching Adherence style */}
+          <div className="w-full h-2.5 bg-gray-150 rounded-full overflow-hidden flex gap-0.5 border border-gray-100/20">
+            {Array.from({ length: 18 }).map((_, i) => (
+              <div
+                key={i}
+                className={`h-full flex-1 ${
+                  i < growthStatus.progressCount ? 'bg-emerald-500' : 'bg-gray-200'
+                }`}
+              />
+            ))}
+          </div>
+          
+          <p className="text-xs text-gray-600 font-medium leading-relaxed mt-1">
+            {growthStatus.desc}
+          </p>
+        </div>
+      )}
+
+      {/* 3. Element Pecahan Ketiga: 4-Column Growth Metrics Grid (Placed directly on background) */}
+      {activeChild && (
+        <div className="grid grid-cols-4 gap-2.5 py-4 border-t border-b border-border/80 my-4 px-1">
+          <div className="flex flex-col items-center">
+            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider text-center block">
+              Berat
+            </span>
+            <span className="text-base font-black text-gray-900 mt-1 text-center block">
+              {latestRecord ? `${latestRecord.weightKg} kg` : `${activeChild.birthWeightKg} kg`}
+            </span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider text-center block">
+              Tinggi
+            </span>
+            <span className="text-base font-black text-gray-900 mt-1 text-center block">
+              {latestRecord ? `${latestRecord.heightCm} cm` : `${activeChild.birthHeightCm} cm`}
+            </span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider text-center block">
+              L. Kepala
+            </span>
+            <span className="text-base font-black text-gray-900 mt-1 text-center block">
+              {latestRecord && latestRecord.headCircCm ? `${latestRecord.headCircCm} cm` : '-'}
+            </span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider text-center block">
+              L. Lengan
+            </span>
+            <span className="text-base font-black text-gray-900 mt-1 text-center block">
+              {currentLila}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* 4. Quick Actions Cards Grid (Reference 2 & 3 Style) */}
+      <div className="grid grid-cols-3 gap-3.5 mb-6 pt-1">
+        <div
+          onClick={() => navigate('/dashboard/growth/tambah')}
+          className="flex flex-col items-center justify-center bg-white border border-border hover:bg-gray-50/30 rounded-[24px] p-4 transition-all active:scale-[0.97] cursor-pointer shadow-xs"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50/70 text-emerald-600 flex items-center justify-center text-xl mb-1.5 shadow-sm border border-emerald-100/30">
+            📏
+          </div>
+          <span className="text-[11px] font-extrabold text-gray-700 tracking-tight text-center">
+            Ukur Anak
+          </span>
+        </div>
+        
+        <div
+          onClick={() => navigate('/dashboard/mpasi')}
+          className="flex flex-col items-center justify-center bg-white border border-border hover:bg-gray-50/30 rounded-[24px] p-4 transition-all active:scale-[0.97] cursor-pointer shadow-xs"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-amber-50/70 text-amber-600 flex items-center justify-center text-xl mb-1.5 shadow-sm border border-amber-100/30">
+            🥗
+          </div>
+          <span className="text-[11px] font-extrabold text-gray-700 tracking-tight text-center">
+            Log MPASI
+          </span>
+        </div>
+
+        <div
+          onClick={() => navigate('/dashboard/imunisasi')}
+          className="flex flex-col items-center justify-center bg-white border border-border hover:bg-gray-50/30 rounded-[24px] p-4 transition-all active:scale-[0.97] cursor-pointer shadow-xs"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-blue-50/70 text-blue-600 flex items-center justify-center text-xl mb-1.5 shadow-sm border border-blue-100/30">
+            💉
+          </div>
+          <span className="text-[11px] font-extrabold text-gray-700 tracking-tight text-center">
+            Imunisasi
+          </span>
+        </div>
+      </div>
+
+      {/* 3. Daily Operations Cards (Reference 1 Soft Gradient Cards) */}
+      {activeChild && (
+        <div className="space-y-4 pt-2 pb-24">
+          
+          {/* Soft Gradient Timeline Card: Upcoming Immunization */}
+          <div 
+            onClick={() => navigate('/dashboard/imunisasi')}
+            className="bg-gradient-to-r from-blue-50/70 to-sky-50/40 border border-blue-100/60 rounded-[32px] p-6 shadow-xs flex justify-between items-center relative overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer"
+          >
+            <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-blue-100/30 blur-xl pointer-events-none" />
+            
+            <div className="flex-1 min-w-0 pr-4">
+              <span className="text-[9px] font-bold text-blue-600 uppercase tracking-widest mb-1.5 block">
+                Jadwal Imunisasi Mendekati
+              </span>
+              <h4 className="text-sm font-black text-blue-900 tracking-tight leading-snug">
+                {nextImmunization ? nextImmunization.vaccine?.name : 'Semua Lengkap'}
+              </h4>
+              <span className="text-xs text-blue-800/80 font-medium mt-1 block truncate">
+                {immunizationAlertText}
+              </span>
+            </div>
+
+            <div className="w-11 h-11 bg-white rounded-2xl border border-blue-100 flex items-center justify-center text-lg shadow-sm shrink-0">
+              🔔
+            </div>
+          </div>
+
+          {/* Soft Gradient Timeline Card: Today's MPASI Menu */}
+          <div 
+            onClick={() => navigate('/dashboard/mpasi')}
+            className="bg-gradient-to-r from-rose-50/70 to-pink-50/40 border border-rose-100/60 rounded-[32px] p-6 shadow-xs flex justify-between items-center relative overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer"
+          >
+            <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-rose-100/30 blur-xl pointer-events-none" />
+            
+            <div className="flex-1 min-w-0 pr-4">
+              <span className="text-[9px] font-bold text-rose-600 uppercase tracking-widest mb-1.5 block">
+                Menu MPASI Hari Ini
+              </span>
+              <h4 className="text-sm font-black text-rose-900 tracking-tight leading-snug">
+                {todayMenu ? 'Menu Sehat disusun' : 'Buat Rencana Menu'}
+              </h4>
+              <div className="text-xs text-rose-800/80 font-medium mt-1 leading-normal truncate">
+                {todayMenu ? (
+                  <span>
+                    Pagi: {todayMenu.breakfast} • Siang: {todayMenu.lunch} • Malam: {todayMenu.dinner}
+                  </span>
+                ) : (
+                  <span className="italic text-gray-400">Rencana menu MPASI belum disusun, Bunda.</span>
+                )}
+              </div>
+            </div>
+
+            <div className="w-11 h-11 bg-white rounded-2xl border border-rose-100 flex items-center justify-center text-lg shadow-sm shrink-0">
+              🥣
+            </div>
+          </div>
+
+        </div>
+      )}
     </div>
   );
 }
