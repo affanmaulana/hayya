@@ -151,7 +151,7 @@ export default function TambahCatatanTumbuh() {
   }
 
   return (
-    <div className={`space-y-6 font-[var(--font-body)] ${isLeaving ? 'animate-slide-down-fade' : 'animate-slide-up-fade'}`}>
+    <div className={`space-y-6 font-[var(--font-body)] ${isLeaving ? 'animate-slide-out-right-fade' : 'animate-slide-in-right-fade'}`}>
       {/* Form Fields sit directly on background */}
       <div className="space-y-6">
         <div className="border-b border-gray-200/60 pb-4">
