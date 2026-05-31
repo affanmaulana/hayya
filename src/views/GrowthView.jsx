@@ -721,10 +721,10 @@ export default function GrowthView() {
         style={{ transform: isOpen ? 'translate(-50%, 0)' : 'translate(-50%, 100%)' }}
       >
         {/* Top Accent Bar */}
-        <div className="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-2.5 shrink-0" />
+        <div className="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-3 shrink-0" />
 
         {/* Premium Clean Header */}
-        <div className="flex items-center justify-between mb-3 shrink-0">
+        <div className="flex items-center justify-between mb-2 shrink-0">
           <h3 className="text-gray-900 font-bold text-lg tracking-tight">
             {editingRecordId ? 'Ubah Catatan Pertumbuhan' : 'Tambah Catatan Pertumbuhan'}
           </h3>
