@@ -349,7 +349,7 @@ export default function GrowthView() {
               </div>
 
               {/* Standard Block Layout Containment */}
-              <div className="w-full block relative" style={{ height: '256px' }}>
+              <div className="w-full block clear-both" style={{ width: '100%', height: '260px', position: 'relative' }}>
                 {chartData.filter(d => d.val !== null).length >= 2 ? (
                   <svg
                     key={activeMetric}
