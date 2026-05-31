@@ -95,10 +95,13 @@ export default function AppLayout() {
     }
 
     // Default or other routes (e.g. /tambah-catatan, /pengaturan, etc.)
-    // Note: /dashboard/growth/tambah is handled natively in TambahCatatanTumbuh.jsx, so we return show: false
-    if (path === '/dashboard/growth/tambah') {
+    // Note: /dashboard/growth/tambah is handled with the native sticky AppLayout header for guaranteed viewport sticky behavior
+    if (path === '/dashboard/growth/tambah' || path === '/dashboard/growth/tambah/') {
       return {
-        show: false
+        show: true,
+        showBackButton: true,
+        title: 'Catat Pertumbuhan Si Kecil',
+        showSwitcher: false
       };
     }
 
@@ -131,10 +134,10 @@ export default function AppLayout() {
                 maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)' 
               }}
             />
-            <div className="flex items-center justify-between px-4 py-4 min-h-[72px]">
-              {/* Left Side: Title and Back Button */}
-              <div className="flex items-center gap-3">
-                {headerConfig.showBackButton && (
+            <div className="flex items-center justify-between px-4 py-4 min-h-[72px] relative">
+              {/* Left Side: Back Button or Title */}
+              {headerConfig.showBackButton ? (
+                <div className="flex items-center shrink-0 z-10">
                   <button
                     onClick={() => {
                       if (location.pathname === '/dashboard/growth/tambah') {
@@ -150,23 +153,41 @@ export default function AppLayout() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
                   </button>
-                )}
-                
-                <div className="flex flex-col justify-center">
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <div className="flex flex-col justify-center">
+                    {headerConfig.subtitle && (
+                      <span className="text-xs text-gray-400 font-medium font-[var(--font-body)]">
+                        {headerConfig.subtitle}
+                      </span>
+                    )}
+                    <h1 className="text-xl font-bold text-gray-900 tracking-tight font-[var(--font-heading)] leading-tight m-0">
+                      {headerConfig.title}
+                    </h1>
+                  </div>
+                </div>
+              )}
+
+              {/* Centered Title for Subpages (when back button is present) */}
+              {headerConfig.showBackButton && (
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none max-w-[60%]">
                   {headerConfig.subtitle && (
-                    <span className="text-xs text-gray-400 font-medium font-[var(--font-body)]">
+                    <span className="text-[10px] text-gray-400 font-semibold tracking-wide uppercase font-[var(--font-body)] mb-0.5">
                       {headerConfig.subtitle}
                     </span>
                   )}
-                  <h1 className="text-xl font-bold text-gray-900 tracking-tight font-[var(--font-heading)] leading-tight m-0">
+                  <h1 className="text-xs md:text-sm font-semibold text-gray-900 tracking-tight bg-white/60 border border-white/30 px-3.5 py-1.5 rounded-full whitespace-nowrap pointer-events-auto shadow-xs backdrop-blur-xs">
                     {headerConfig.title}
                   </h1>
                 </div>
-              </div>
+              )}
 
-              {/* Right Side: Child Switcher */}
-              {headerConfig.showSwitcher && (
+              {/* Right Side: Child Switcher or Balanced Spacer */}
+              {headerConfig.showSwitcher ? (
                 <ChildSwitcher />
+              ) : (
+                <div className="w-10 h-10 shrink-0 pointer-events-none" />
               )}
             </div>
           </header>

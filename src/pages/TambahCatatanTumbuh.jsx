@@ -166,61 +166,34 @@ export default function TambahCatatanTumbuh() {
   }
 
   return (
-    <div
-      className="space-y-6 font-[var(--font-body)] transition-all ease-out pb-44"
-      style={{
-        opacity: isLeaving ? 0.3 : (mounted ? 1 : 0),
-        transform: isLeaving ? 'translateX(48px)' : (mounted ? 'none' : 'translateX(32px)'),
-        transitionDuration: isLeaving ? '220ms' : '400ms',
-        transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
-      }}
-    >
-      {/* Sovereign iOS centered Action Bar header rendered directly inside the page to participate in slide animations */}
-      <header className="sticky top-0 z-30 -mx-4 px-4 h-16 flex items-center justify-between border-b border-gray-100 mb-2 shrink-0">
-        {/* Progressive Glass Blur background layer matching main header */}
-        <div 
-          className="absolute inset-0 bg-white/20 pointer-events-none -z-10"
-          style={{ 
-            backdropFilter: 'blur(8px)', 
-            WebkitBackdropFilter: 'blur(8px)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)', 
-            maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)' 
-          }}
-        />
-        <button
-          onClick={handleBack}
-          className="w-10 h-10 rounded-full bg-white/80 border border-white/60 shadow-sm flex items-center justify-center text-gray-800 hover:bg-black/[0.02] active:scale-95 transition-all cursor-pointer focus:outline-none"
-          aria-label="Kembali"
-        >
-          <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-          </svg>
-        </button>
-        
-        <h2 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-900 font-semibold text-sm tracking-tight bg-white/60 border border-white/30 px-3 py-1 rounded-full whitespace-nowrap">
-          Catat Pertumbuhan Si Kecil
-        </h2>
-        
-        {/* Invisible spacer to maintain symmetry for justify-between alignment */}
-        <div className="w-10 h-10 pointer-events-none" />
-      </header>
-
-      {/* Form Fields sit directly on background */}
-      <div className="space-y-6">
-        {editId ? (
-          <div className="border-b border-gray-200/60 pb-4">
-            <h3 className="text-base font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">
-              Ubah Informasi Catatan
-            </h3>
-            <p className="text-xs text-gray-500 mt-1">
-              Perbarui data timbangan berat dan tinggi badan {activeChild?.name || 'si kecil'}.
+    <div className="relative font-[var(--font-body)]">
+      {/* Animated Content Wrapper */}
+      <div
+        className="space-y-6 transition-all ease-out pb-44 pt-4"
+        style={{
+          opacity: isLeaving ? 0.3 : (mounted ? 1 : 0),
+          transform: isLeaving ? 'translateX(48px)' : (mounted ? 'none' : 'translateX(32px)'),
+          transitionDuration: isLeaving ? '220ms' : '400ms',
+          transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
+        }}
+      >
+        {/* Form Fields sit directly on background */}
+        <div className="space-y-6">
+          {editId ? (
+            <div className="border-b border-gray-200/60 pb-4">
+              <h3 className="text-base font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">
+                Ubah Informasi Catatan
+              </h3>
+              <p className="text-xs text-gray-500 mt-1">
+                Perbarui data timbangan berat dan tinggi badan {activeChild?.name || 'si kecil'}.
+              </p>
+            </div>
+          ) : (
+            <p className="text-xs text-gray-500 leading-relaxed">
+              Catat perkembangan fisik <span className="font-semibold text-gray-700">{activeChild?.name || 'si kecil'}</span> secara berkala untuk mengevaluasi status pertumbuhannya.
             </p>
-          </div>
-        ) : (
-          <p className="text-xs text-gray-500 leading-relaxed">
-            Catat perkembangan fisik <span className="font-semibold text-gray-700">{activeChild?.name || 'si kecil'}</span> secara berkala untuk mengevaluasi status pertumbuhannya.
-          </p>
-        )}
+          )}
+        </div>
 
         {/* Error Alert Box */}
         {errorMsg && (
@@ -228,7 +201,7 @@ export default function TambahCatatanTumbuh() {
             ⚠️ {errorMsg}
           </div>
         )}
-
+ 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Weight */}
           <div className="space-y-1.5">
