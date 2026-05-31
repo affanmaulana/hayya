@@ -707,24 +707,24 @@ export default function GrowthView() {
         +
       </button>
 
-      {/* Backdrop overlay - z-50 to stay in front of everything */}
+      {/* Backdrop overlay - z-30 to stay in front of main content and behind modal */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-50 transition-opacity duration-300"
+          className="fixed inset-0 bg-black/40 z-30 transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      {/* STRICT iOS-Style Bottom Sheet Modal - padding p-4, pb-8, z-60 */}
+      {/* STRICT iOS-Style Bottom Sheet Modal - max-h-[85vh], flex flex-col, z-40 */}
       <div
-        className="fixed bottom-0 left-1/2 w-full max-w-[448px] bg-white rounded-t-[32px] p-4 pb-8 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-60 transition-transform duration-300 ease-in-out"
+        className="fixed bottom-0 left-1/2 w-full max-w-[448px] max-h-[85vh] bg-white rounded-t-[32px] p-6 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] z-40 flex flex-col transition-transform duration-300 ease-in-out"
         style={{ transform: isOpen ? 'translate(-50%, 0)' : 'translate(-50%, 100%)' }}
       >
         {/* Top Accent Bar */}
-        <div className="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-4" />
+        <div className="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-4 shrink-0" />
 
         {/* Premium Clean Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 shrink-0">
           <h3 className="text-gray-900 font-bold text-lg tracking-tight">
             {editingRecordId ? 'Ubah Catatan Pertumbuhan' : 'Tambah Catatan Pertumbuhan'}
           </h3>
@@ -737,95 +737,100 @@ export default function GrowthView() {
           </button>
         </div>
 
-        {/* Clean Input Fields Form - REMOVED pb-28 and scroll limits */}
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="weightKg">Berat (kg) *</label>
-            <input
-              id="weightKg"
-              type="number"
-              step="0.01"
-              min="1"
-              max="40"
-              placeholder="0.00"
-              value={weightKg}
-              onChange={(e) => setWeightKg(e.target.value)}
-              required
-              className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="heightCm">Tinggi (cm) *</label>
-            <input
-              id="heightCm"
-              type="number"
-              step="0.1"
-              min="30"
-              max="130"
-              placeholder="0.0"
-              value={heightCm}
-              onChange={(e) => setHeightCm(e.target.value)}
-              required
-              className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="headCircCm">Lingkar Kepala (cm) (opsional)</label>
-            <input
-              id="headCircCm"
-              type="number"
-              step="0.1"
-              min="25"
-              max="60"
-              placeholder="0.0"
-              value={headCircCm}
-              onChange={(e) => setHeadCircCm(e.target.value)}
-              className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="measuredAt">Tanggal Pengukuran *</label>
-            <input
-              id="measuredAt"
-              type="date"
-              value={measuredAt}
-              onChange={(e) => setMeasuredAt(e.target.value)}
-              max={new Date().toISOString().split('T')[0]}
-              required
-              className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4 cursor-pointer"
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="notes">Catatan (opsional)</label>
-            <textarea
-              id="notes"
-              rows={2}
-              placeholder="Tambahkan catatan di sini..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
-            />
+        {/* Clean Input Fields Form with isolated scroll wrapper and static bottom actions */}
+        <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
+          {/* Isolated Scrollable Body Container */}
+          <div className="w-full flex-1 overflow-y-auto pr-1 my-3 scrollbar-none pb-24">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="weightKg">Berat (kg) *</label>
+              <input
+                id="weightKg"
+                type="number"
+                step="0.01"
+                min="1"
+                max="40"
+                placeholder="0.00"
+                value={weightKg}
+                onChange={(e) => setWeightKg(e.target.value)}
+                required
+                className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="heightCm">Tinggi (cm) *</label>
+              <input
+                id="heightCm"
+                type="number"
+                step="0.1"
+                min="30"
+                max="130"
+                placeholder="0.0"
+                value={heightCm}
+                onChange={(e) => setHeightCm(e.target.value)}
+                required
+                className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="headCircCm">Lingkar Kepala (cm) (opsional)</label>
+              <input
+                id="headCircCm"
+                type="number"
+                step="0.1"
+                min="25"
+                max="60"
+                placeholder="0.0"
+                value={headCircCm}
+                onChange={(e) => setHeadCircCm(e.target.value)}
+                className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="measuredAt">Tanggal Pengukuran *</label>
+              <input
+                id="measuredAt"
+                type="date"
+                value={measuredAt}
+                onChange={(e) => setMeasuredAt(e.target.value)}
+                max={new Date().toISOString().split('T')[0]}
+                required
+                className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4 cursor-pointer"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="notes">Catatan (opsional)</label>
+              <textarea
+                id="notes"
+                rows={2}
+                placeholder="Tambahkan catatan di sini..."
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="w-full bg-gray-50 border-0 rounded-2xl py-3 px-4 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500/10 focus:bg-white transition-all mb-4"
+              />
+            </div>
           </div>
 
-          {/* High-Leverage Capsule Button - BRANDING PINK COLOR (bg-primary) */}
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full py-3.5 bg-primary hover:bg-primary-dark text-white font-medium text-sm rounded-full shadow-sm transition-all active:scale-[0.98] cursor-pointer"
-          >
-            {submitting ? 'Menyimpan...' : (editingRecordId ? 'Simpan Perubahan' : 'Simpan Catatan')}
-          </button>
-
-          {editingRecordId && (
+          {/* High-Leverage Capsule Button - BRANDING PINK COLOR (bg-primary) - static outside scroll wrapper */}
+          <div className="shrink-0 pt-2 bg-white">
             <button
-              type="button"
-              onClick={handleDelete}
+              type="submit"
               disabled={submitting}
-              className="w-full mt-3 py-3.5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-sm rounded-full transition-all active:scale-[0.98] cursor-pointer text-center"
+              className="w-full py-3.5 bg-primary hover:bg-primary-dark text-white font-medium text-sm rounded-full shadow-sm transition-all active:scale-[0.98] cursor-pointer"
             >
-              Hapus Catatan
+              {submitting ? 'Menyimpan...' : (editingRecordId ? 'Simpan Perubahan' : 'Simpan Catatan')}
             </button>
-          )}
+
+            {editingRecordId && (
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={submitting}
+                className="w-full mt-3 py-3.5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-sm rounded-full transition-all active:scale-[0.98] cursor-pointer text-center"
+              >
+                Hapus Catatan
+              </button>
+            )}
+          </div>
         </form>
       </div>
     </div>
