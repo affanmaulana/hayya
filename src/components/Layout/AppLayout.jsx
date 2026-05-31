@@ -38,6 +38,7 @@ export default function AppLayout() {
     '/dashboard/profil/anak': 'Kelola Data Anak',
     '/dashboard/profil/edukasi': 'Edukasi & Artikel',
     '/dashboard/profil/cek-gejala': 'Cek Gejala',
+    '/dashboard/growth/tambah': 'Tambah Catatan Tumbuh',
   };
 
   const activeSubPageTitle = subPageTitles[location.pathname];
@@ -92,9 +93,15 @@ export default function AppLayout() {
             />
             <div className="px-4 h-16 flex items-center justify-between relative">
               <button
-                onClick={() => navigate('/dashboard/profil')}
+                onClick={() => {
+                  if (location.pathname === '/dashboard/growth/tambah') {
+                    navigate('/dashboard/growth');
+                  } else {
+                    navigate('/dashboard/profil');
+                  }
+                }}
                 className="w-10 h-10 rounded-full bg-white/80 border border-white/60 shadow-sm flex items-center justify-center text-gray-800 hover:bg-black/[0.02] active:scale-95 transition-all cursor-pointer focus:outline-none"
-                aria-label="Kembali ke profil"
+                aria-label="Kembali"
               >
                 <svg className="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -112,7 +119,7 @@ export default function AppLayout() {
         )}
 
         {/* ===== MAIN CONTENT ===== */}
-        <main className="flex-1 overflow-y-auto px-(--spacing-page) pt-0 pb-(--spacing-section) pb-28">
+        <main className={`flex-1 overflow-y-auto px-(--spacing-page) pt-0 pb-(--spacing-section) ${location.pathname === '/dashboard/growth/tambah' ? 'pb-8' : 'pb-28'}`}>
           <Outlet />
         </main>
 
@@ -122,7 +129,7 @@ export default function AppLayout() {
         </div>
 
         {/* ===== BOTTOM NAVIGATION ===== */}
-        <BottomNav />
+        {location.pathname !== '/dashboard/growth/tambah' && <BottomNav />}
       </div>
     </div>
   );

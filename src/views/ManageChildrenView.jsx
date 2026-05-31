@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChild } from '../hooks/useChild';
 import { formatDate } from '../utils/dateHelpers';
+import CustomDatePicker from '../components/CustomDatePicker.jsx';
 
 export default function ManageChildrenView({ onBack }) {
   const navigate = useNavigate();
@@ -271,14 +272,13 @@ export default function ManageChildrenView({ onBack }) {
                 <label htmlFor="edit-dob" className="text-xs font-semibold text-gray-700">
                   Tanggal Lahir *
                 </label>
-                <input
+                <CustomDatePicker
                   id="edit-dob"
-                  type="date"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
                   max={maxDobString}
+                  placeholder="Pilih tanggal lahir..."
                   required
-                  className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out cursor-pointer"
                 />
               </div>
 
@@ -438,14 +438,13 @@ export default function ManageChildrenView({ onBack }) {
                 <label htmlFor="add-dob" className="text-xs font-semibold text-gray-700">
                   Tanggal Lahir *
                 </label>
-                <input
+                <CustomDatePicker
                   id="add-dob"
-                  type="date"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
                   max={maxDobString}
+                  placeholder="Pilih tanggal lahir..."
                   required
-                  className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out cursor-pointer"
                 />
               </div>
 

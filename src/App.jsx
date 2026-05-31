@@ -18,6 +18,8 @@ import GrowthView from './views/GrowthView';
 import MpasiView from './views/MpasiView';
 import ImmunizationView from './views/ImmunizationView';
 import ProfilPage from './pages/ProfilPage';
+import TambahCatatanTumbuh from './pages/TambahCatatanTumbuh';
+
 
 // Views/Sub-views
 import EditProfileView from './views/EditProfileView';
@@ -82,6 +84,8 @@ function AppRoutes() {
       >
         <Route index element={<DashboardView />} />
         <Route path="growth" element={<GrowthView />} />
+        <Route path="growth/tambah" element={<TambahCatatanTumbuh />} />
+
         <Route path="mpasi" element={<MpasiView />} />
         <Route path="imunisasi" element={<ImmunizationView />} />
         <Route path="profil" element={<ProfilPage />} />

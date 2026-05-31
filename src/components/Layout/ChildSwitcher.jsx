@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useChild } from '../../hooks/useChild.js';
 import { calculateAgeInMonthsAndDays } from '../../utils/dateHelpers.js';
+import CustomDatePicker from '../CustomDatePicker.jsx';
 
 /**
  * ChildSwitcher — Dropdown to switch between registered children.
@@ -256,12 +257,11 @@ export default function ChildSwitcher() {
                 <label className="text-[11px] font-bold text-text">
                   Tanggal Lahir <span className="text-primary">*</span>
                 </label>
-                <input
-                  type="date"
+                <CustomDatePicker
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
                   max={todayString}
-                  className="w-full h-9 px-3 border border-border rounded-input text-xs bg-bg-card focus:border-primary focus:outline-none transition-colors cursor-pointer"
+                  placeholder="Pilih tanggal lahir..."
                   required
                 />
               </div>

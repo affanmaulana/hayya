@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import useAuth from '../hooks/useAuth';
 import { useChild } from '../hooks/useChild';
 import { calculateAgeInMonthsAndDays, formatDate } from '../utils/dateHelpers';
+import CustomDatePicker from '../components/CustomDatePicker.jsx';
 
 export default function DashboardView() {
   const { currentUser } = useAuth();
@@ -172,13 +173,12 @@ export default function DashboardView() {
               <label htmlFor="birth-date" className="text-xs font-semibold text-gray-700">
                 Tanggal Lahir <span className="text-primary">*</span>
               </label>
-              <input
+              <CustomDatePicker
                 id="birth-date"
-                type="date"
                 value={dateOfBirth}
                 onChange={(e) => setDateOfBirth(e.target.value)}
                 max={todayString}
-                className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out cursor-pointer"
+                placeholder="Pilih tanggal lahir..."
                 required
               />
             </div>

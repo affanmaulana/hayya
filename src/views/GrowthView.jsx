@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGrowth } from '../hooks/useGrowth';
 import { useChild } from '../hooks/useChild';
@@ -7,159 +7,12 @@ import { formatDate } from '../utils/dateHelpers';
 export default function GrowthView() {
   const navigate = useNavigate();
   const { activeChild, isLoading } = useChild();
-  const { getGrowthRecords, addGrowthRecord, deleteGrowthRecord } = useGrowth();
+  const { getGrowthRecords } = useGrowth();
 
-  const [weightKg, setWeightKg] = useState('');
-  const [heightCm, setHeightCm] = useState('');
-  const [headCircCm, setHeadCircCm] = useState('');
-  const [measuredAt, setMeasuredAt] = useState('');
-  const [notes, setNotes] = useState('');
-  const [toastMessage, setToastMessage] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState('ringkasan');
   const [activeMetric, setActiveMetric] = useState('tinggi'); // 'berat', 'tinggi', 'lingkarKepala', 'lila'
-  const [editingRecordId, setEditingRecordId] = useState(null);
-
-  // Auto-dismiss toast message after 3 seconds
-  useEffect(() => {
-    if (toastMessage) {
-      const timer = setTimeout(() => {
-        setToastMessage('');
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [toastMessage]);
-
-  // ----- RENDER LOADING STATE -----
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 px-4 space-y-4 font-[var(--font-body)]">
-        <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-        <p className="text-sm text-text-secondary font-medium">Memuat data si kecil...</p>
-      </div>
-    );
-  }
-
-  // ----- RENDER EMPTY STATE (No Active Child) -----
-  if (!activeChild) {
-    return (
-      <div className="flex flex-col items-center justify-center text-center py-12 px-4 space-y-5 font-[var(--font-body)]">
-        <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center text-3xl shadow-sm border border-primary/10">
-          📈
-        </div>
-        <div className="space-y-2">
-          <h2 className="text-lg font-bold font-[var(--font-heading)] text-text">
-            Bunda Belum Memilih Profil Si Kecil
-          </h2>
-          <p className="text-sm text-text-secondary max-w-[280px] leading-relaxed mx-auto">
-            Yuk, daftarkan atau pilih profil si kecil terlebih dahulu di Beranda untuk mencatat data pertumbuhannya. 🧡
-          </p>
-        </div>
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="h-11 px-6 rounded-button bg-primary hover:bg-primary-dark text-white text-sm font-semibold transition-colors shadow-md shadow-primary/10 cursor-pointer"
-        >
-          Ke Beranda
-        </button>
-      </div>
-    );
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setToastMessage('');
-    setSubmitting(true);
-    try {
-      if (!activeChild) throw new Error('Tidak ada anak aktif.');
-      
-      const record = {
-        weightKg,
-        heightCm,
-        headCircCm: headCircCm || null,
-        measuredAt,
-        notes,
-      };
-
-      if (editingRecordId) {
-        // Validate input limits before deletion
-        const w = parseFloat(weightKg);
-        if (isNaN(w) || w < 1.0 || w > 40.0) throw new Error('Berat badan harus di antara 1.0 kg dan 40.0 kg, Bunda. 🧡');
-        const h = parseFloat(heightCm);
-        if (isNaN(h) || h < 30.0 || h > 130.0) throw new Error('Tinggi badan harus di antara 30.0 cm dan 130.0 cm, Bunda. 🧡');
-        if (headCircCm) {
-          const hc = parseFloat(headCircCm);
-          if (isNaN(hc) || hc < 25.0 || hc > 60.0) throw new Error('Lingkar kepala harus di antara 25.0 cm dan 60.0 cm, Bunda. 🧡');
-        }
-        
-        // Date checks
-        const dob = new Date(activeChild.dateOfBirth);
-        const measured = new Date(measuredAt);
-        const today = new Date();
-        const dobDateOnly = new Date(dob.getFullYear(), dob.getMonth(), dob.getDate());
-        const measuredDateOnly = new Date(measured.getFullYear(), measured.getMonth(), measured.getDate());
-        const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-        if (measuredDateOnly > todayDateOnly) throw new Error('Tanggal pengukuran tidak boleh melewati hari ini, Bunda. 🧡');
-        if (measuredDateOnly < dobDateOnly) throw new Error(`Tanggal tidak boleh mendahului tanggal lahir (${activeChild.dateOfBirth}), Bunda. 🧡`);
-
-        // Check duplicates excluding self
-        const otherRecords = records.filter(r => r.id !== editingRecordId);
-        if (otherRecords.some(r => r.measuredAt === measuredAt)) {
-          throw new Error(`Bunda sudah memiliki catatan pertumbuhan pada tanggal ${measuredAt}.`);
-        }
-
-        // Safe delete
-        await deleteGrowthRecord(editingRecordId);
-      }
-
-      await addGrowthRecord(activeChild.id, record);
-      
-      // clear form
-      setWeightKg('');
-      setHeightCm('');
-      setHeadCircCm('');
-      setMeasuredAt('');
-      setNotes('');
-      setEditingRecordId(null);
-      setIsOpen(false);
-    } catch (err) {
-      setToastMessage(err.message || 'Gagal menyimpan catatan pertumbuhan.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!editingRecordId) return;
-    setSubmitting(true);
-    try {
-      await deleteGrowthRecord(editingRecordId);
-      setWeightKg('');
-      setHeightCm('');
-      setHeadCircCm('');
-      setMeasuredAt('');
-      setNotes('');
-      setEditingRecordId(null);
-      setIsOpen(false);
-    } catch (err) {
-      setToastMessage(err.message || 'Gagal menghapus catatan.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   const records = activeChild ? getGrowthRecords(activeChild.id) : [];
-
-  // Reset form fields when the active child changes
-  useEffect(() => {
-    setWeightKg('');
-    setHeightCm('');
-    setHeadCircCm('');
-    setMeasuredAt('');
-    setNotes('');
-    setIsOpen(false);
-  }, [activeChild?.id]);
 
   // WHO Growth Standard approximation for range [z-score -2, z-score +2]
   const getIdealRangeForMetric = (metric, ageInMonths) => {
@@ -390,16 +243,6 @@ export default function GrowthView() {
         }
       `}</style>
 
-      {/* Floating Center Toast Notification Popup with Auto-dismiss */}
-      {toastMessage && (
-        <div className="fixed top-10 left-1/2 -translate-x-1/2 z-99 flex items-center justify-center w-full max-w-[320px] px-4 animate-fade-in">
-          <div className="bg-gray-900/95 backdrop-blur-md text-white text-xs font-semibold py-3 px-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.15)] flex items-center gap-2 border border-white/10">
-            <span>⚠️</span>
-            <span className="leading-relaxed">{toastMessage}</span>
-          </div>
-        </div>
-      )}
-
       {/* Dynamic Header Title - REMOVED horizontal padding */}
       <div className="mt-1 px-0">
         <h2 className="text-xl font-bold font-[var(--font-heading)] text-gray-900 tracking-tight">
@@ -455,7 +298,7 @@ export default function GrowthView() {
             </p>
           </div>
           <button
-            onClick={() => setIsOpen(true)}
+            onClick={() => navigate('/dashboard/growth/tambah')}
             className="h-10 px-5 rounded-button bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-semibold border border-gray-200 transition-colors cursor-pointer"
           >
             Tambah Catatan Pertama
@@ -649,7 +492,7 @@ export default function GrowthView() {
                   return (
                     <div 
                       key={r.id || i}
-                      onClick={() => handleEditClick(r)}
+                      onClick={() => navigate(`/dashboard/growth/tambah?edit=${r.id}`)}
                       className="flex items-center justify-between py-3 border-b border-gray-100/70 last:border-0 cursor-pointer hover:bg-gray-50/50 active:scale-[0.99] transition-all px-2 -mx-2 rounded-xl"
                       title="Klik untuk mengubah catatan"
                     >
@@ -692,147 +535,13 @@ export default function GrowthView() {
 
       {/* Desktop-Safe Premium Liquid Glass Floating Action Button (FAB) */}
       <button
-        onClick={() => {
-          setEditingRecordId(null);
-          setWeightKg('');
-          setHeightCm('');
-          setHeadCircCm('');
-          setMeasuredAt('');
-          setNotes('');
-          setIsOpen(true);
-        }}
+        onClick={() => navigate('/dashboard/growth/tambah')}
         className="fixed bottom-24 right-6 md:right-[calc(50%-384px+24px)] lg:right-[calc(50%-512px+24px)] left-auto z-30 w-14 h-14 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex items-center justify-center text-gray-800 text-3xl font-light hover:bg-black/[0.02] active:scale-95 transition-all cursor-pointer"
         aria-label="Tambah catatan pertumbuhan"
       >
         +
       </button>
-
-      {/* Backdrop overlay - z-40 to stay in front of main content and behind modal */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-40 transition-opacity duration-300"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
-
-      {/* STRICT iOS-Style Bottom Sheet Modal - max-h-[85vh], flex flex-col, z-50 */}
-      <div
-        className="fixed bottom-0 left-1/2 w-full max-w-[448px] max-h-[85vh] bg-white rounded-t-[32px] p-6 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] z-50 flex flex-col transition-transform duration-300 ease-in-out"
-        style={{ transform: isOpen ? 'translate(-50%, 0)' : 'translate(-50%, 100%)' }}
-      >
-        {/* Top Accent Bar */}
-        <div className="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-3 shrink-0" />
-
-        {/* Premium Clean Header */}
-        <div className="flex items-center justify-between mb-2 shrink-0">
-          <h3 className="text-gray-900 font-bold text-lg tracking-tight">
-            {editingRecordId ? 'Ubah Catatan Pertumbuhan' : 'Tambah Catatan Pertumbuhan'}
-          </h3>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-all duration-200 cursor-pointer font-bold text-base focus:outline-none"
-            aria-label="Tutup"
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Clean Input Fields Form with isolated scroll wrapper and static bottom actions */}
-        <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
-          {/* Isolated Scrollable Body Container with gentle horizontal padding to prevent focused border clipping */}
-          <div className="w-full flex-1 overflow-y-auto px-1.5 pr-2.5 my-3 scrollbar-none pb-28">
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="weightKg">Berat (kg) *</label>
-              <input
-                id="weightKg"
-                type="number"
-                step="0.01"
-                min="1"
-                max="40"
-                placeholder="0.00"
-                value={weightKg}
-                onChange={(e) => setWeightKg(e.target.value)}
-                required
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-3"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="heightCm">Tinggi (cm) *</label>
-              <input
-                id="heightCm"
-                type="number"
-                step="0.1"
-                min="30"
-                max="130"
-                placeholder="0.0"
-                value={heightCm}
-                onChange={(e) => setHeightCm(e.target.value)}
-                required
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-3"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="headCircCm">Lingkar Kepala (cm) (opsional)</label>
-              <input
-                id="headCircCm"
-                type="number"
-                step="0.1"
-                min="25"
-                max="60"
-                placeholder="0.0"
-                value={headCircCm}
-                onChange={(e) => setHeadCircCm(e.target.value)}
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-3"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="measuredAt">Tanggal Pengukuran *</label>
-              <input
-                id="measuredAt"
-                type="date"
-                value={measuredAt}
-                onChange={(e) => setMeasuredAt(e.target.value)}
-                max={new Date().toISOString().split('T')[0]}
-                required
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-3 cursor-pointer"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-700 block mb-1" htmlFor="notes">Catatan (opsional)</label>
-              <textarea
-                id="notes"
-                rows={2}
-                placeholder="Tambahkan catatan di sini..."
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-3"
-              />
-            </div>
-          </div>
-
-          {/* High-Leverage Capsule Button - BRANDING PINK COLOR (bg-primary) - static outside scroll wrapper */}
-          <div className="shrink-0 pt-2 bg-white">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-3.5 bg-primary hover:bg-primary-dark text-white font-medium text-sm rounded-full shadow-sm transition-all active:scale-[0.98] cursor-pointer"
-            >
-              {submitting ? 'Menyimpan...' : (editingRecordId ? 'Simpan Perubahan' : 'Simpan Catatan')}
-            </button>
-
-            {editingRecordId && (
-              <button
-                type="button"
-                onClick={handleDelete}
-                disabled={submitting}
-                className="w-full mt-3 py-3.5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-sm rounded-full transition-all active:scale-[0.98] cursor-pointer text-center"
-              >
-                Hapus Catatan
-              </button>
-            )}
-          </div>
-        </form>
-      </div>
     </div>
   );
 }
+

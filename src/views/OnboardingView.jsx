@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { ChildContext } from '../context/ChildContext';
 import { getAppData, saveAppData } from '../utils/localStorageUtils';
+import CustomDatePicker from '../components/CustomDatePicker.jsx';
 
 /**
  * Custom robust UUID generator with Date.now() + Math.random() fallback.
@@ -428,15 +429,12 @@ export default function OnboardingView() {
                 <label htmlFor="birth-date" className="text-xs font-semibold text-text">
                   Tanggal Lahir <span className="text-primary">*</span>
                 </label>
-                <input
+                <CustomDatePicker
                   id="birth-date"
-                  type="date"
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
                   max={todayString}
-                  className={`w-full h-11 px-4 border rounded-input text-sm bg-bg-card focus:outline-none transition-colors cursor-pointer ${
-                    dateError ? 'border-danger focus:border-danger' : 'border-border focus:border-primary'
-                  }`}
+                  placeholder="Pilih tanggal lahir..."
                   required
                 />
                 

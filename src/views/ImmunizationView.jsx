@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useChild } from '../hooks/useChild';
 import { useImmunization } from '../hooks/useImmunization';
 import { calculateAgeInMonthsAndDays, formatDate } from '../utils/dateHelpers';
+import CustomDatePicker from '../components/CustomDatePicker.jsx';
 
 export default function ImmunizationView() {
   const navigate = useNavigate();
@@ -537,15 +538,14 @@ export default function ImmunizationView() {
                   <span>Tanggal Pemberian *</span>
                   <span className="text-[10px] text-gray-400 font-normal">Sesuai kartu</span>
                 </label>
-                <input
+                <CustomDatePicker
                   id="modal-date"
-                  type="date"
                   value={actualDate}
                   onChange={(e) => setActualDate(e.target.value)}
                   max={new Date().toISOString().split('T')[0]}
                   min={activeChild?.dateOfBirth}
+                  placeholder="Pilih tanggal pemberian..."
                   required
-                  className="w-full h-11 px-4 border border-gray-200 rounded-input text-sm bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all duration-200 ease-in-out cursor-pointer"
                 />
               </div>
 

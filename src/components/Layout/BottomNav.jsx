@@ -114,7 +114,7 @@ export default function BottomNav() {
       aria-label="Navigasi utama"
     >
       {/* Inner wrapper — relative context for the sliding pill */}
-      <div className="relative flex flex-row w-full h-full p-1 items-center justify-between">
+      <div className="relative flex flex-row w-full h-full items-center justify-between">
 
         {/* Sliding pill — single element that glides between tabs */}
         <div
