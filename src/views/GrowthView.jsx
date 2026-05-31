@@ -721,10 +721,10 @@ export default function GrowthView() {
         style={{ transform: isOpen ? 'translate(-50%, 0)' : 'translate(-50%, 100%)' }}
       >
         {/* Top Accent Bar */}
-        <div className="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-4 shrink-0" />
+        <div className="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-2.5 shrink-0" />
 
         {/* Premium Clean Header */}
-        <div className="flex items-center justify-between mb-4 shrink-0">
+        <div className="flex items-center justify-between mb-3 shrink-0">
           <h3 className="text-gray-900 font-bold text-lg tracking-tight">
             {editingRecordId ? 'Ubah Catatan Pertumbuhan' : 'Tambah Catatan Pertumbuhan'}
           </h3>
@@ -753,7 +753,7 @@ export default function GrowthView() {
                 value={weightKg}
                 onChange={(e) => setWeightKg(e.target.value)}
                 required
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-3"
               />
             </div>
             <div className="space-y-1">
@@ -768,7 +768,7 @@ export default function GrowthView() {
                 value={heightCm}
                 onChange={(e) => setHeightCm(e.target.value)}
                 required
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-3"
               />
             </div>
             <div className="space-y-1">
@@ -782,7 +782,7 @@ export default function GrowthView() {
                 placeholder="0.0"
                 value={headCircCm}
                 onChange={(e) => setHeadCircCm(e.target.value)}
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-3"
               />
             </div>
             <div className="space-y-1">
@@ -794,7 +794,7 @@ export default function GrowthView() {
                 onChange={(e) => setMeasuredAt(e.target.value)}
                 max={new Date().toISOString().split('T')[0]}
                 required
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-4 cursor-pointer"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-3 cursor-pointer"
               />
             </div>
             <div className="space-y-1">
@@ -805,7 +805,7 @@ export default function GrowthView() {
                 placeholder="Tambahkan catatan di sini..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-4"
+                className="w-full bg-gray-50/70 border border-transparent rounded-2xl py-3.5 px-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-purple-600 focus:bg-white focus:ring-0 transition-all mb-3"
               />
             </div>
           </div>
