@@ -258,7 +258,7 @@ export default function GrowthView() {
         />
         <button
           onClick={() => setActiveSubTab('ringkasan')}
-          className={`relative z-10 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${
+          className={`relative z-1 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${
             activeSubTab === 'ringkasan'
               ? 'text-gray-900'
               : 'text-gray-500 hover:text-gray-900'
@@ -268,7 +268,7 @@ export default function GrowthView() {
         </button>
         <button
           onClick={() => setActiveSubTab('riwayat')}
-          className={`relative z-10 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${
+          className={`relative z-1 flex-1 py-2 text-xs font-semibold rounded-xl transition-colors duration-300 cursor-pointer text-center ${
             activeSubTab === 'riwayat'
               ? 'text-gray-900'
               : 'text-gray-500 hover:text-gray-900'
@@ -350,108 +350,120 @@ export default function GrowthView() {
 
               {/* Standard Block Layout Containment */}
               <div className="w-full block relative" style={{ height: '256px' }}>
-                <svg
-                  key={activeMetric}
-                  viewBox="0 0 400 200"
-                  className="w-full h-full overflow-visible"
-                  preserveAspectRatio="none"
-                  width="100%"
-                  height="100%"
-                >
-                  {/* Horizontal grid lines */}
-                  {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
-                    const val = minHeight + ratio * (maxHeight - minHeight);
-                    const y = getY(val);
-                    return (
-                      <g key={i}>
-                        <line
-                          x1={paddingLeft}
-                          y1={y}
-                          x2={400 - paddingRight}
-                          y2={y}
-                          stroke="#f3f4f6"
-                          strokeWidth="1"
-                          strokeDasharray="4 4"
-                        />
+                {chartData.filter(d => d.val !== null).length >= 2 ? (
+                  <svg
+                    key={activeMetric}
+                    viewBox="0 0 400 200"
+                    className="w-full h-full overflow-visible"
+                    preserveAspectRatio="none"
+                    width="100%"
+                    height="100%"
+                  >
+                    {/* Horizontal grid lines */}
+                    {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                      const val = minHeight + ratio * (maxHeight - minHeight);
+                      const y = getY(val);
+                      return (
+                        <g key={i}>
+                          <line
+                            x1={paddingLeft}
+                            y1={y}
+                            x2={400 - paddingRight}
+                            y2={y}
+                            stroke="#f3f4f6"
+                            strokeWidth="1"
+                            strokeDasharray="4 4"
+                          />
+                          <text
+                            x={paddingLeft - 8}
+                            y={y + 3}
+                            textAnchor="end"
+                            className="fill-gray-400 text-[8px] font-medium"
+                          >
+                            {activeMetric === 'berat' ? val.toFixed(1) : Math.round(val)}
+                          </text>
+                        </g>
+                      );
+                    })}
+
+                    {/* X axis labels */}
+                    {Array.from({ length: 5 }).map((_, i) => {
+                      const val = minAge + (i / 4) * (maxAge - minAge);
+                      const x = getX(val);
+                      return (
                         <text
-                          x={paddingLeft - 8}
-                          y={y + 3}
-                          textAnchor="end"
+                          key={i}
+                          x={x}
+                          y={200 - paddingBottom + 14}
+                          textAnchor="middle"
                           className="fill-gray-400 text-[8px] font-medium"
                         >
-                          {activeMetric === 'berat' ? val.toFixed(1) : Math.round(val)}
+                          {Math.round(val)} bln
                         </text>
-                      </g>
-                    );
-                  })}
+                      );
+                    })}
 
-                  {/* X axis labels */}
-                  {Array.from({ length: 5 }).map((_, i) => {
-                    const val = minAge + (i / 4) * (maxAge - minAge);
-                    const x = getX(val);
-                    return (
-                      <text
-                        key={i}
-                        x={x}
-                        y={200 - paddingBottom + 14}
-                        textAnchor="middle"
-                        className="fill-gray-400 text-[8px] font-medium"
-                      >
-                        {Math.round(val)} bln
-                      </text>
-                    );
-                  })}
-
-                  {/* WHO Ideal Range Shaded Area */}
-                  <path
-                    d={areaPath}
-                    fill="rgba(16,185,129,0.05)"
-                    stroke="rgba(16,185,129,0.12)"
-                    strokeWidth="1.5"
-                    strokeDasharray="3 3"
-                  />
-
-                  {/* Child's Trend Line */}
-                  {trendLinePath && (
+                    {/* WHO Ideal Range Shaded Area */}
                     <path
-                      d={trendLinePath}
-                      fill="none"
-                      stroke="#10b981"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                      d={areaPath}
+                      fill="rgba(16,185,129,0.05)"
+                      stroke="rgba(16,185,129,0.12)"
+                      strokeWidth="1.5"
+                      strokeDasharray="3 3"
                     />
-                  )}
 
-                  {/* Interactive/Design Data Points */}
-                  {chartData.filter(d => d.val !== null).map((d, index) => {
-                    const { idealMin, idealMax } = getIdealRangeForMetric(activeMetric, d.ageInMonths);
-                    let dotColorClass = "fill-emerald-500"; // Ideal (Emerald)
-                    if (d.val < idealMin) {
-                      dotColorClass = "fill-amber-500"; // Below (Amber/Orange)
-                    } else if (d.val > idealMax) {
-                      dotColorClass = "fill-blue-500"; // Above (Blue)
-                    }
-                    return (
-                      <g key={index}>
-                        <circle
-                          cx={getX(d.ageInMonths)}
-                          cy={getY(d.val)}
-                          r="4"
-                          className={`${dotColorClass} stroke-white stroke-2`}
-                        />
-                        <text
-                          x={getX(d.ageInMonths)}
-                          y={getY(d.val) - 8}
-                          textAnchor="middle"
-                          className="fill-gray-800 text-[7px] font-bold"
-                        >
-                          {d.val}
-                        </text>
-                      </g>
-                    );
-                  })}
-                </svg>
+                    {/* Child's Trend Line */}
+                    {trendLinePath && (
+                      <path
+                        d={trendLinePath}
+                        fill="none"
+                        stroke="#10b981"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    )}
+
+                    {/* Interactive/Design Data Points */}
+                    {chartData.filter(d => d.val !== null).map((d, index) => {
+                      const { idealMin, idealMax } = getIdealRangeForMetric(activeMetric, d.ageInMonths);
+                      let dotColorClass = "fill-emerald-500"; // Ideal (Emerald)
+                      if (d.val < idealMin) {
+                        dotColorClass = "fill-amber-500"; // Below (Amber/Orange)
+                      } else if (d.val > idealMax) {
+                        dotColorClass = "fill-blue-500"; // Above (Blue)
+                      }
+                      return (
+                        <g key={index}>
+                          <circle
+                            cx={getX(d.ageInMonths)}
+                            cy={getY(d.val)}
+                            r="4"
+                            className={`${dotColorClass} stroke-white stroke-2`}
+                          />
+                          <text
+                            x={getX(d.ageInMonths)}
+                            y={getY(d.val) - 8}
+                            textAnchor="middle"
+                            className="fill-gray-800 text-[7px] font-bold"
+                          >
+                            {d.val}
+                          </text>
+                        </g>
+                      );
+                    })}
+                  </svg>
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-center w-full h-full bg-gray-50/40 rounded-2xl border border-dashed border-gray-200/80 p-6 space-y-2">
+                    <span className="text-3xl">📊</span>
+                    <p className="text-xs font-semibold text-gray-500">
+                      Tambahkan minimal 2 catatan untuk melihat grafik
+                    </p>
+                    <p className="text-[10px] text-gray-400 max-w-[200px] leading-relaxed mx-auto">
+                      Grafik tren pertumbuhan akan otomatis terbentuk setelah si kecil memiliki minimal 2 catatan perkembangan.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Cleaned Inline Label */}
